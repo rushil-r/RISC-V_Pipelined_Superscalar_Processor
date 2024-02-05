@@ -40,7 +40,7 @@ module divu_1iter (
     // TODO: your code here
     wire [31:0] intermediate;
     wire [0:0] less_than;
-    assign intermediate = ((i_remainder << 1 | i_dividend >> 31) & 32'h0000_0001);
+    assign intermediate = (i_remainder << 1) | ((i_dividend >> 31) & 32'h0000_0001);
     assign less_than = intermediate < i_divisor;
     assign o_remainder = less_than ? intermediate : (intermediate - i_divisor);
     assign o_quotient = less_than ? (i_quotient << 1) : ((i_quotient << 1) | 32'h0000_0001);
