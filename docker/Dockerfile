@@ -64,4 +64,4 @@ RUN rm /oss-cad-suite-linux-x64-20240120.tgz
 # NB: replicated from base image
 RUN useradd -m -s /bin/bash penn && echo 'penn ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/penn
 USER penn
-WORKDIR /home/penn
+WORKDIR /home/penn/CIS5710HWs
