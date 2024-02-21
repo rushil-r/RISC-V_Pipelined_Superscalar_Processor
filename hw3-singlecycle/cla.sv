@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-// Authors: Ahmed Abdellah, Rushil Roy 
+// Authors: Ahmed Abdellah, Rushil Roy
 /**
  * @param a first 1-bit input
  * @param b second 1-bit input
@@ -35,7 +35,7 @@ module gp4 (
 );
   wire inter1, inter2, inter3;
 
-  //assign carry out bits 
+  //assign carry out bits
   assign inter1 = (cin & pin[0]) | gin[0];
   assign inter2 = (pin[1] & inter1) | gin[1];
   assign inter3 = (pin[2] & inter2) | gin[2];
@@ -44,11 +44,12 @@ module gp4 (
   assign cout[1] = inter2;
   assign cout[2] = inter3;
 
-  //propogate 
+  //propogate
   assign pout = pin[0] & pin[1] & pin[2] & pin[3];
 
-  //generate 
-  assign gout = (gin[0] & pin[1] & pin[2] & pin[3])  | (gin[1] & pin[2] & pin[3]) | (gin[2] & pin[3]) | gin[3];
+  //generate
+  assign gout = ((gin[0] & pin[1] & pin[2] & pin[3])  | (gin[1] & pin[2] & pin[3]) |
+   (gin[2] & pin[3]) | gin[3]);
 
 endmodule
 
@@ -65,7 +66,7 @@ module gp8 (
   // carry out temp vars
   wire inter1, inter2, inter3, inter4, inter5, inter6, inter7;
 
-  // Assign intermeidate values before cout 
+  // Assign intermeidate values before cout
   assign inter1 = gin[0] | (pin[0] & cin);
   assign inter2 = gin[1] | (pin[1] & inter1);
   assign inter3 = gin[2] | (pin[2] & inter2);
@@ -74,7 +75,7 @@ module gp8 (
   assign inter6 = gin[5] | (pin[5] & inter5);
   assign inter7 = gin[6] | (pin[6] & inter6);
 
-  // Assign cout according to intermediate 
+  // Assign cout according to intermediate
   assign cout[0] = inter1;
   assign cout[1] = inter2;
   assign cout[2] = inter3;
@@ -83,15 +84,16 @@ module gp8 (
   assign cout[5] = inter6;
   assign cout[6] = inter7;
 
-  //propogate 
+  //propogate
   assign pout = pin[0] & pin[1] & pin[2] & pin[3] & pin[4] & pin[5] & pin[6] & pin[7];
 
   //generate
-  assign gout = (gin[0] & pin[1] & pin[2] & pin[3] & pin[4] & pin[5] & pin[6] & pin[7])  | (gin[1] & pin[2] & pin[3] & pin[4] & pin[5] & pin[6] & pin[7]) |
-    (gin[2]  & pin[3] & pin[4] & pin[5] & pin[6] & pin[7]) | 
-    (gin[3] & pin[4] & pin[5] & pin[6] & pin[7]) | 
-    (gin[4] & pin[5] & pin[6] & pin[7]) | 
-    (gin[5] &  pin[6] & pin[7]) | 
+  assign gout = (gin[0] & pin[1] & pin[2] & pin[3] & pin[4] & pin[5] & pin[6] & pin[7]) |
+    (gin[1] & pin[2] & pin[3] & pin[4] & pin[5] & pin[6] & pin[7]) |
+    (gin[2]  & pin[3] & pin[4] & pin[5] & pin[6] & pin[7]) |
+    (gin[3] & pin[4] & pin[5] & pin[6] & pin[7]) |
+    (gin[4] & pin[5] & pin[6] & pin[7]) |
+    (gin[5] &  pin[6] & pin[7]) |
     (gin[6] & pin[7]) | gin[7];
 endmodule
 
@@ -102,54 +104,55 @@ module cla (
     output wire [31:0] sum
 );
 
-  wire [31:0] c_fin, p_temp, g_temp;  // make final buses 
+  wire [31:0] c_fin, p_temp, g_temp;  // make final buses
   //make firtt ctemp bit the current cin value  (c0)
   assign c_fin[0] = cin;
 
-  //use genvar to make 32 gp1 for first carryout output 
+  //use genvar to make 32 gp1 for first carryout output
   genvar gp1_create;
   generate
     for (gp1_create = 0; gp1_create < 32; gp1_create = gp1_create + 1)
     gp1 gp1_instantiate (
-        a[gp1_create],
-        b[gp1_create],
-        g_temp[gp1_create],
-        p_temp[gp1_create]
+        .a(a[gp1_create]),
+        .b(b[gp1_create]),
+        .g(g_temp[gp1_create]),
+        .p(p_temp[gp1_create])
     );
   endgenerate
 
   //array for routing the proper cout_outputs into the right gp4 (curr + 4 NOT INCLUSIVE)
-  parameter int c_routing[8] = '{1, 5, 9, 13, 17, 21, 25, 29};
-  //wires for storing prop and gen signals 
+  parameter int CRouting[8] = '{1, 5, 9, 13, 17, 21, 25, 29};
+  //wires for storing prop and gen signals
   wire [7:0] g4, p4;
   genvar gp4_iter;
 
   generate
     for (gp4_iter = 0; gp4_iter < 8; gp4_iter = gp4_iter + 1)
     gp4 gp4_instantiate (
-        g_temp[4*gp4_iter+:4],  //starting index + next 4 bits 
-        p_temp[4*gp4_iter+:4],
-        c_fin[4*gp4_iter],
-        g4[gp4_iter],
-        p4[gp4_iter],
-        c_fin[c_routing[gp4_iter]+:3]  // starting index + next 3 bits to make next index not inclusive of next cout 
+        .gin(g_temp[4*gp4_iter+:4]),  //starting index + next 4 bits
+        .pin(p_temp[4*gp4_iter+:4]),
+        .cin(c_fin[4*gp4_iter]),
+        .gout(g4[gp4_iter]),
+        .pout(p4[gp4_iter]),
+        .cout(c_fin[CRouting[gp4_iter]+:3])
+        //^^^ starting index + next 3 bits to make next index not inclusive of next cout
     );
   endgenerate
 
 
-  // now make our single g8 
+  // now make our single g8
   wire g8, p8;
-  wire [6:0] c_inter;  //hold our interemdaite values 
+  wire [6:0] c_inter;  //hold our interemdaite values
   gp8 gp8_inst (
-      g4,
-      p4,
-      c_fin[0],
-      g8,
-      p8,
-      c_inter
+      .gin(g4),
+      .pin(p4),
+      .cin(c_fin[0]),
+      .gout(g8),
+      .pout(p8),
+      .cout(c_inter)
   );
 
-  // assign final c values from our intermediates 
+  // assign final c values from our intermediates
   assign c_fin[4]  = c_inter[0];
   assign c_fin[8]  = c_inter[1];
   assign c_fin[12] = c_inter[2];
@@ -158,7 +161,7 @@ module cla (
   assign c_fin[24] = c_inter[5];
   assign c_fin[28] = c_inter[6];
 
-  // final sum XOR  
+  // final sum XOR
   genvar summation;
   generate
     for (summation = 0; summation < 32; summation++)

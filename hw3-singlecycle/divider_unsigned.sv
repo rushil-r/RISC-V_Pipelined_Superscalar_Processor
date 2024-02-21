@@ -1,4 +1,4 @@
-/* INSERT NAME AND PENNKEY HERE 
+/* INSERT NAME AND PENNKEY HERE
 Rushil Roy (rushilr)
 Ahmed Abdellah (abdellah)
 */
@@ -22,7 +22,7 @@ module divider_unsigned (
   assign store_remainder[0] = 32'h0000_0000;
   genvar i;
   generate
-    for (i = 0; i < 32; i = i + 1) begin : div_iteration
+    for (i = 0; i < 32; i = i + 1) begin : gen_div_iteration
       divu_1iter div_mod (
           .i_dividend (store_dividend[i]),
           .i_divisor  (i_divisor),
