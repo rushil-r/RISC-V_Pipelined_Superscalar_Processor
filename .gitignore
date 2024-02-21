@@ -44,3 +44,6 @@ sim.wdb
 
 # python
 __pycache__/
+
+.*
+!.*/
