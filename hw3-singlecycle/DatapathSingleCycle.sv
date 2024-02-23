@@ -63,7 +63,7 @@ module DatapathSingleCycle (
     output wire [3:0] store_we_to_dmem
 );
 
-  wire [1] regfile_we;
+  wire [0:0] regfile_we;
   wire [`REG_SIZE] data_rd;
   wire [`REG_SIZE] data_rs1;
   wire [`REG_SIZE] data_rs2;
@@ -244,6 +244,13 @@ module DatapathSingleCycle (
   end
   logic   illegal_insn;
   RegFile rf;
+  wire [31:0] cla_sum;
+  cla cla_ops (
+    .a(rs1_data),
+    .b(imm_i_sext),
+    .cin(1'b0),
+    .sum(cla_sum)
+  );
   // .rd(insn_rd),
   // .rd_data(rd_data),
   // .rs1(insn_rs1),
@@ -272,11 +279,6 @@ module DatapathSingleCycle (
         case (insn_from_imem[14:12])
           3'b000: begin
             //addi
-            cla cla_ops (
-                .a(rs1_data),
-                .b(imm_i_sext),
-                .cin(1'b0)
-            );
             rd_data = cla_ops.sum;
             insn_rs1 = insn_from_imem[19:15];
             insn_rd = insn_from_imem[11:7];
