@@ -250,12 +250,6 @@ module DatapathSingleCycle (
   end
   logic   illegal_insn;
   wire [31:0] cla_sum;
-  cla cla_ops (
-    .a(data_rs1),
-    .b(imm_i_sext),
-    .cin(1'b0),
-    .sum(cla_sum)
-  );
   RegFile rf (
     .rd(insn_rd),
     .rd_data(data_rd),
@@ -267,6 +261,12 @@ module DatapathSingleCycle (
     .we(regfile_we),
     .rst(rst)
   );
+  cla cla_ops (
+    .a(data_rs1),
+    .b(imm_i_sext),
+    .cin(1'b0),
+    .sum(cla_sum)
+  );
   always_comb begin
     assign illegal_insn = 1'b0;
     assign regfile_we   = 1'b0;
@@ -277,8 +277,6 @@ module DatapathSingleCycle (
         // TODO: start here by implementing lui
           regfile_we = 1'b1;
           data_rd = {imm_u[20:0], 11'b0};
-
-          // insn_rd = insn_from_imem[11:7];
         //MemorySingleCycle
       end
       OpAuipc: begin
@@ -290,11 +288,10 @@ module DatapathSingleCycle (
           3'b000: begin
             //addi
             data_rd = cla_ops.sum;
-            // insn_rs1 = insn_from_imem[19:15];
-            // insn_rd = insn_from_imem[11:7];
           end
           3'b001: begin
           //slli
+            data_rd = data_rs1 << imm_shamt;
           end
           3'b010: begin
           //slti
@@ -304,29 +301,22 @@ module DatapathSingleCycle (
             end else begin
               data_rd = data_rs1 < imm_i_sext ? 1 : 0;
             end
-            // insn_rs1 = insn_from_imem[19:15];
-            // insn_rd = insn_from_imem[11:7];
           end
           3'b011: begin
           //stliu
             data_rd = data_rs1 < imm_i_sext ? 1 : 0;
-            // insn_rs1 = insn_from_imem[19:15];
-            // insn_rd = insn_from_imem[11:7];
           end
           3'b100: begin
           //xori
-            // insn_rs1 = insn_from_imem[19:15];
-            // insn_rd = insn_from_imem[11:7];
+            data_rd = data_rs1 ^ imm_i_sext;
           end
           3'b101: begin
             if (insn_from_imem[31:25] == 7'd0) begin
               //srli
-            //   insn_rs1 = insn_from_imem[19:15];
-            //   insn_rd = insn_from_imem[11:7];
+              data_rd = data_rs1 >> imm_shamt;
             end else if (insn_from_imem[31:25] == 7'b0100000) begin
-            //   //srai
-            //   insn_rs1 = insn_from_imem[19:15];
-            //   insn_rd = insn_from_imem[11:7];
+            //srai
+              data_rd = data_rs1 >>> imm_shamt;
             end
             else begin
               regfile_we = 1'b0;
