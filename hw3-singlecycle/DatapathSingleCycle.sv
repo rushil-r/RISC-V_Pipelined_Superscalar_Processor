@@ -250,6 +250,10 @@ module DatapathSingleCycle (
   end
   logic   illegal_insn;
   wire [31:0] cla_sum;
+  wire [31:0] cla_sum_reg;
+  wire [31:0] cla_diff_reg;
+  wire [31:0] branch_tgt;
+  assign branch_tgt = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
   RegFile rf (
     .rd(insn_rd),
     .rd_data(data_rd),
@@ -261,19 +265,32 @@ module DatapathSingleCycle (
     .we(regfile_we),
     .rst(rst)
   );
+
   cla cla_ops (
     .a(data_rs1),
     .b(imm_i_sext),
     .cin(1'b0),
     .sum(cla_sum)
   );
+  cla cla_reg_add (
+    .a(data_rs1),
+    .b(data_rs2),
+    .cin(1'b0),
+    .sum(cla_sum_reg)
+  );
+  cla cla_reg_sub (
+    .a(data_rs1),
+    .b((~data_rs2) + 1'b1),
+    .cin(1'b0),
+    .sum(cla_diff_reg)
+  );
   always_comb begin
     // set as default, but make sure to change if illegal/default-case/failure
-    assign illegal_insn = 1'b0;
-    assign regfile_we   = 1'b0;
-    halt = 1'b0;
+    illegal_insn = 1'b0;
+    regfile_we   = 1'b0;
     data_rd = 32'd0;
     pcNext = pcCurrent + 4;
+    halt = 1'b0;
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
@@ -292,13 +309,7 @@ module DatapathSingleCycle (
           end
           3'b010: begin
           //slti
-            if (imm_i_sext[30] == 1) begin
-              //indicates negative bc sign-extension
-              data_rd = (data_rs1 < (((~{{13'b0}, imm_i_sext[18:0]}) + 1) * -1)) ? 1 : 0;
-              //idk how this shit works
-            end else begin
-              data_rd = data_rs1 < imm_i_sext ? 1 : 0;
-            end
+            data_rd = ($signed(data_rs1) < $signed(imm_i_sext)) ? 1 : 0;
           end
           3'b011: begin
           //stliu
@@ -312,13 +323,9 @@ module DatapathSingleCycle (
             if (insn_from_imem[31:25] == 7'd0) begin
               //srli
               data_rd = data_rs1 >> imm_shamt;
-            end else if (insn_from_imem[31:25] == 7'b0100000) begin
+            end else begin
             //srai
               data_rd = data_rs1 >>> imm_shamt;
-            end
-            else begin
-              regfile_we = 1'b0;
-              illegal_insn = 1'b1;
             end
           end
           3'b110: begin
@@ -335,65 +342,102 @@ module DatapathSingleCycle (
           end
         endcase
       end
-      OpEnviron: begin
-        if (insn_ecall) begin
-          halt = 1'b1;
-        end else begin
-          illegal_insn = 1'b1;
-        end
-      end
       OpBranch: begin
         // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
         case(insn_from_imem[14:12])
           3'b000: begin
             //beq
             if (data_rs1 == data_rs2) begin
-              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+              pcNext = branch_tgt;
             end
           end
           3'b001: begin
             //bne
             if (data_rs1 != data_rs2) begin
-              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+              pcNext = branch_tgt;
             end
           end
           3'b100: begin
-            if ((data_rs1[31] & data_rs2[31]) | (!(data_rs1[31] | data_rs2[31]))) begin
-              //neg-neg | pos-pos
-              if (data_rs1 < data_rs2) begin
-                pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
-              end
-            end else if (data_rs1[31]) begin
-              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            if ($signed(data_rs1) < $signed(data_rs2)) begin
+              pcNext = branch_tgt;
             end
           end
           3'b101: begin
             //bge
-            if ((data_rs1[31] & data_rs2[31]) | (!(data_rs1[31] | data_rs2[31]))) begin
-              //neg-neg | pos-pos
-              if (data_rs1 >= data_rs2) begin
-                pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
-              end
-            end else if (!(data_rs1[31])) begin
-              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            if ($signed(data_rs1) >= $signed(data_rs2)) begin
+              pcNext = branch_tgt;
             end
           end
           3'b110: begin
             //bltu
             if (data_rs1 < data_rs2) begin
-              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+              pcNext = branch_tgt;
             end
           end
           3'b111: begin
             //bgeu
             if (data_rs1 >= data_rs2) begin
-              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+              pcNext = branch_tgt;
             end
           end
           default: begin
             illegal_insn = 1'b1;
           end
         endcase
+      end
+      OpRegReg: begin
+        regfile_we = 1'b1;
+        case(insn_from_imem[14:12])
+          3'b000: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //add
+              data_rd = cla_reg_add.sum;
+            end else begin
+              //sub
+              data_rd = cla_reg_sub.sum;
+            end
+          end
+          3'b001: begin
+            //sll
+            data_rd = data_rs1 << (data_rs2[4:0]);
+          end
+          3'b010: begin
+            //slt
+            data_rd = $signed(data_rs1) < $signed(data_rs2) ? 1 : 0;
+          end
+          3'b011: begin
+            //sltu
+            data_rd = data_rs1 < data_rs2 ? 1 : 0;
+          end
+          3'b100: begin
+            //xor
+            data_rd = data_rs1 ^ data_rs2;
+          end
+          3'b101: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //srl
+              data_rd = data_rs1 >> (data_rs2[4:0]);
+            end else begin
+              //sra
+              data_rd = data_rs1 >>> (data_rs2[4:0]);
+            end
+          end
+          3'b110: begin
+            //or
+            data_rd = data_rs1 | data_rs2;
+          end
+          3'b111: begin
+            //and
+            data_rd = data_rs1 & data_rs2;
+          end
+          default: begin
+            illegal_insn = 1'b1;
+            regfile_we = 1'b0;
+          end
+        endcase
+      end
+      OpEnviron: begin
+        halt = 1'b1;
       end
       default: begin
         illegal_insn = 1'b1;
