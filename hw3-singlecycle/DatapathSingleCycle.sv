@@ -268,6 +268,7 @@ module DatapathSingleCycle (
     .sum(cla_sum)
   );
   always_comb begin
+    // set as default, but make sure to change if illegal/default-case/failure
     assign illegal_insn = 1'b0;
     assign regfile_we   = 1'b0;
     halt = 1'b0;
@@ -275,10 +276,10 @@ module DatapathSingleCycle (
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
-        data_rd = {imm_u[20:0], 11'b0};
+        data_rd = {imm_u[20:0], 11'b0}; // 20-bit bitshift
       end
       OpRegImm: begin
-        regfile_we = 1'b1;
+        regfile_we = 1'b1; //re-enable regfile when changing data_rd
         case (insn_from_imem[14:12])
           3'b000: begin
             //addi
@@ -286,13 +287,14 @@ module DatapathSingleCycle (
           end
           3'b001: begin
           //slli
-            data_rd = data_rs1 << imm_shamt;
+            data_rd = data_rs1 << imm_shamt; //imm_shamt for shift_amount
           end
           3'b010: begin
           //slti
             if (imm_i_sext[30] == 1) begin
               //indicates negative bc sign-extension
               data_rd = (data_rs1 < (((~{{13'b0}, imm_i_sext[18:0]}) + 1) * -1)) ? 1 : 0;
+              //idk how this shit works
             end else begin
               data_rd = data_rs1 < imm_i_sext ? 1 : 0;
             end
