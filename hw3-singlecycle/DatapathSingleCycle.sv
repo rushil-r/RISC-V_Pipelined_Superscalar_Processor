@@ -437,7 +437,14 @@ module DatapathSingleCycle (
         endcase
       end
       OpEnviron: begin
-        halt = 1'b1;
+        case(insn_from_imem[31:7])
+          25'd0: begin
+            halt = 1'b1;
+          end
+          default: begin
+            illegal_insn = 1'b1;
+          end
+        endcase
       end
       default: begin
         illegal_insn = 1'b1;
