@@ -273,10 +273,11 @@ module DatapathSingleCycle (
     assign regfile_we   = 1'b0;
     halt = 1'b0;
     data_rd = 32'd0;
+    pcNext = pcCurrent + 4;
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
-        data_rd = {imm_u[20:0], 11'b0}; // 20-bit bitshift
+        data_rd = {imm_u[20:0], 11'b0}; // 20-bit bitshifted left by 12
       end
       OpRegImm: begin
         regfile_we = 1'b1; //re-enable regfile when changing data_rd
@@ -323,14 +324,10 @@ module DatapathSingleCycle (
           3'b110: begin
           //ori
             data_rd = data_rs1 | imm_i_sext;
-            // insn_rs1 = insn_from_imem[19:15];
-            // insn_rd = insn_from_imem[11:7];
           end
           3'b111: begin
           //andi
             data_rd = data_rs1 & imm_i_sext;
-            // insn_rs1 = insn_from_imem[19:15];
-            // insn_rd = insn_from_imem[11:7];
           end
           default: begin
             regfile_we = 1'b0;
@@ -339,14 +336,71 @@ module DatapathSingleCycle (
         endcase
       end
       OpEnviron: begin
-        halt = 1'b1;
+        if (insn_ecall) begin
+          halt = 1'b1;
+        end else begin
+          illegal_insn = 1'b1;
+        end
+      end
+      OpBranch: begin
+        // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
+        case(insn_from_imem[14:12])
+          3'b000: begin
+            //beq
+            if (data_rs1 == data_rs2) begin
+              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            end
+          end
+          3'b001: begin
+            //bne
+            if (data_rs1 != data_rs2) begin
+              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            end
+          end
+          3'b100: begin
+            if ((data_rs1[31] & data_rs2[31]) | (!(data_rs1[31] | data_rs2[31]))) begin
+              //neg-neg | pos-pos
+              if (data_rs1 < data_rs2) begin
+                pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+              end
+            end else if (data_rs1[31]) begin
+              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            end
+          end
+          3'b101: begin
+            //bge
+            if ((data_rs1[31] & data_rs2[31]) | (!(data_rs1[31] | data_rs2[31]))) begin
+              //neg-neg | pos-pos
+              if (data_rs1 >= data_rs2) begin
+                pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+              end
+            end else if (!(data_rs1[31])) begin
+              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            end
+          end
+          3'b110: begin
+            //bltu
+            if (data_rs1 < data_rs2) begin
+              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            end
+          end
+          3'b111: begin
+            //bgeu
+            if (data_rs1 >= data_rs2) begin
+              pcNext = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+            end
+          end
+          default: begin
+            illegal_insn = 1'b1;
+          end
+        endcase
       end
       default: begin
         illegal_insn = 1'b1;
       end
     endcase
-    pcNext = pcCurrent + 4;
-    //assign pc_to_imem = pcNext;
+    //pcNext = pcCurrent+4;
+    //^^^^^ relocated to inside case statements to allow for branching logic
   end
 endmodule
 
