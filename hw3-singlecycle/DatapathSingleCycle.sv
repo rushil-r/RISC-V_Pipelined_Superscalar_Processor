@@ -1,3 +1,7 @@
+/* INSERT NAME AND PENNKEY HERE
+Rushil Roy (rushilr)
+Ahmed Abdellah (abdellah)
+*/
 `timescale 1ns / 1ns
 
 // registers are 32 bits in RV32
