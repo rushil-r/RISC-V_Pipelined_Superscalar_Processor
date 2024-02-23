@@ -4,8 +4,6 @@
 
 > We have recently updated the `riscv-tests` submodule with the binaries needed for testing your processor. Be sure you get those changes by running (from the root directory of your git repo) the command: `git submodule update --recursive riscv-tests/`
 
-> We have also recently updated our Docker image to add the `zip` utility, which is needed for submitting this homework. Be sure to pull this latest image, and restart your container using it.
-
 This homework has two milestones, described next.
 
 ## HW3A: ALU & Branch Instructions
@@ -16,7 +14,7 @@ Once your register file is working, you can start implementing your processor.
 
 > **The instance of the RegFile module inside your processor must be named `rf` for the tests to work**.
 
-For this milestone, your processor must support ALU instructions (`lui` through `and` (but not `auipc`) on our [ISA sheet](../riscv isa reference sheet.pdf)), branches (`beq` through `bgeu`) and the `ecall` instruction.
+For this milestone, your processor must support ALU instructions (`lui` through `and` (but not `auipc`) on our [ISA sheet](../riscv%20isa%20reference%20sheet.pdf)), branches (`beq` through `bgeu`) and the `ecall` instruction.
 
 > For our purposes, `ecall` just needs to set the `halt` output of the processor to 1
 
@@ -37,7 +35,7 @@ The assembly code for each RV test is available to help you understand what each
 
 ## HW3B: Remaining Instructions
 
-In this second milestone, you will need to support the remaining rv32im instructions. The memory instructions, with multi-byte loads and stores, will likely be where you spend the most time.
+In this second milestone, you will need to support the remaining rv32im instructions. The memory instructions, with multi-byte loads and stores, will likely be where you spend the most time. Note that your processor does not need to support misaligned memory accesses, and we don't run the `rv32ui-p-ma_data` test that would exercise these cases.
 
 You should instantiate your divider from HW2A and use it to implement the divide and remainder instructions. You can use the `*` operator for multiply. For this milestone, the autograder will run `pytest-3 -s testbench.py` to run all of the RV tests against your processor. This will also run the larger [Dhrystone benchmark](https://en.wikipedia.org/wiki/Dhrystone) ([source code here](https://github.com/cis5710/riscv-tests/tree/master/benchmarks/dhrystone)) which runs about 190k instructions through your processor, and will allow us to make performance comparisons across the processors we build.
 
@@ -49,7 +47,7 @@ You cannot use the `-`, `/` or `%` operators in your code.
 
 ## Testing and Debugging Tips
 
-You can edit the `testOneRiscvTest` test in `testbench.py` to run any single RV test, which will result in much simpler waveforms.
+You can edit the `testOneRiscvTest` test in `testbench.py` to run any single RV test. You can then run just this test via `pytest-3 -s testbench.py --tests testOneRiscvTest`. This should result in simpler waveforms. You can also specify a comma-separated list of tests to the `--tests` flag.
 
 In GtkWave, use the `disasm_wire` signal (be sure to change the Data Format to `ASCII`) to view the assembly code for the current instruction. This, along with the PC and `cycles_current` value, can help you track what your processor is doing. This disassembler has not been extensively tested, however, so it may contain bugs. PRs welcome!
 
