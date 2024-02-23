@@ -285,16 +285,17 @@ module DatapathSingleCycle (
     .sum(cla_diff_reg)
   );
   always_comb begin
+    halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
     regfile_we   = 1'b0;
     data_rd = 32'd0;
     pcNext = pcCurrent + 4;
-    halt = 1'b0;
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
         data_rd = {imm_u[20:0], 11'b0}; // 20-bit bitshifted left by 12
+        store_data_to_dmem = data_rd;
       end
       OpRegImm: begin
         regfile_we = 1'b1; //re-enable regfile when changing data_rd
