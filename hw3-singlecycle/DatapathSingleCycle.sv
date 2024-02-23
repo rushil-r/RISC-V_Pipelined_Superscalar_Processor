@@ -50,6 +50,12 @@ module RegFile (
   end
 endmodule
 
+
+
+
+
+
+
 module DatapathSingleCycle (
     input wire clk,
     input wire rst,
@@ -63,13 +69,13 @@ module DatapathSingleCycle (
     output wire [3:0] store_we_to_dmem
 );
 
-  wire [0:0] regfile_we;
-  wire [`REG_SIZE] data_rd;
-  wire [`REG_SIZE] data_rs1;
-  wire [`REG_SIZE] data_rs2;
-  wire [4:0] regfile_rd;
-  wire [4:0] regfile_rs1;
-  wire [4:0] regfile_rs2;
+  logic [0:0] regfile_we;
+  logic [`REG_SIZE] data_rd;
+  logic [`REG_SIZE] data_rs1;
+  logic [`REG_SIZE] data_rs2;
+  logic [4:0] regfile_rd;
+  logic [4:0] regfile_rs1;
+  logic [4:0] regfile_rs2;
 
   // components of the instruction
   wire [6:0] insn_funct7;
@@ -243,31 +249,34 @@ module DatapathSingleCycle (
     end
   end
   logic   illegal_insn;
-  RegFile rf;
   wire [31:0] cla_sum;
   cla cla_ops (
-    .a(rs1_data),
+    .a(data_rs1),
     .b(imm_i_sext),
     .cin(1'b0),
     .sum(cla_sum)
   );
-  // .rd(insn_rd),
-  // .rd_data(rd_data),
-  // .rs1(insn_rs1),
-  // .rs1_data(rs1_data),
-  // .rs2(insn_rs2),
-  // .rs2_data(rs2_data),
-  // .clk(clk),
-  // .we(regfile_we),
-  // .rst(rst)
+  RegFile rf (
+    .rd(insn_rd),
+    .rd_data(data_rd),
+    .rs1(insn_rs1),
+    .rs1_data(data_rs1),
+    .rs2(insn_rs2),
+    .rs2_data(data_rs2),
+    .clk(clk),
+    .we(regfile_we),
+    .rst(rst)
+  );
   always_comb begin
-    illegal_insn = 1'b0;
-    regfile_we   = 1'b0;
+    assign illegal_insn = 1'b0;
+    assign regfile_we   = 1'b0;
+    halt = 1'b0;
+    data_rd = 32'd0;
     case (insn_opcode)
       OpLui: begin
         // TODO: start here by implementing lui
           regfile_we = 1'b1;
-          rd_data = imm_u_sext;
+          data_rd = imm_u_sext;
           // insn_rd = insn_from_imem[11:7];
         //MemorySingleCycle
       end
@@ -279,9 +288,9 @@ module DatapathSingleCycle (
         case (insn_from_imem[14:12])
           3'b000: begin
             //addi
-            rd_data = cla_ops.sum;
-            insn_rs1 = insn_from_imem[19:15];
-            insn_rd = insn_from_imem[11:7];
+            data_rd = cla_ops.sum;
+            // insn_rs1 = insn_from_imem[19:15];
+            // insn_rd = insn_from_imem[11:7];
           end
           3'b001: begin
           //slli
@@ -290,33 +299,33 @@ module DatapathSingleCycle (
           //slti
             if (imm_i_sext[30] == 1) begin
               //indicates negative bc sign-extension
-              rd_data = (rs1_data < ((~(imm_i_sext[18:0]) + 1)*-1)) ? 1 : 0;
+              data_rd = (data_rs1 < (((~{{13'b0}, imm_i_sext[18:0]}) + 1) * -1)) ? 1 : 0;
             end else begin
-              rd_data = rs1_data < imm_i_sext ? 1 : 0;
+              data_rd = data_rs1 < imm_i_sext ? 1 : 0;
             end
-            insn_rs1 = insn_from_imem[19:15];
-            insn_rd = insn_from_imem[11:7];
+            // insn_rs1 = insn_from_imem[19:15];
+            // insn_rd = insn_from_imem[11:7];
           end
           3'b011: begin
           //stliu
-            rd_data = rs1_data < imm_i_sext ? 1 : 0;
-            insn_rs1 = insn_from_imem[19:15];
-            insn_rd = insn_from_imem[11:7];
+            data_rd = data_rs1 < imm_i_sext ? 1 : 0;
+            // insn_rs1 = insn_from_imem[19:15];
+            // insn_rd = insn_from_imem[11:7];
           end
           3'b100: begin
           //xori
-            insn_rs1 = insn_from_imem[19:15];
-            insn_rd = insn_from_imem[11:7];
+            // insn_rs1 = insn_from_imem[19:15];
+            // insn_rd = insn_from_imem[11:7];
           end
           3'b101: begin
             if (insn_from_imem[31:25] == 7'd0) begin
               //srli
-              insn_rs1 = insn_from_imem[19:15];
-              insn_rd = insn_from_imem[11:7];
+            //   insn_rs1 = insn_from_imem[19:15];
+            //   insn_rd = insn_from_imem[11:7];
             end else if (insn_from_imem[31:25] == 7'b0100000) begin
-              //srai
-              insn_rs1 = insn_from_imem[19:15];
-              insn_rd = insn_from_imem[11:7];
+            //   //srai
+            //   insn_rs1 = insn_from_imem[19:15];
+            //   insn_rd = insn_from_imem[11:7];
             end
             else begin
               regfile_we = 1'b0;
@@ -325,13 +334,13 @@ module DatapathSingleCycle (
           end
           3'b110: begin
           //ori
-            insn_rs1 = insn_from_imem[19:15];
-            insn_rd = insn_from_imem[11:7];
+            // insn_rs1 = insn_from_imem[19:15];
+            // insn_rd = insn_from_imem[11:7];
           end
           3'b111: begin
           //andi
-            insn_rs1 = insn_from_imem[19:15];
-            insn_rd = insn_from_imem[11:7];
+            // insn_rs1 = insn_from_imem[19:15];
+            // insn_rd = insn_from_imem[11:7];
           end
           default: begin
             regfile_we = 1'b0;
@@ -346,7 +355,7 @@ module DatapathSingleCycle (
         illegal_insn = 1'b1;
       end
     endcase
-    assign pc_to_imem = pcNext;
+    //assign pc_to_imem = pcNext;
   end
 endmodule
 
