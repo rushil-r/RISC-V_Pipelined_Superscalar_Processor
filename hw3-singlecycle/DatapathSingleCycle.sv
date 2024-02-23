@@ -325,6 +325,7 @@ module DatapathSingleCycle (
           end
           3'b110: begin
           //ori
+            data_rd = data_rs1 | imm_i_sext;
             // insn_rs1 = insn_from_imem[19:15];
             // insn_rd = insn_from_imem[11:7];
           end
