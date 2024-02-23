@@ -116,7 +116,7 @@ module DatapathSingleCycle (
   wire [`REG_SIZE] imm_s_sext = {{20{imm_s[11]}}, imm_s[11:0]};
   wire [`REG_SIZE] imm_b_sext = {{19{imm_b[12]}}, imm_b[12:0]};
   wire [`REG_SIZE] imm_j_sext = {{11{imm_j[20]}}, imm_j[20:0]};
-  wire [`REG_SIZE] imm_u_sext = {{11{imm_j[20]}}, imm_u[20:0]};
+  wire [`REG_SIZE] imm_u_sext = {{11{imm_u[20]}}, imm_u[20:0]};
   // opcodes - see section 19 of RiscV spec
   localparam bit [`OPCODE_SIZE] OpLoad = 7'b00_000_11;
   localparam bit [`OPCODE_SIZE] OpStore = 7'b01_000_11;
