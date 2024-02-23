@@ -274,13 +274,8 @@ module DatapathSingleCycle (
     data_rd = 32'd0;
     case (insn_opcode)
       OpLui: begin
-        // TODO: start here by implementing lui
-          regfile_we = 1'b1;
-          data_rd = {imm_u[20:0], 11'b0};
-        //MemorySingleCycle
-      end
-      OpAuipc: begin
-        // NOT REQUIRED FOR 3A
+        regfile_we = 1'b1;
+        data_rd = {imm_u[20:0], 11'b0};
       end
       OpRegImm: begin
         regfile_we = 1'b1;
@@ -331,6 +326,7 @@ module DatapathSingleCycle (
           end
           3'b111: begin
           //andi
+            data_rd = data_rs1 & imm_i_sext;
             // insn_rs1 = insn_from_imem[19:15];
             // insn_rd = insn_from_imem[11:7];
           end
@@ -347,6 +343,7 @@ module DatapathSingleCycle (
         illegal_insn = 1'b1;
       end
     endcase
+    pcNext = pcCurrent + 4;
     //assign pc_to_imem = pcNext;
   end
 endmodule
