@@ -47,3 +47,5 @@ __pycache__/
 
 .*
 !.*/
+riscv-tests
+hw3-singlecycle/testbench.py
