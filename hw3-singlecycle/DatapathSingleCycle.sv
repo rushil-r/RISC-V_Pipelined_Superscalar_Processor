@@ -276,7 +276,8 @@ module DatapathSingleCycle (
       OpLui: begin
         // TODO: start here by implementing lui
           regfile_we = 1'b1;
-          data_rd = imm_u_sext;
+          data_rd = {imm_u[20:0], 11'b0};
+
           // insn_rd = insn_from_imem[11:7];
         //MemorySingleCycle
       end
