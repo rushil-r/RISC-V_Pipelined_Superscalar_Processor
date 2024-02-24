@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date             : Fri Feb 23 21:47:41 2024
+| Date             : Fri Feb 23 22:41:21 2024
 | Host             : big19.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command          : report_power -file ./vivado_output/post_route_power_report.txt
 | Design           : RiscvSystem
@@ -53,12 +53,12 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |    <0.001 |        5 |       --- |             --- |
-| Slice Logic    |    <0.001 |      485 |       --- |             --- |
-|   LUT as Logic |    <0.001 |      185 |     53200 |            0.35 |
+| Slice Logic    |    <0.001 |      484 |       --- |             --- |
+|   LUT as Logic |    <0.001 |      184 |     53200 |            0.35 |
 |   CARRY4       |    <0.001 |       15 |     13300 |            0.11 |
 |   Register     |    <0.001 |      201 |    106400 |            0.19 |
 |   Others       |     0.000 |       24 |       --- |             --- |
-| Signals        |    <0.001 |      434 |       --- |             --- |
+| Signals        |    <0.001 |      438 |       --- |             --- |
 | Block RAM      |    <0.001 |      9.5 |       140 |            6.79 |
 | MMCM           |     0.086 |        1 |         4 |           25.00 |
 | I/O            |    <0.001 |       17 |       200 |            8.50 |
