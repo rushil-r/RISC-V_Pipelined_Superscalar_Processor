@@ -112,15 +112,15 @@ module DatapathSingleCycle (
   };
 
   // U - 20-bit immediate
-  wire [20:0] imm_u;
-  assign imm_u = {insn_from_imem[31:12], 1'b0};
+  wire [19:0] imm_u;
+  assign imm_u = insn_from_imem[31:12];
 
 
   wire [`REG_SIZE] imm_i_sext = {{20{imm_i[11]}}, imm_i[11:0]};
   wire [`REG_SIZE] imm_s_sext = {{20{imm_s[11]}}, imm_s[11:0]};
   wire [`REG_SIZE] imm_b_sext = {{19{imm_b[12]}}, imm_b[12:0]};
   wire [`REG_SIZE] imm_j_sext = {{11{imm_j[20]}}, imm_j[20:0]};
-  wire [`REG_SIZE] imm_u_sext = {{11{imm_u[20]}}, imm_u[20:0]};
+  wire [`REG_SIZE] imm_u_sext = {{12{imm_u[19]}}, imm_u[19:0]};
   // opcodes - see section 19 of RiscV spec
   localparam bit [`OPCODE_SIZE] OpLoad = 7'b00_000_11;
   localparam bit [`OPCODE_SIZE] OpStore = 7'b01_000_11;
@@ -256,8 +256,7 @@ module DatapathSingleCycle (
   wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
   wire [31:0] cla_diff_reg;
-  wire [31:0] branch_tgt;
-  assign branch_tgt = pcCurrent + {{19{imm_b[11]}}, (imm_b<<1)};
+  //assign branch_tgt = pcCurrent + {{19{imm_b[11]}}, (imm_b)};
   RegFile rf (
     .rd(insn_rd),
     .rd_data(data_rd),
@@ -298,7 +297,8 @@ module DatapathSingleCycle (
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
-        data_rd = (({{12'b0}, imm_u[19:0]}) << 11); // 20-bit bitshifted left by 12
+        data_rd = (({12'b0, imm_u[19:0]}) << 12); // 20-bit bitshifted left by 12
+        store_data_to_dmem = data_rd;
       end
       OpRegImm: begin
         regfile_we = 1'b1; //re-enable regfile when changing data_rd
@@ -352,36 +352,36 @@ module DatapathSingleCycle (
           3'b000: begin
             //beq
             if (data_rs1 == data_rs2) begin
-              pcNext = branch_tgt;
+              pcNext = imm_b_sext;
             end
           end
           3'b001: begin
             //bne
             if (data_rs1 != data_rs2) begin
-              pcNext = branch_tgt;
+              pcNext = imm_b_sext;
             end
           end
           3'b100: begin
             if ($signed(data_rs1) < $signed(data_rs2)) begin
-              pcNext = branch_tgt;
+              pcNext = imm_b_sext;
             end
           end
           3'b101: begin
             //bge
             if ($signed(data_rs1) >= $signed(data_rs2)) begin
-              pcNext = branch_tgt;
+              pcNext = imm_b_sext;
             end
           end
           3'b110: begin
             //bltu
             if (data_rs1 < data_rs2) begin
-              pcNext = branch_tgt;
+              pcNext = imm_b_sext;
             end
           end
           3'b111: begin
             //bgeu
             if (data_rs1 >= data_rs2) begin
-              pcNext = branch_tgt;
+              pcNext = imm_b_sext;
             end
           end
           default: begin
