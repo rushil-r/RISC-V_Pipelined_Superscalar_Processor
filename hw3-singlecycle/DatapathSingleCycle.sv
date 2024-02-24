@@ -298,7 +298,6 @@ module DatapathSingleCycle (
       OpLui: begin
         regfile_we = 1'b1;
         data_rd = (({12'b0, imm_u[19:0]}) << 12); // 20-bit bitshifted left by 12
-        store_data_to_dmem = data_rd;
       end
       OpRegImm: begin
         regfile_we = 1'b1; //re-enable regfile when changing data_rd
