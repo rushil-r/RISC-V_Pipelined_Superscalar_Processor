@@ -55,11 +55,6 @@ module RegFile (
 endmodule
 
 
-
-
-
-
-
 module DatapathSingleCycle (
     input wire clk,
     input wire rst,
@@ -296,7 +291,7 @@ module DatapathSingleCycle (
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
-        data_rd = (({12'b0, imm_u[19:0]}) << 12); // 20-bit bitshifted left by 12
+        data_rd = {{imm_u[19:0]}, 12'b0}; // 20-bit bitshifted left by 12
       end
       OpRegImm: begin
         regfile_we = 1'b1; //re-enable regfile when changing data_rd
@@ -327,7 +322,7 @@ module DatapathSingleCycle (
               data_rd = data_rs1 >> imm_shamt;
             end else begin
             //srai
-              data_rd = data_rs1 >>> imm_shamt;
+              data_rd = $signed(data_rs1) >>> imm_shamt;
             end
           end
           3'b110: begin
@@ -423,7 +418,7 @@ module DatapathSingleCycle (
               data_rd = data_rs1 >> (data_rs2[4:0]);
             end else begin
               //sra
-              data_rd = data_rs1 >>> (data_rs2[4:0]);
+              data_rd = $signed(data_rs1) >>> $signed(data_rs2[4:0]);
             end
           end
           3'b110: begin
