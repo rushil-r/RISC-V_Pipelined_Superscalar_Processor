@@ -294,9 +294,10 @@ module DatapathSingleCycle (
       .o_remainder(div_u_rem_reg),
       .o_quotient (div_u_qot_reg)
   );
+
   divider_unsigned div_sr_alu_n (
-      .i_dividend (((data_rs1 >>> 31) ^ data_rs1) + (~(data_rs1 >>> 31))),
-      .i_divisor  (((data_rs2 >>> 31) ^ data_rs2) + (~(data_rs1 >>> 31))),
+      .i_dividend (({32{data_rs1[31]}} ^ data_rs1) + ({31'b0, data_rs1[31]})),
+      .i_divisor  (({32{data_rs2[31]}} ^ data_rs2) + ({31'b0, data_rs2[31]})),
       .o_remainder(div_rem_reg),
       .o_quotient (div_qot_reg)
   );
