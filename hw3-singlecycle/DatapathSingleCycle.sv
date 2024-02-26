@@ -90,7 +90,7 @@ module DatapathSingleCycle (
   // I - short immediates and loads
   wire [11:0] imm_i;
   assign imm_i = insn_from_imem[31:20];
-  wire [4:0] imm_shamt = insn_from_imem[24:20];
+  wire [ 4:0] imm_shamt = insn_from_imem[24:20];
 
   // S - stores
   wire [11:0] imm_s;
@@ -247,7 +247,7 @@ module DatapathSingleCycle (
       end
     end
   end
-  logic   illegal_insn;
+  logic illegal_insn;
   wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
   wire [31:0] cla_diff_reg;
@@ -259,84 +259,84 @@ module DatapathSingleCycle (
   wire [31:0] div_qot_reg_bn;
   //assign branch_tgt = pcCurrent + {{19{imm_b[11]}}, (imm_b)};
   RegFile rf (
-    .rd(insn_rd),
-    .rd_data(data_rd),
-    .rs1(insn_rs1),
-    .rs1_data(data_rs1),
-    .rs2(insn_rs2),
-    .rs2_data(data_rs2),
-    .clk(clk),
-    .we(regfile_we),
-    .rst(rst)
+      .rd(insn_rd),
+      .rd_data(data_rd),
+      .rs1(insn_rs1),
+      .rs1_data(data_rs1),
+      .rs2(insn_rs2),
+      .rs2_data(data_rs2),
+      .clk(clk),
+      .we(regfile_we),
+      .rst(rst)
   );
 
   cla cla_ops (
-    .a(data_rs1),
-    .b(imm_i_sext),
-    .cin(1'b0),
-    .sum(cla_sum)
+      .a  (data_rs1),
+      .b  (imm_i_sext),
+      .cin(1'b0),
+      .sum(cla_sum)
   );
   cla cla_reg_add (
-    .a(data_rs1),
-    .b(data_rs2),
-    .cin(1'b0),
-    .sum(cla_sum_reg)
+      .a  (data_rs1),
+      .b  (data_rs2),
+      .cin(1'b0),
+      .sum(cla_sum_reg)
   );
   cla cla_reg_sub (
-    .a(data_rs1),
-    .b((~data_rs2) + 1'b1),
-    .cin(1'b0),
-    .sum(cla_diff_reg)
+      .a  (data_rs1),
+      .b  ((~data_rs2) + 1'b1),
+      .cin(1'b0),
+      .sum(cla_diff_reg)
   );
   divider_unsigned div_u_alu (
-    .i_dividend(data_rs1),
-    .i_divisor(data_rs2),
-    .o_remainder(div_u_rem_reg),
-    .o_quotient(div_u_qot_reg)
+      .i_dividend (data_rs1),
+      .i_divisor  (data_rs2),
+      .o_remainder(div_u_rem_reg),
+      .o_quotient (div_u_qot_reg)
   );
-    divider_unsigned div_sr_alu_n (
-    .i_dividend(((data_rs1>>>31) ^ data_rs1)+(~(data_rs1>>>31))),
-    .i_divisor(((data_rs2>>>31) ^ data_rs2)+(~(data_rs1>>>31))),
-    .o_remainder(div_rem_reg),
-    .o_quotient(div_qot_reg)
+  divider_unsigned div_sr_alu_n (
+      .i_dividend (((data_rs1 >>> 31) ^ data_rs1) + (~(data_rs1 >>> 31))),
+      .i_divisor  (((data_rs2 >>> 31) ^ data_rs2) + (~(data_rs1 >>> 31))),
+      .o_remainder(div_rem_reg),
+      .o_quotient (div_qot_reg)
   );
 
   always_comb begin
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
-    regfile_we   = 1'b0;
+    regfile_we = 1'b0;
     pcNext = pcCurrent + 4;
     case (insn_opcode)
       OpLui: begin
         regfile_we = 1'b1;
-        data_rd = {{imm_u[19:0]}, 12'b0}; // 20-bit bitshifted left by 12
+        data_rd = {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
       end
       OpAuipc: begin
         regfile_we = 1'b1;
-        data_rd = pcCurrent + {{imm_u[19:0]}, 12'b0}; // 20-bit bitshifted left by 12
+        data_rd = pcCurrent + {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
       end
       OpRegImm: begin
-        regfile_we = 1'b1; //re-enable regfile when changing data_rd
+        regfile_we = 1'b1;  //re-enable regfile when changing data_rd
         case (insn_from_imem[14:12])
           3'b000: begin
             //addi
             data_rd = cla_ops.sum;
           end
           3'b001: begin
-          //slli
-            data_rd = data_rs1 << imm_shamt; //imm_shamt for shift_amount
+            //slli
+            data_rd = data_rs1 << imm_shamt;  //imm_shamt for shift_amount
           end
           3'b010: begin
-          //slti
+            //slti
             data_rd = ($signed(data_rs1) < $signed(imm_i_sext)) ? 1 : 0;
           end
           3'b011: begin
-          //stliu
+            //stliu
             data_rd = data_rs1 < imm_i_sext ? 1 : 0;
           end
           3'b100: begin
-          //xori
+            //xori
             data_rd = data_rs1 ^ imm_i_sext;
           end
           3'b101: begin
@@ -344,20 +344,20 @@ module DatapathSingleCycle (
               //srli
               data_rd = data_rs1 >> imm_shamt;
             end else begin
-            //srai
+              //srai
               data_rd = $signed(data_rs1) >>> imm_shamt;
             end
           end
           3'b110: begin
-          //ori
+            //ori
             data_rd = data_rs1 | imm_i_sext;
           end
           3'b111: begin
-          //andi
+            //andi
             data_rd = data_rs1 & imm_i_sext;
           end
           default: begin
-            regfile_we = 1'b0;
+            regfile_we   = 1'b0;
             illegal_insn = 1'b1;
           end
         endcase
@@ -365,11 +365,11 @@ module DatapathSingleCycle (
       OpBranch: begin
         regfile_we = 1'b0;
         // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
-        case(insn_from_imem[14:12])
+        case (insn_from_imem[14:12])
           3'b000: begin
             //beq
             if (data_rs1 == data_rs2) begin
-              pcNext =pcCurrent + imm_b_sext;
+              pcNext = pcCurrent + imm_b_sext;
             end
           end
           3'b001: begin
@@ -403,13 +403,13 @@ module DatapathSingleCycle (
           end
           default: begin
             illegal_insn = 1'b1;
-            regfile_we = 1'b0;
+            regfile_we   = 1'b0;
           end
         endcase
       end
       OpRegReg: begin
         regfile_we = 1'b1;
-        case(insn_from_imem[14:12])
+        case (insn_from_imem[14:12])
           3'b000: begin
             if (insn_from_imem[31:25] == 7'd0) begin
               //add
@@ -428,7 +428,9 @@ module DatapathSingleCycle (
               data_rd = data_rs1 << (data_rs2[4:0]);
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //mulh
-              data_rd = (($signed(data_rs1) * $signed(data_rs2)) >> 32)& 32'h00000000ffffffff;
+              logic [63:0] inter_mulh;
+              inter_mulh = ($signed(data_rs1) * $signed(data_rs2));
+              data_rd = inter_mulh[63:32];
             end
           end
           3'b010: begin
@@ -437,7 +439,9 @@ module DatapathSingleCycle (
               data_rd = $signed(data_rs1) < $signed(data_rs2) ? 1 : 0;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //mulhsu
-              data_rd = (($signed(data_rs1) * $unsigned(data_rs2)) >> 32)& 32'h00000000ffffffff;
+              logic [63:0] inter_mulhsu;
+              inter_mulhsu = ($signed(data_rs1) * $unsigned(data_rs2));
+              data_rd = inter_mulhsu[63:32];
             end
           end
           3'b011: begin
@@ -446,7 +450,9 @@ module DatapathSingleCycle (
               data_rd = data_rs1 < data_rs2 ? 1 : 0;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //mulhu
-              data_rd = (($unsigned(data_rs1) * $unsigned(data_rs2)) >> 32) & 32'h00000000ffffffff;
+              logic [63:0] inter_mulhu;
+              inter_mulhu = ($unsigned(data_rs1) * $unsigned(data_rs2));
+              data_rd = inter_mulhu[63:32];
             end
           end
           3'b100: begin
@@ -455,10 +461,10 @@ module DatapathSingleCycle (
               data_rd = data_rs1 ^ data_rs2;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //div
-              if (data_rs1[31] == data_rs2[31])  begin
+              if (data_rs1[31] == data_rs2[31]) begin
                 data_rd = div_qot_reg;
               end else begin
-                data_rd = ((~div_qot_reg)+1'b1);
+                data_rd = ((~div_qot_reg) + 1'b1);
               end
             end
           end
@@ -476,12 +482,12 @@ module DatapathSingleCycle (
           end
           3'b110: begin
             if (insn_from_imem[31:25] == 7'd0) begin
-            //or
-            data_rd = data_rs1 | data_rs2;
+              //or
+              data_rd = data_rs1 | data_rs2;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //rem
-              if (data_rs1[31])  begin
-                data_rd = ((~div_rem_reg)+1'b1);
+              if (data_rs1[31]) begin
+                data_rd = ((~div_rem_reg) + 1'b1);
               end else begin
                 data_rd = div_rem_reg;
               end
@@ -498,19 +504,19 @@ module DatapathSingleCycle (
           end
           default: begin
             illegal_insn = 1'b1;
-            regfile_we = 1'b0;
+            regfile_we   = 1'b0;
           end
         endcase
       end
       OpEnviron: begin
         regfile_we = 1'b0;
-        case(insn_from_imem[31:7])
+        case (insn_from_imem[31:7])
           25'd0: begin
             halt = 1'b1;
           end
           default: begin
             illegal_insn = 1'b1;
-            regfile_we = 1'b0;
+            regfile_we   = 1'b0;
           end
         endcase
       end
@@ -525,7 +531,7 @@ module DatapathSingleCycle (
         pcNext = ((data_rs1 + imm_i_sext) & (32'b11111111111111111111111111111110));
       end
       default: begin
-        regfile_we = 1'b0;
+        regfile_we   = 1'b0;
         illegal_insn = 1'b1;
       end
     endcase
