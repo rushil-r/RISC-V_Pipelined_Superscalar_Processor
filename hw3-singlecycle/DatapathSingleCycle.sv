@@ -571,6 +571,33 @@ module DatapathSingleCycle (
           end
         endcase
       end
+      OpStore: begin
+        regfile_we = 1'b1;
+        case (insn_from_imem[14:12])
+          3'b000: begin
+            // store byte 
+            addr_to_dmem = data_rs1 + imm_i_sext;
+            store_we_to_dmem = 4'b0001;
+            store_data_to_dmem[7:0] = data_rs2[7:0];
+          end
+          3'b001: begin
+            // store half word
+            addr_to_dmem = data_rs1 + imm_i_sext;
+            store_we_to_dmem = 4'b0011;
+            store_data_to_dmem[15:0] = data_rs2[15:0];
+          end
+          3'b010: begin
+            // store word 
+            addr_to_dmem = data_rs1 + imm_i_sext;
+            store_we_to_dmem = 4'b1111;
+            store_data_to_dmem = data_rs2;
+          end
+          default: begin
+            illegal_insn = 1'b1;
+            regfile_we   = 1'b0;
+          end
+        endcase
+      end
       default: begin
         regfile_we   = 1'b0;
         illegal_insn = 1'b1;
