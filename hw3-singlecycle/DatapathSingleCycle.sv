@@ -656,8 +656,11 @@ module MemorySingleCycle #(
 
   always_comb begin
     // memory addresses should always be 4B-aligned
-    assert (pc_to_imem[1:0] == 2'b00);
+    assert (pc_to_imem[1:0] == 2'b00);  //TODO: HERE IS WHY WE ARE CRASHING
     assert (addr_to_dmem[1:0] == 2'b00);
+  //TODO: PROF PUT THESE HERE TO MAKE SURE WE DID MEM_ALIGN CHECK BEFOR\
+    //ERROR: [185000] %Error: DatapathSingleCycle.sv:660: Assertion failed in RiscvProcessor.mem: 'assert' failed.
+    //%Error: /home/penn/CIS5710HWs/hw3-singlecycle/DatapathSingleCycle.sv:660: Verilog $stop
   end
 
   localparam int AddrMsb = $clog2(NUM_WORDS) + 1;
