@@ -540,14 +540,15 @@ module DatapathSingleCycle (
         case (insn_from_imem[14:12])
           3'b000: begin
             // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
-            logic temp_add = data_rs1 + imm_i_sext;  // declare outside 
+            logic [`REG_SIZE] temp_add;
+            temp_add = data_rs1 + imm_i_sext;  // declare outside
             addr_to_dmem = {{temp_add[31:2]}, {2'b00}};  // Base + immediate offset
             // Extract the byte based on the byte address within the word and sign-extend it
             // mult of 4 -> [7:0]
             // mod 1  -> [15:8]
             // mod 2 -> [23:16]
             // mod 3 -> [31:24]
-            data_rd = {{24{load_data_from_dmem[15]}}, load_data_from_dmem[15:16]};
+            data_rd = {{24{load_data_from_dmem[15]}}, load_data_from_dmem[7:0]};
           end
           3'b001: begin
             // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
@@ -563,12 +564,12 @@ module DatapathSingleCycle (
           end
           3'b100: begin
             // lbu loads an 8-bit value from mem, 0 extends to 32 bits, then stores in rd
-            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate value 
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate value
             data_rd = {24'd0, load_data_from_dmem[7:0]};
           end
           3'b101: begin
             // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
-            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate value 
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate value
             data_rd = {16'd0, load_data_from_dmem[15:0]};
           end
           default: begin
@@ -581,7 +582,7 @@ module DatapathSingleCycle (
         regfile_we = 1'b1;
         case (insn_from_imem[14:12])
           3'b000: begin
-            // store byte 
+            // store byte
             addr_to_dmem = data_rs1 + imm_i_sext;
             store_we_to_dmem = 4'b0001;
             store_data_to_dmem[7:0] = data_rs2[7:0];
@@ -593,7 +594,7 @@ module DatapathSingleCycle (
             store_data_to_dmem[15:0] = data_rs2[15:0];
           end
           3'b010: begin
-            // store word 
+            // store word
             addr_to_dmem = data_rs1 + imm_i_sext;
             store_we_to_dmem = 4'b1111;
             store_data_to_dmem = data_rs2;
