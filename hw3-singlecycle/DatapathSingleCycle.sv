@@ -537,10 +537,14 @@ module DatapathSingleCycle (
         case (insn_from_imem[14:12])
           3'b000: begin
             // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
-            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate offset
-            // Assuming load_data_from_dmem is the 32-bit data read from memory
+            logic temp_add = data_rs1 + imm_i_sext;  // declare outside 
+            addr_to_dmem = {{temp_add[31:2]}, {2'b00}};  // Base + immediate offset
             // Extract the byte based on the byte address within the word and sign-extend it
-            data_rd = {{24{load_data_from_dmem[7]}}, load_data_from_dmem[7:0]};
+            // mult of 4 -> [7:0]
+            // mod 1  -> [15:8]
+            // mod 2 -> [23:16]
+            // mod 3 -> [31:24]
+            data_rd = {{24{load_data_from_dmem[15]}}, load_data_from_dmem[15:16]};
           end
           3'b001: begin
             // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
@@ -552,7 +556,6 @@ module DatapathSingleCycle (
             // lw loads a 32-bit value from memory into rd
             // Calculate memory address to load from
             addr_to_dmem = data_rs1 + imm_i_sext;  // Base  + immediate offset
-            // Load the data from memory (handled by memory modaddressule)
             data_rd = load_data_from_dmem;  // Data loaded from memory
           end
           3'b100: begin
