@@ -532,12 +532,51 @@ module DatapathSingleCycle (
         data_rd = pcCurrent + 4;
         pcNext = ((data_rs1 + imm_i_sext) & (32'b11111111111111111111111111111110));
       end
+      OpLoad: begin
+        regfile_we = 1'b1;
+        case (insn_from_imem[14:12])
+          3'b000: begin
+            // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate offset
+            // Assuming load_data_from_dmem is the 32-bit data read from memory
+            // Extract the byte based on the byte address within the word and sign-extend it
+            data_rd = {{24{load_data_from_dmem[7]}}, load_data_from_dmem[7:0]};
+          end
+          3'b001: begin
+            // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate offset
+            // Extract the halfword and sign-extend it
+            data_rd = {{16{load_data_from_dmem[15]}}, load_data_from_dmem[15:0]};
+          end
+          3'b010: begin
+            // lw loads a 32-bit value from memory into rd
+            // Calculate memory address to load from
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base  + immediate offset
+            // Load the data from memory (handled by memory modaddressule)
+            data_rd = load_data_from_dmem;  // Data loaded from memory
+          end
+          3'b100: begin
+            // lbu loads an 8-bit value from mem, 0 extends to 32 bits, then stores in rd
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate value 
+            data_rd = {24'd0, load_data_from_dmem[7:0]};
+          end
+          3'b101: begin
+            // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
+            addr_to_dmem = data_rs1 + imm_i_sext;  // Base + immediate value 
+            data_rd = {16'd0, load_data_from_dmem[15:0]};
+          end
+          default: begin
+            illegal_insn = 1'b1;
+            regfile_we   = 1'b0;
+          end
+        endcase
+      end
       default: begin
         regfile_we   = 1'b0;
         illegal_insn = 1'b1;
       end
     endcase
-    //pcNext = pcCurrent+4;
+    //pcNext = pcCurrent+4
     //^^^^^ relocated to inside case statements to allow for branching logic
   end
 endmodule
