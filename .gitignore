@@ -43,7 +43,7 @@ sim.wdb
 .top-synth-module
 
 # python
-__pycache__/
+
 
 .*
 !.*/
