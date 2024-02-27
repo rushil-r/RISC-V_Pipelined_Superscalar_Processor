@@ -441,8 +441,11 @@ module DatapathSingleCycle (
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //mulhsu
               logic [63:0] inter_mulhsu;
-              inter_mulhsu = ($signed(data_rs1) * $unsigned(data_rs2));
-              data_rd = inter_mulhsu[63:32];
+              inter_mulhsu = $signed(data_rs1) * $signed({1'b0, data_rs2});
+              data_rd = (inter_mulhsu[63:32]);
+              //still fw it somehow at the start
+              //* data_rs1[31] * (|data_rs2));
+              //data_rd = inter_mulhsu[63:32];
             end
           end
           3'b011: begin
