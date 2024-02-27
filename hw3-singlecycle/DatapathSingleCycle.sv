@@ -296,8 +296,8 @@ module DatapathSingleCycle (
   );
 
   divider_unsigned div_sr_alu_n (
-      .i_dividend (({32{data_rs1[31]}} ^ data_rs1) + ({31'b0, data_rs1[31]})),
-      .i_divisor  (({32{data_rs2[31]}} ^ data_rs2) + ({31'b0, data_rs2[31]})),
+      .i_dividend ((({32{data_rs1[31]}} ^ data_rs1) + {31'b0, data_rs1[31]})),
+      .i_divisor  ((({32{data_rs2[31]}} ^ data_rs2) + {31'b0, data_rs2[31]})),
       .o_remainder(div_rem_reg),
       .o_quotient (div_qot_reg)
   );
@@ -462,10 +462,10 @@ module DatapathSingleCycle (
               data_rd = data_rs1 ^ data_rs2;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //div
-              if (data_rs1[31] == data_rs2[31]) begin
-                data_rd = div_qot_reg;
+              if (data_rs1[31] != data_rs2[31]) begin
+                data_rd = (~div_qot_reg) + 1'b1;
               end else begin
-                data_rd = ((~div_qot_reg) + 1'b1);
+                data_rd = div_qot_reg;
               end
             end
           end
