@@ -463,9 +463,10 @@ module DatapathSingleCycle (
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //div
               if (data_rs1[31] != data_rs2[31]) begin
-                data_rd = (~div_qot_reg) + 1'b1;
+                data_rd = ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
+                //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
               end else begin
-                data_rd = div_qot_reg;
+                data_rd = div_qot_reg;  // case falls here (should be 3)
               end
             end
           end
