@@ -572,7 +572,9 @@ module DatapathSingleCycle (
           3'b001: begin
             // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
             temp_add = data_rs1 + imm_i_sext;
-            addr_to_dmem = {temp_add[31:1], 1'b0};  // Align to the nearest lower half-word boundary
+            addr_to_dmem = {
+              temp_add[31:2], 2'b00
+            };  // Align to the nearest lower half-word boundary
 
             // Assuming memory access returns a 32-bit word
             case (temp_add[1:0])
@@ -585,7 +587,10 @@ module DatapathSingleCycle (
                 // Grab the second 16 bits 
                 data_rd = {{16{load_data_from_dmem[31]}}, load_data_from_dmem[31:16]};
               end
-              default: data_rd = 32'bx;
+              default: begin
+                illegal_insn = 1'b1;
+                regfile_we   = 1'b0;
+              end
 
             endcase
           end
@@ -615,7 +620,7 @@ module DatapathSingleCycle (
           3'b101: begin
             // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
             temp_add = data_rs1 + imm_i_sext;
-            addr_to_dmem = {temp_add[31:1], 1'b0};  // Align to the nearest lower half-word boundary
+            addr_to_dmem = {temp_add[31:2], 2'b00};  // Align to the nearest lower half-word boundary
 
             // Assuming memory access returns a 32-bit word
             case (temp_add[1:0])
@@ -629,6 +634,8 @@ module DatapathSingleCycle (
                 data_rd = {16'd0, load_data_from_dmem[31:16]};
               end
               default: begin
+                illegal_insn = 1'b1;
+                regfile_we   = 1'b0;
               end
             endcase
           end
@@ -702,7 +709,7 @@ module DatapathSingleCycle (
             endcase
           end
           3'b010: begin
-            // store word 
+            //store word
             addr_to_dmem = data_rs1 + imm_i_sext;
             store_we_to_dmem = 4'b1111;
             store_data_to_dmem = data_rs2;
