@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Fri Feb 23 22:41:22 2024
-| Host         : big19.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date         : Fri Mar  1 20:33:45 2024
+| Host         : big16.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command      : report_timing -file ./vivado_output/post_route_timing_report.txt
 | Design       : RiscvSystem
 | Device       : 7z020-clg484
@@ -11,19 +11,19 @@ Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 
 Timing Report
 
-Slack (MET) :             193.541ns  (required time - arrival time)
-  Source:                 oled_device/m_OLEDCtrl/state_reg[1]/C
-                            (rising edge-triggered cell FDRE clocked by clk_mem_clk_wiz_0  {rise@50.000ns fall@150.000ns period=200.000ns})
-  Destination:            oled_device/m_OLEDCtrl/after_page_state_reg[1]/CE
+Slack (MET) :             95.551ns  (required time - arrival time)
+  Source:                 oled_device/mem_reg[1][0][6]/C
+                            (falling edge-triggered cell FDRE clocked by clk_mem_clk_wiz_0  {rise@50.000ns fall@150.000ns period=200.000ns})
+  Destination:            oled_device/write_ascii_data_reg[5]/D
                             (rising edge-triggered cell FDRE clocked by clk_mem_clk_wiz_0  {rise@50.000ns fall@150.000ns period=200.000ns})
   Path Group:             clk_mem_clk_wiz_0
   Path Type:              Setup (Max at Slow Process Corner)
-  Requirement:            200.000ns  (clk_mem_clk_wiz_0 rise@250.000ns - clk_mem_clk_wiz_0 rise@50.000ns)
-  Data Path Delay:        5.650ns  (logic 1.269ns (22.462%)  route 4.381ns (77.538%))
-  Logic Levels:           4  (LUT4=1 LUT5=2 LUT6=1)
-  Clock Path Skew:        -0.144ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    -1.510ns = ( 248.490 - 250.000 ) 
-    Source Clock Delay      (SCD):    -0.790ns = ( 49.210 - 50.000 ) 
+  Requirement:            100.000ns  (clk_mem_clk_wiz_0 rise@250.000ns - clk_mem_clk_wiz_0 fall@150.000ns)
+  Data Path Delay:        4.121ns  (logic 1.059ns (25.699%)  route 3.062ns (74.302%))
+  Logic Levels:           3  (LUT3=1 LUT6=2)
+  Clock Path Skew:        -0.070ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.518ns = ( 248.482 - 250.000 ) 
+    Source Clock Delay      (SCD):    -0.872ns = ( 149.128 - 150.000 ) 
     Clock Pessimism Removal (CPR):    0.577ns
   Clock Uncertainty:      0.289ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -32,31 +32,29 @@ Slack (MET) :             193.541ns  (required time - arrival time)
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
-                         (clock clk_mem_clk_wiz_0 rise edge)
-                                                     50.000    50.000 r  
-    Y9                                                0.000    50.000 r  CLOCK_100MHz (IN)
-                         net (fo=0)                   0.000    50.000    mmcm/CLOCK_100MHz
-    Y9                   IBUF (Prop_ibuf_I_O)         1.490    51.490 r  mmcm/clkin1_ibufg/O
-                         net (fo=1, routed)           1.285    52.775    mmcm/clk_in1_clk_wiz_0
+                         (clock clk_mem_clk_wiz_0 fall edge)
+                                                    150.000   150.000 f  
+    Y9                                                0.000   150.000 f  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000   150.000    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.490   151.490 f  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.285   152.775    mmcm/clk_in1_clk_wiz_0
     MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
-                                                     -7.343    45.432 r  mmcm/mmcm_adv_inst/CLKOUT1
-                         net (fo=2, routed)           1.855    47.287    mmcm/clk_mem_clk_wiz_0
+                                                     -7.343   145.432 f  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           1.855   147.287    mmcm/clk_mem_clk_wiz_0
     BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
-                                                      0.101    47.388 r  mmcm/clkout2_buf/O
-                         net (fo=215, routed)         1.822    49.210    oled_device/m_OLEDCtrl/clock_mem
-    SLICE_X6Y19          FDRE                                         r  oled_device/m_OLEDCtrl/state_reg[1]/C
+                                                      0.101   147.388 f  mmcm/clkout2_buf/O
+                         net (fo=322, routed)         1.740   149.128    oled_device/clock_mem
+    SLICE_X21Y30         FDRE                                         r  oled_device/mem_reg[1][0][6]/C  (IS_INVERTED)
   -------------------------------------------------------------------    -------------------
-    SLICE_X6Y19          FDRE (Prop_fdre_C_Q)         0.518    49.728 f  oled_device/m_OLEDCtrl/state_reg[1]/Q
-                         net (fo=80, routed)          1.908    51.637    oled_device/m_OLEDCtrl/oled_dc
-    SLICE_X10Y21         LUT5 (Prop_lut5_I0_O)        0.146    51.783 r  oled_device/m_OLEDCtrl/temp_spi_data[7]_i_4/O
-                         net (fo=2, routed)           0.575    52.358    oled_device/m_OLEDCtrl/temp_spi_data[7]_i_4_n_0
-    SLICE_X9Y20          LUT5 (Prop_lut5_I0_O)        0.328    52.686 r  oled_device/m_OLEDCtrl/temp_index[6]_i_6/O
-                         net (fo=2, routed)           0.811    53.496    oled_device/m_OLEDCtrl/temp_index[6]_i_6_n_0
-    SLICE_X9Y22          LUT6 (Prop_lut6_I5_O)        0.124    53.620 r  oled_device/m_OLEDCtrl/temp_page[1]_i_4/O
-                         net (fo=4, routed)           0.606    54.226    oled_device/m_OLEDCtrl/temp_page[1]_i_4_n_0
-    SLICE_X10Y22         LUT4 (Prop_lut4_I3_O)        0.153    54.379 r  oled_device/m_OLEDCtrl/temp_page[1]_i_1/O
-                         net (fo=5, routed)           0.481    54.860    oled_device/m_OLEDCtrl/temp_page[1]_i_1_n_0
-    SLICE_X8Y22          FDRE                                         r  oled_device/m_OLEDCtrl/after_page_state_reg[1]/CE
+    SLICE_X21Y30         FDRE (Prop_fdre_C_Q)         0.459   149.587 r  oled_device/mem_reg[1][0][6]/Q
+                         net (fo=4, routed)           0.980   150.567    oled_device/mem_reg[1][0]_1[6]
+    SLICE_X25Y28         LUT3 (Prop_lut3_I0_O)        0.150   150.717 r  oled_device/write_ascii_data[5]_i_15/O
+                         net (fo=1, routed)           1.141   151.858    oled_device/write_ascii_data[5]_i_15_n_1
+    SLICE_X25Y26         LUT6 (Prop_lut6_I2_O)        0.326   152.184 r  oled_device/write_ascii_data[5]_i_4/O
+                         net (fo=1, routed)           0.941   153.125    oled_device/write_ascii_data[5]_i_4_n_1
+    SLICE_X27Y27         LUT6 (Prop_lut6_I4_O)        0.124   153.249 r  oled_device/write_ascii_data[5]_i_1/O
+                         net (fo=1, routed)           0.000   153.249    oled_device/write_ascii_data[5]_i_1_n_1
+    SLICE_X27Y27         FDRE                                         r  oled_device/write_ascii_data_reg[5]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_mem_clk_wiz_0 rise edge)
@@ -70,16 +68,16 @@ Slack (MET) :             193.541ns  (required time - arrival time)
                          net (fo=2, routed)           1.691   246.835    mmcm/clk_mem_clk_wiz_0
     BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
                                                       0.091   246.926 r  mmcm/clkout2_buf/O
-                         net (fo=215, routed)         1.563   248.490    oled_device/m_OLEDCtrl/clock_mem
-    SLICE_X8Y22          FDRE                                         r  oled_device/m_OLEDCtrl/after_page_state_reg[1]/C
-                         clock pessimism              0.577   249.066    
-                         clock uncertainty           -0.289   248.777    
-    SLICE_X8Y22          FDRE (Setup_fdre_C_CE)      -0.376   248.401    oled_device/m_OLEDCtrl/after_page_state_reg[1]
+                         net (fo=322, routed)         1.555   248.482    oled_device/clock_mem
+    SLICE_X27Y27         FDRE                                         r  oled_device/write_ascii_data_reg[5]/C
+                         clock pessimism              0.577   249.058    
+                         clock uncertainty           -0.289   248.769    
+    SLICE_X27Y27         FDRE (Setup_fdre_C_D)        0.031   248.800    oled_device/write_ascii_data_reg[5]
   -------------------------------------------------------------------
-                         required time                        248.401    
-                         arrival time                         -54.860    
+                         required time                        248.800    
+                         arrival time                        -153.249    
   -------------------------------------------------------------------
-                         slack                                193.541    
+                         slack                                 95.551    
 
 
 

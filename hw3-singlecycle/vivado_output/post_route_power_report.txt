@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date             : Fri Feb 23 22:41:21 2024
-| Host             : big19.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date             : Fri Mar  1 20:33:45 2024
+| Host             : big16.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command          : report_power -file ./vivado_output/post_route_power_report.txt
 | Design           : RiscvSystem
 | Device           : xc7z020clg484-1
@@ -53,12 +53,13 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |    <0.001 |        5 |       --- |             --- |
-| Slice Logic    |    <0.001 |      484 |       --- |             --- |
-|   LUT as Logic |    <0.001 |      184 |     53200 |            0.35 |
-|   CARRY4       |    <0.001 |       15 |     13300 |            0.11 |
-|   Register     |    <0.001 |      201 |    106400 |            0.19 |
-|   Others       |     0.000 |       24 |       --- |             --- |
-| Signals        |    <0.001 |      438 |       --- |             --- |
+| Slice Logic    |    <0.001 |      960 |       --- |             --- |
+|   LUT as Logic |    <0.001 |      437 |     53200 |            0.82 |
+|   CARRY4       |    <0.001 |       31 |     13300 |            0.23 |
+|   Register     |    <0.001 |      344 |    106400 |            0.32 |
+|   Others       |     0.000 |       27 |       --- |             --- |
+|   BUFG         |     0.000 |        1 |        32 |            3.13 |
+| Signals        |    <0.001 |      891 |       --- |             --- |
 | Block RAM      |    <0.001 |      9.5 |       140 |            6.79 |
 | MMCM           |     0.086 |        1 |         4 |           25.00 |
 | I/O            |    <0.001 |       17 |       200 |            8.50 |
@@ -99,17 +100,17 @@ Table of Contents
 1.3 Confidence Level
 --------------------
 
-+-----------------------------+------------+-------------------------------------------------------+------------------------------------------------------------------------------------------------------------+
-| User Input Data             | Confidence | Details                                               | Action                                                                                                     |
-+-----------------------------+------------+-------------------------------------------------------+------------------------------------------------------------------------------------------------------------+
-| Design implementation state | High       | Design is routed                                      |                                                                                                            |
-| Clock nodes activity        | High       | User specified more than 95% of clocks                |                                                                                                            |
-| I/O nodes activity          | Medium     | More than 5% of inputs are missing user specification | Provide missing input activity with simulation results or by editing the "By Resource Type -> I/Os" view   |
-| Internal nodes activity     | Medium     | User specified less than 25% of internal nodes        | Provide missing internal nodes activity with simulation results or by editing the "By Resource Type" views |
-| Device models               | High       | Device models are Production                          |                                                                                                            |
-|                             |            |                                                       |                                                                                                            |
-| Overall confidence level    | Medium     |                                                       |                                                                                                            |
-+-----------------------------+------------+-------------------------------------------------------+------------------------------------------------------------------------------------------------------------+
++-----------------------------+------------+-------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| User Input Data             | Confidence | Details                                               | Action                                                                                                             |
++-----------------------------+------------+-------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Design implementation state | High       | Design is routed                                      |                                                                                                                    |
+| Clock nodes activity        | Medium     | More than 5% of clocks are missing user specification | Provide missing clock activity with a constraint file, simulation results or by editing the "By Clock Domain" view |
+| I/O nodes activity          | Medium     | More than 5% of inputs are missing user specification | Provide missing input activity with simulation results or by editing the "By Resource Type -> I/Os" view           |
+| Internal nodes activity     | Medium     | User specified less than 25% of internal nodes        | Provide missing internal nodes activity with simulation results or by editing the "By Resource Type" views         |
+| Device models               | High       | Device models are Production                          |                                                                                                                    |
+|                             |            |                                                       |                                                                                                                    |
+| Overall confidence level    | Medium     |                                                       |                                                                                                                    |
++-----------------------------+------------+-------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 
 
 2. Settings

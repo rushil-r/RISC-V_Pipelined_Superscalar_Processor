@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Fri Feb 23 22:41:23 2024
-| Host         : big19.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date         : Fri Mar  1 20:33:46 2024
+| Host         : big16.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command      : report_drc -file ./vivado_output/post_route_drc_report.txt
 | Design       : RiscvSystem
 | Device       : xc7z020clg484-1
@@ -24,15 +24,21 @@ Table of Contents
       Design limits: <entire design considered>
            Ruledeck: default
              Max violations: <unlimited>
-             Violations found: 1
-+--------+----------+--------------------+------------+
-| Rule   | Severity | Description        | Violations |
-+--------+----------+--------------------+------------+
-| ZPS7-1 | Warning  | PS7 block required | 1          |
-+--------+----------+--------------------+------------+
+             Violations found: 2
++----------+----------+--------------------+------------+
+| Rule     | Severity | Description        | Violations |
++----------+----------+--------------------+------------+
+| PDRC-153 | Warning  | Gated clock check  | 1          |
+| ZPS7-1   | Warning  | PS7 block required | 1          |
++----------+----------+--------------------+------------+
 
 2. REPORT DETAILS
 -----------------
+PDRC-153#1 Warning
+Gated clock check  
+Net mem/mem_reg_1_1_1[0] is a gated clock net sourced by a combinational pin mem/store_we_to_dmem_reg[3]_i_2/O, cell mem/store_we_to_dmem_reg[3]_i_2. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
+Related violations: <none>
+
 ZPS7-1#1 Warning
 PS7 block required  
 The PS7 cell must be used in this Zynq design in order to enable correct default configuration.

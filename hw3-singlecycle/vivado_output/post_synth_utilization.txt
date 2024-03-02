@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Fri Feb 23 22:40:47 2024
-| Host         : big19.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date         : Fri Mar  1 20:33:21 2024
+| Host         : big16.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command      : report_utilization -file ./vivado_output/post_synth_utilization.txt
 | Design       : RiscvSystem
 | Device       : 7z020clg484-1
@@ -30,12 +30,12 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             |  222 |     0 |     53200 |  0.42 |
-|   LUT as Logic          |  222 |     0 |     53200 |  0.42 |
+| Slice LUTs*             |  476 |     0 |     53200 |  0.89 |
+|   LUT as Logic          |  476 |     0 |     53200 |  0.89 |
 |   LUT as Memory         |    0 |     0 |     17400 |  0.00 |
-| Slice Registers         |  209 |     0 |    106400 |  0.20 |
-|   Register as Flip Flop |  209 |     0 |    106400 |  0.20 |
-|   Register as Latch     |    0 |     0 |    106400 |  0.00 |
+| Slice Registers         |  352 |     0 |    106400 |  0.33 |
+|   Register as Flip Flop |  316 |     0 |    106400 |  0.30 |
+|   Register as Latch     |   36 |     0 |    106400 |  0.03 |
 | F7 Muxes                |    0 |     0 |     26600 |  0.00 |
 | F8 Muxes                |    0 |     0 |     13300 |  0.00 |
 +-------------------------+------+-------+-----------+-------+
@@ -55,9 +55,9 @@ Table of Contents
 | 0     |            _ |       Reset |            - |
 | 0     |          Yes |           - |            - |
 | 0     |          Yes |           - |          Set |
-| 16    |          Yes |           - |        Reset |
+| 52    |          Yes |           - |        Reset |
 | 8     |          Yes |         Set |            - |
-| 185   |          Yes |       Reset |            - |
+| 292   |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -117,7 +117,7 @@ Table of Contents
 +------------+------+-------+-----------+-------+
 |  Site Type | Used | Fixed | Available | Util% |
 +------------+------+-------+-----------+-------+
-| BUFGCTRL   |    3 |     0 |        32 |  9.38 |
+| BUFGCTRL   |    4 |     0 |        32 | 12.50 |
 | BUFIO      |    0 |     0 |        16 |  0.00 |
 | MMCME2_ADV |    1 |     0 |         4 | 25.00 |
 | PLLE2_ADV  |    0 |     0 |         4 |  0.00 |
@@ -150,14 +150,15 @@ Table of Contents
 +------------+------+---------------------+
 |  Ref Name  | Used | Functional Category |
 +------------+------+---------------------+
-| FDRE       |  185 |        Flop & Latch |
-| LUT6       |   90 |                 LUT |
-| LUT5       |   47 |                 LUT |
+| FDRE       |  292 |        Flop & Latch |
+| LUT6       |  264 |                 LUT |
+| LUT5       |   99 |                 LUT |
+| LUT3       |   74 |                 LUT |
+| LUT2       |   60 |                 LUT |
+| LUT4       |   51 |                 LUT |
 | LUT1       |   41 |                 LUT |
-| LUT4       |   36 |                 LUT |
-| LUT2       |   32 |                 LUT |
-| LUT3       |   31 |                 LUT |
-| CARRY4     |   23 |          CarryLogic |
+| CARRY4     |   39 |          CarryLogic |
+| LDCE       |   36 |        Flop & Latch |
 | FDCE       |   16 |        Flop & Latch |
 | OBUF       |   10 |                  IO |
 | RAMB36E1   |    8 |        Block Memory |
@@ -167,8 +168,8 @@ Table of Contents
 | IBUF       |    3 |                  IO |
 | BUFH       |    2 |               Clock |
 | BUFGCTRL   |    2 |               Clock |
+| BUFG       |    2 |               Clock |
 | MMCME2_ADV |    1 |               Clock |
-| BUFG       |    1 |               Clock |
 +------------+------+---------------------+
 
 
