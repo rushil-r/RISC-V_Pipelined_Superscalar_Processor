@@ -129,7 +129,7 @@ def runCocotbTests(pytestconfig):
     sim = os.getenv("SIM", "verilator")
     proj_path = Path(__file__).resolve().parent
     assert hdl_toplevel_lang == "verilog"
-    verilog_sources = [ proj_path / "divider_unsigned_pipelined.sv", proj_path / "DatapathMultiCycle.sv" ]
+    verilog_sources = [ proj_path / "DatapathMultiCycle.sv" ]
     toplevel_module = "RiscvProcessor"
 
     try:
@@ -232,6 +232,23 @@ async def test2Divu(dut):
     assert dut.datapath.rf.regs[3].value == 4, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 @cocotb.test()
+async def testDivuEtAl(dut):
+    "Run back-to-back divu insns"
+    asm(dut, '''
+        li x16,16
+        li x2,2
+        divu x8,x16,x2
+        addi x9,x8,1''')
+    await preTestSetup(dut)
+
+    # Since divu takes 2 cycles, li,li,divu takes 4 cycles to complete
+    # and result is available in the 5th cycle.
+    await ClockCycles(dut.clock_proc, 5)
+    assert dut.datapath.rf.regs[8].value == 8, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    await ClockCycles(dut.clock_proc, 1) # wait one more cycle for addi's result
+    assert dut.datapath.rf.regs[9].value == 9, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+
+@cocotb.test()
 async def testEcall(dut):
     "ecall insn causes processor to halt"
     asm(dut, '''
@@ -246,8 +263,6 @@ async def testEcall(dut):
 @cocotb.test(skip='RVTEST_ALUBR' in os.environ)
 async def dhrystone(dut):
     "Run dhrystone benchmark from riscv-tests"
-    #if 'RVTEST_ALUBR' in os.environ:
-    #    return
     dsBinary = RISCV_BENCHMARKS_PATH / 'dhrystone.riscv' 
     assert dsBinary.exists(), f'Could not find Dhrystone binary {dsBinary}, have you built riscv-tests?'
     loadBinaryIntoMemory(dut, dsBinary)
@@ -263,8 +278,8 @@ async def dhrystone(dut):
             # there are 22 output checks, each sets 1 bit
             expectedValue = (1<<22) - 1
             assert expectedValue == dut.datapath.rf.regs[5].value.integer
-            latency_millis = (cycles / 50_000_000) * 1000
-            dut._log.info(f'dhrystone passed after {cycles} cycles, {latency_millis} milliseconds with 50MHz clock')
+            latency_millis = (cycles / 10_000_000) * 1000
+            dut._log.info(f'dhrystone passed after {cycles} cycles, {latency_millis} milliseconds with 10MHz clock')
             return
         pass
     raise SimTimeoutError()
