@@ -447,8 +447,11 @@ module DatapathSingleCycle (
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //mulhsu
               logic [63:0] inter_mulhsu;
-              inter_mulhsu = ((data_rs1) * $unsigned(data_rs2));
-              data_rd = inter_mulhsu[63:32];
+              inter_mulhsu = $signed(data_rs1) * $signed({1'b0, data_rs2});
+              data_rd = (inter_mulhsu[63:32]);
+              //still fw it somehow at the start
+              //* data_rs1[31] * (|data_rs2));
+              //data_rd = inter_mulhsu[63:32];
             end
           end
           3'b011: begin
@@ -575,7 +578,7 @@ module DatapathSingleCycle (
           end
           3'b001: begin
             // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
-             // Align to the nearest lower half-word boundary
+            // Align to the nearest lower half-word boundary
             // Assuming memory access returns a 32-bit word
             case (temp_load_casing[1:0])
               2'b00: begin
@@ -584,7 +587,7 @@ module DatapathSingleCycle (
               end
               2'b10: begin
                 // Unaligned access, half-word crosses 32-bit word boundary
-                // Grab the second 16 bits 
+                // Grab the second 16 bits
                 data_rd = {{16{load_data_from_dmem[31]}}, load_data_from_dmem[31:16]};
               end
               default: begin
@@ -603,9 +606,9 @@ module DatapathSingleCycle (
             // Sign-extend based on the lowest 2 bits of the address
             case (temp_load_casing[1:0])
               2'b00: data_rd = {24'd0, load_data_from_dmem[7:0]};  //mul of 4 (mod 0)
-              2'b01: data_rd = {24'd0, load_data_from_dmem[15:8]};  //mod 1 
+              2'b01: data_rd = {24'd0, load_data_from_dmem[15:8]};  //mod 1
               2'b10: data_rd = {24'd0, load_data_from_dmem[23:16]};  // mod 2
-              2'b11: data_rd = {24'd0, load_data_from_dmem[31:24]};  // mod 3 
+              2'b11: data_rd = {24'd0, load_data_from_dmem[31:24]};  // mod 3
               default: begin
                 regfile_we   = 1'b0;
                 illegal_insn = 1'b1;
@@ -622,7 +625,7 @@ module DatapathSingleCycle (
               end
               2'b10: begin
                 // Unaligned access, half-word crosses 32-bit word boundary
-                // Grab the second 16 bits 
+                // Grab the second 16 bits
                 data_rd = {16'd0, load_data_from_dmem[31:16]};
               end
               default: begin
@@ -637,32 +640,36 @@ module DatapathSingleCycle (
           end
         endcase
       end
-      OpMiscMem: begin
-        if(insn_fence) begin
-        end
-      end
       OpStore: begin
         if (insn_sb) begin
           //store byte
           temp_add = data_rs1 + imm_s_sext;
           addr_to_dmem = {temp_add[31:2], 2'b00};
           case (temp_add[1:0])
-          //aligned
-          2'b00: begin  store_data_to_dmem[7:0] = data_rs2[7:0];
-          store_we_to_dmem = 4'b0001;
-           end
-          2'b01: begin  store_data_to_dmem[15: 8] = data_rs2[7:0];
-          //mod 1
-          store_we_to_dmem = 4'b0010;
-          end
-          2'b10: begin  store_data_to_dmem[23 : 16] = data_rs2[7:0];
-          //mod 2
-          store_we_to_dmem = 4'b0100;
-           end
-          //mod3
-          2'b11: begin  store_data_to_dmem[31 : 24] = data_rs2[7:0];
-          store_we_to_dmem = 4'b1000;
-           end
+            //aligned
+            2'b00: begin
+              store_data_to_dmem[7:0] = data_rs2[7:0];
+              store_we_to_dmem = 4'b0001;
+            end
+            2'b01: begin
+              store_data_to_dmem[15:8] = data_rs2[7:0];
+              //mod 1
+              store_we_to_dmem = 4'b0010;
+            end
+            2'b10: begin
+              store_data_to_dmem[23 : 16] = data_rs2[7:0];
+              //mod 2
+              store_we_to_dmem = 4'b0100;
+            end
+            //mod3
+            2'b11: begin
+              store_data_to_dmem[31 : 24] = data_rs2[7:0];
+              store_we_to_dmem = 4'b1000;
+            end
+            default: begin
+              regfile_we   = 1'b0;
+              illegal_insn = 1'b1;
+            end
           endcase
         end else if (insn_sh) begin
           //store half
@@ -670,16 +677,20 @@ module DatapathSingleCycle (
           addr_to_dmem = {temp_add[31:2], 2'b00};
           //allignment
           case (temp_add[1])
-          1'b0: begin
-          //aligned
-          store_data_to_dmem[15:0] = data_rs2[15:0];
-          store_we_to_dmem = 4'b0011;
-          end
-          1'b1: begin
-          // mod 1
-          store_data_to_dmem[31: 16] = data_rs2[15:0];
-          store_we_to_dmem = 4'b1100;
-          end
+            1'b0: begin
+              //aligned
+              store_data_to_dmem[15:0] = data_rs2[15:0];
+              store_we_to_dmem = 4'b0011;
+            end
+            1'b1: begin
+              // mod 1
+              store_data_to_dmem[31:16] = data_rs2[15:0];
+              store_we_to_dmem = 4'b1100;
+            end
+            default: begin
+              regfile_we   = 1'b0;
+              illegal_insn = 1'b1;
+            end
           endcase
         end else if (insn_sw) begin
           //store word -> assuming fullt aligned
@@ -687,6 +698,10 @@ module DatapathSingleCycle (
           addr_to_dmem = data_rs1 + imm_s_sext;
           store_data_to_dmem = data_rs2;
         end
+      end
+      OpMiscMem: begin
+        regfile_we   = 1'b1;
+        illegal_insn = 1'b0;
       end
       default: begin
         regfile_we   = 1'b0;
