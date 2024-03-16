@@ -575,7 +575,7 @@ module DatapathSingleCycle (
           end
           3'b001: begin
             // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
-            // Align to the nearest lower half-word boundary
+             // Align to the nearest lower half-word boundary
             // Assuming memory access returns a 32-bit word
             case (temp_load_casing[1:0])
               2'b00: begin
@@ -614,11 +614,6 @@ module DatapathSingleCycle (
           end
           3'b101: begin
             // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
-            temp_add = data_rs1 + imm_i_sext;
-            addr_to_dmem = {
-              temp_add[31:2], 2'b00
-            };  // Align to the nearest lower half-word boundary
-
             // Assuming memory access returns a 32-bit word
             case (temp_load_casing[1:0])
               2'b00: begin
@@ -643,81 +638,47 @@ module DatapathSingleCycle (
         endcase
       end
       OpMiscMem: begin
-        if (insn_fence) begin
+        if(insn_fence) begin
         end
       end
       OpStore: begin
-        regfile_we = 1'b1;
-        case (insn_from_imem[14:12])
-          3'b000: begin
-            // store byte 
-            temp_add = data_rs1 + imm_i_sext;
-            addr_to_dmem = {temp_add[31:2], 2'd0};
-            case (temp_add[1:0])
-              2'b00: begin
-                //aligned --> grab first byte
-                store_we_to_dmem   = 4'b0001;
-                store_data_to_dmem = data_rs2;
-
-                // store_data_to_dmem[7:0] = data_rs2[7:0];
-              end
-              2'b01: begin
-                // store second byte 
-                store_we_to_dmem   = 4'b0010;
-                store_data_to_dmem = data_rs2 << 8;
-                // store_data_to_dmem[15:8] = data_rs2[7:0];
-              end
-              2'b10: begin
-                // store third byte 
-                store_we_to_dmem   = 4'b0100;
-                store_data_to_dmem = data_rs2 << 16;
-                // store_data_to_dmem[23:16] = data_rs2[7:0];
-              end
-              2'b11: begin
-                // store fourth byte 
-                store_we_to_dmem   = 4'b1000;
-                store_data_to_dmem = data_rs2 << 24;
-                // store_data_to_dmem[31:24] = data_rs2[7:0];
-              end
-              default: begin
-                regfile_we   = 1'b0;
-                illegal_insn = 1'b1;
-              end
-            endcase
-
+        if (insn_sb) begin
+          //store byte
+          temp_add = data_rs1 + imm_s_sext;
+          addr_to_dmem = {temp_add[31:2], 2'b00};
+          case (temp_add[1:0])
+          //aligned
+          2'b00: begin  store_data_to_dmem[7:0] = data_rs2[7:0];
+          store_we_to_dmem = 4'b0001;
+           end
+          2'b01: begin  store_data_to_dmem[15: 8] = data_rs2[7:0];
+          //mod 1
+          store_we_to_dmem = 4'b0010;
           end
-          3'b001: begin
-            // store half word
-            temp_add = data_rs1 + imm_i_sext;
-            addr_to_dmem = {temp_add[31:2], 2'd0};
-            case (temp_add[1:0])
-              2'b00: begin
-                //aligned --> grab first half-word
-                store_we_to_dmem   = 4'b0011;
-                store_data_to_dmem = data_rs2;
-                // store_data_to_dmem[15:0] = data_rs2[15:0];
-              end
-              2'b10: begin
-                // store second half-word
-                store_we_to_dmem   = 4'b1100;
-                store_data_to_dmem = data_rs2 << 16;
-                // store_data_to_dmem[31:16] = data_rs2[15:0];
-              end
-              default: begin
-                regfile_we   = 1'b0;
-                illegal_insn = 1'b1;
-              end
-            endcase
+          2'b10: begin  store_data_to_dmem[23 : 16] = data_rs2[7:0];
+          //mod 2
+          store_we_to_dmem = 4'b0100;
+           end
+          //mod3
+          2'b11: begin  store_data_to_dmem[31 : 24] = data_rs2[7:0];
+          store_we_to_dmem = 4'b1000;
+           end
+          endcase
+        end else if (insn_sh) begin
+          //store half
+          temp_add = data_rs1 + imm_s_sext;
+          addr_to_dmem = {temp_add[31:2], 2'b00};
+          //allignment
+          case (temp_add[1])
+          1'b0: begin
+          //aligned
+          store_data_to_dmem[15:0] = data_rs2[15:0];
+          store_we_to_dmem = 4'b0011;
           end
-          3'b010: begin
-            //store word
-            addr_to_dmem = data_rs1 + imm_i_sext;
-            store_we_to_dmem = 4'b1111;
-            store_data_to_dmem = data_rs2;
-          end
-          default: begin
-            illegal_insn = 1'b1;
-            regfile_we   = 1'b0;
+          1'b1: begin
+          // mod 1
+          store_data_to_dmem[31: 16] = data_rs2[15:0];
+          store_we_to_dmem = 4'b1100;
           end
           endcase
         end else if (insn_sw) begin
@@ -778,11 +739,8 @@ module MemorySingleCycle #(
 
   always_comb begin
     // memory addresses should always be 4B-aligned
-    assert (pc_to_imem[1:0] == 2'b00);  //TODO: HERE IS WHY WE ARE CRASHING
+    assert (pc_to_imem[1:0] == 2'b00);
     assert (addr_to_dmem[1:0] == 2'b00);
-  //TODO: PROF PUT THESE HERE TO MAKE SURE WE DID MEM_ALIGN CHECK BEFOR\
-    //ERROR: [185000] %Error: DatapathSingleCycle.sv:660: Assertion failed in RiscvProcessor.mem: 'assert' failed.
-    //%Error: /home/penn/CIS5710HWs/hw3-singlecycle/DatapathSingleCycle.sv:660: Verilog $stop
   end
 
   localparam int AddrMsb = $clog2(NUM_WORDS) + 1;
