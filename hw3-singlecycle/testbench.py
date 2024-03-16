@@ -271,11 +271,14 @@ async def testEcall(dut):
     "ecall insn causes processor to halt"
     asm(dut, '''
         lui x1,0x12345
-        ecall''')
+        ecall
+        lui x1,0xABCDE''')
     await preTestSetup(dut)
 
-    await ClockCycles(dut.clock_proc, 2) # check for halt *during* ecall, not afterwards
+    await ClockCycles(dut.clock_proc, 2) # check for halt *during* ecall
     assert dut.datapath.halt.value == 1, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    await ClockCycles(dut.clock_proc, 1) # ensure halt goes back down after ecall is done
+    assert dut.datapath.halt.value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     pass
 
 @cocotb.test()
@@ -406,7 +409,15 @@ RV_TEST_BINARIES = [
 
 rvTestFactory = TestFactory(test_function=riscvTest)
 if 'RVTEST_ALUBR' in os.environ:
-    RV_TEST_BINARIES = RV_TEST_BINARIES[:27]
+    # #RV_TEST_BINARIES = RV_TEST_BINARIES[:27]
+    # RV_TEST_BINARIES.pop(30) #fails on lb (doesnt crash)
+    # RV_TEST_BINARIES.pop(30) #crash on lbu
+    # RV_TEST_BINARIES.pop(30) #fails on lh (doesnt crash)
+    # RV_TEST_BINARIES.pop(30) #crash on lhu
+    # RV_TEST_BINARIES.pop(31) #crash on sb
+    # RV_TEST_BINARIES.pop(31) #crash on sh
+    # RV_TEST_BINARIES.pop(31) #crash on sw
+    # RV_TEST_BINARIES.pop(31) #crash on fence_i (not implemented)
     pass
 rvTestFactory.add_option(name='binaryPath', optionlist=RV_TEST_BINARIES)
 rvTestFactory.generate_tests()
