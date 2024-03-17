@@ -147,16 +147,16 @@ module RiscvProcessor (
   MemorySingleCycle #(
       .NUM_WORDS(8192)
   ) mem (
-      .rst      (rst),
-      .clock_mem (clock_mem),
+      .rst                (rst),
+      .clock_mem          (clock_mem),
       // imem is read-only
-      .pc_to_imem(pc_to_imem),
-      .insn_from_imem(insn_from_imem),
+      .pc_to_imem         (pc_to_imem),
+      .insn_from_imem     (insn_from_imem),
       // dmem is read-write
-      .addr_to_dmem(mem_data_addr),
+      .addr_to_dmem       (mem_data_addr),
       .load_data_from_dmem(mem_data_loaded_value),
       .store_data_to_dmem (mem_data_to_write),
-      .store_we_to_dmem  (mem_data_we)
+      .store_we_to_dmem   (mem_data_we)
   );
 
   DatapathMultiCycle datapath (
