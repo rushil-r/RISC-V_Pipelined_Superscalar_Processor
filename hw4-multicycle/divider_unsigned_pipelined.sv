@@ -42,7 +42,7 @@ module divider_unsigned_pipelined (
         );
         if (i == 15) begin : g_prep_pipe
           always_ff @(posedge clk) begin : clock_check
-            if (rst) begin : rest_case
+            if (rst) begin : reset_case
               i_divisor_post_pipe <= 32'h0000_0000;
               dividend_new <= 32'h0000_0000;
               remainder_new <= 32'h0000_0000;

@@ -26,10 +26,37 @@ module RegFile (
     input logic we,
     input logic rst
 );
-
-  // TODO: copy your HW3B code here
-
+  localparam int NumRegs = 32;
+  logic [`REG_SIZE] regs[NumRegs];
+  // TODO: your code here
+  assign regs[0]  = 32'd0;
+  assign rs1_data = regs[rs1];
+  assign rs2_data = regs[rs2];
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      regs[1] <= 32'd0;
+    end else begin
+      if (we && rd == 1) begin
+        regs[1] <= rd_data;
+      end
+    end
+  end
+  genvar i;
+  for (i = 2; i < 32; i = i + 1) begin : gen_other_regs
+    always_ff @(posedge clk) begin
+      if (rst) begin
+        regs[i] <= 32'd0;
+      end else begin
+        if (we && rd == i) begin
+          regs[i] <= rd_data;
+        end
+      end
+    end
+  end
 endmodule
+
+
+
 
 module DatapathMultiCycle (
     input wire clk,
@@ -43,10 +70,687 @@ module DatapathMultiCycle (
     output logic [`REG_SIZE] store_data_to_dmem,
     output logic [3:0] store_we_to_dmem
 );
+  logic [0:0] regfile_we;
+  logic [`REG_SIZE] data_rd;
+  logic [`REG_SIZE] data_rs1;
+  logic [`REG_SIZE] data_rs2;
+  logic [4:0] regfile_rd;
+  logic [4:0] regfile_rs1;
+  logic [4:0] regfile_rs2;
 
-  // TODO: your code here (largely based on HW3B)
+  // components of the instruction
+  wire [6:0] insn_funct7;
+  wire [4:0] insn_rs2;
+  wire [4:0] insn_rs1;
+  wire [2:0] insn_funct3;
+  wire [4:0] insn_rd;
+  wire [`OPCODE_SIZE] insn_opcode;
+  // split R-type instruction - see section 2.2 of RiscV spec
+  assign {insn_funct7, insn_rs2, insn_rs1, insn_funct3, insn_rd, insn_opcode} = insn_from_imem;
 
+  // setup for I, S, B & J type instructions
+  // I - short immediates and loads
+  wire [11:0] imm_i;
+  assign imm_i = insn_from_imem[31:20];
+  wire [ 4:0] imm_shamt = insn_from_imem[24:20];
+
+  // S - stores
+  wire [11:0] imm_s;
+  assign imm_s[11:5] = insn_funct7, imm_s[4:0] = insn_rd;
+
+  // B - conditionals
+  wire [12:0] imm_b;
+  assign {imm_b[12], imm_b[10:5]} = insn_funct7, {imm_b[4:1], imm_b[11]} = insn_rd, imm_b[0] = 1'b0;
+
+  // J - unconditional jumps
+  wire [20:0] imm_j;
+  assign {imm_j[20], imm_j[10:1], imm_j[11], imm_j[19:12], imm_j[0]} = {
+    insn_from_imem[31:12], 1'b0
+  };
+
+  // U - 20-bit immediate
+  wire [19:0] imm_u;
+  assign imm_u = insn_from_imem[31:12];
+
+
+  wire [`REG_SIZE] imm_i_sext = {{20{imm_i[11]}}, imm_i[11:0]};
+  wire [`REG_SIZE] imm_s_sext = {{20{imm_s[11]}}, imm_s[11:0]};
+  wire [`REG_SIZE] imm_b_sext = {{19{imm_b[12]}}, imm_b[12:0]};
+  wire [`REG_SIZE] imm_j_sext = {{11{imm_j[20]}}, imm_j[20:0]};
+  wire [`REG_SIZE] imm_u_sext = {{12{imm_u[19]}}, imm_u[19:0]};
+  // opcodes - see section 19 of RiscV spec
+  localparam bit [`OPCODE_SIZE] OpLoad = 7'b00_000_11;
+  localparam bit [`OPCODE_SIZE] OpStore = 7'b01_000_11;
+  localparam bit [`OPCODE_SIZE] OpBranch = 7'b11_000_11;
+  localparam bit [`OPCODE_SIZE] OpJalr = 7'b11_001_11;
+  localparam bit [`OPCODE_SIZE] OpMiscMem = 7'b00_011_11;
+  localparam bit [`OPCODE_SIZE] OpJal = 7'b11_011_11;
+
+  localparam bit [`OPCODE_SIZE] OpRegImm = 7'b00_100_11;
+  localparam bit [`OPCODE_SIZE] OpRegReg = 7'b01_100_11;
+  localparam bit [`OPCODE_SIZE] OpEnviron = 7'b11_100_11;
+
+  localparam bit [`OPCODE_SIZE] OpAuipc = 7'b00_101_11;
+  localparam bit [`OPCODE_SIZE] OpLui = 7'b01_101_11;
+
+  wire insn_lui = insn_opcode == OpLui;
+  wire insn_auipc = insn_opcode == OpAuipc;
+  wire insn_jal = insn_opcode == OpJal;
+  wire insn_jalr = insn_opcode == OpJalr;
+
+  wire insn_beq = insn_opcode == OpBranch && insn_from_imem[14:12] == 3'b000;
+  wire insn_bne = insn_opcode == OpBranch && insn_from_imem[14:12] == 3'b001;
+  wire insn_blt = insn_opcode == OpBranch && insn_from_imem[14:12] == 3'b100;
+  wire insn_bge = insn_opcode == OpBranch && insn_from_imem[14:12] == 3'b101;
+  wire insn_bltu = insn_opcode == OpBranch && insn_from_imem[14:12] == 3'b110;
+  wire insn_bgeu = insn_opcode == OpBranch && insn_from_imem[14:12] == 3'b111;
+
+  wire insn_lb = insn_opcode == OpLoad && insn_from_imem[14:12] == 3'b000;
+  wire insn_lh = insn_opcode == OpLoad && insn_from_imem[14:12] == 3'b001;
+  wire insn_lw = insn_opcode == OpLoad && insn_from_imem[14:12] == 3'b010;
+  wire insn_lbu = insn_opcode == OpLoad && insn_from_imem[14:12] == 3'b100;
+  wire insn_lhu = insn_opcode == OpLoad && insn_from_imem[14:12] == 3'b101;
+
+  wire insn_sb = insn_opcode == OpStore && insn_from_imem[14:12] == 3'b000;
+  wire insn_sh = insn_opcode == OpStore && insn_from_imem[14:12] == 3'b001;
+  wire insn_sw = insn_opcode == OpStore && insn_from_imem[14:12] == 3'b010;
+
+  wire insn_addi = insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b000;
+  wire insn_slti = insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b010;
+  wire insn_sltiu = insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b011;
+  wire insn_xori = insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b100;
+  wire insn_ori = insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b110;
+  wire insn_andi = insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b111;
+
+  wire insn_slli = (insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b001
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_srli = (insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_srai = (insn_opcode == OpRegImm && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'b0100000);
+
+  wire insn_add = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b000
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_sub = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b000
+     && insn_from_imem[31:25] == 7'b0100000);
+  wire insn_sll = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b001
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_slt = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b010
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_sltu = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b011
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_xor = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b100
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_srl = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_sra  = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'b0100000);
+  wire insn_or = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b110
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_and = (insn_opcode == OpRegReg && insn_from_imem[14:12] == 3'b111
+     && insn_from_imem[31:25] == 7'd0);
+
+  wire insn_mul    = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b000);
+  wire insn_mulh   = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b001);
+  wire insn_mulhsu = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b010);
+  wire insn_mulhu  = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b011);
+  wire insn_div    = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b100);
+  wire insn_divu   = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b101);
+  wire insn_rem    = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b110);
+  wire insn_remu   = (insn_opcode == OpRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b111);
+
+  wire insn_ecall = insn_opcode == OpEnviron && insn_from_imem[31:7] == 25'd0;
+  wire insn_fence = insn_opcode == OpMiscMem;
+
+  // synthesis translate_off
+  // this code is only for simulation, not synthesis
+  string disasm_string;
+  always_comb begin
+    disasm_string = rv_disasm(insn_from_imem);
+  end
+  // HACK: get disasm_string to appear in GtkWave, which can apparently show only wire/logic...
+  wire [(8*32)-1:0] disasm_wire;
+  genvar i;
+  for (i = 0; i < 32; i = i + 1) begin : gen_disasm
+    assign disasm_wire[(((i+1))*8)-1:((i)*8)] = disasm_string[31-i];
+  end
+  // synthesis translate_on
+
+  // program counter
+  logic flag_div;
+  logic [`REG_SIZE] pcNext, pcCurrent;
+  always @(posedge clk) begin
+    if (rst) begin
+      pcCurrent <= 32'd0;
+    end else if (flag_div) begin
+      pcCurrent <= pcCurrent;
+    end else begin
+      pcCurrent <= pcNext;
+    end
+  end
+  assign pc_to_imem = pcCurrent;
+
+  // cycle/insn_from_imem counters
+
+  logic [`REG_SIZE] cycles_current, num_insns_current;
+  always @(posedge clk) begin
+    if (rst) begin
+      cycles_current <= 0;
+      num_insns_current <= 0;
+    end else begin
+      cycles_current <= cycles_current + 1;
+      if (!rst) begin
+        num_insns_current <= num_insns_current + 1;
+      end
+    end
+  end
+
+  logic [31:0] temp_addr;
+  logic [31:0] temp_load_casing;
+  logic illegal_insn;
+
+  wire [31:0] cla_sum;
+  wire [31:0] cla_sum_reg;
+  wire [31:0] cla_diff_reg;
+  wire [31:0] div_u_rem_reg;
+  wire [31:0] div_u_qot_reg;
+  wire [31:0] div_rem_reg;
+  wire [31:0] div_qot_reg;
+  wire [31:0] div_rem_reg_bn;
+  wire [31:0] div_qot_reg_bn;
+  logic [3:0] store_we_to_dmem_temp;
+  logic [31:0] store_data_to_dmem_temp;
+  //assign branch_tgt = pcCurrent + {{19{imm_b[11]}}, (imm_b)};
+  RegFile rf (
+      .rd(insn_rd),
+      .rd_data(data_rd),
+      .rs1(insn_rs1),
+      .rs1_data(data_rs1),
+      .rs2(insn_rs2),
+      .rs2_data(data_rs2),
+      .clk(clk),
+      .we(regfile_we),
+      .rst(rst)
+  );
+
+  cla cla_ops (
+      .a  (data_rs1),
+      .b  (imm_i_sext),
+      .cin(1'b0),
+      .sum(cla_sum)
+  );
+  cla cla_reg_add (
+      .a  (data_rs1),
+      .b  (data_rs2),
+      .cin(1'b0),
+      .sum(cla_sum_reg)
+  );
+  cla cla_reg_sub (
+      .a  (data_rs1),
+      .b  ((~data_rs2) + 1'b1),
+      .cin(1'b0),
+      .sum(cla_diff_reg)
+  );
+  divider_unsigned_pipelined div_u_alu (
+      .clk(clk),
+      .rst(rst),
+      .i_dividend(data_rs1),
+      .i_divisor(data_rs2),
+      .o_remainder(div_u_rem_reg),
+      .o_quotient(div_u_qot_reg)
+  );
+
+  divider_unsigned_pipelined div_sr_alu_n (
+      .clk(clk),
+      .rst(rst),
+      .i_dividend((({32{data_rs1[31]}} ^ data_rs1) + {31'b0, data_rs1[31]})),
+      .i_divisor((({32{data_rs2[31]}} ^ data_rs2) + {31'b0, data_rs2[31]})),
+      .o_remainder(div_rem_reg),
+      .o_quotient(div_qot_reg)
+  );
+
+  always_comb begin
+    halt = 1'b0;
+    // set as default, but make sure to change if illegal/default-case/failure
+    illegal_insn = 1'b0;
+    regfile_we = 1'b0;
+    pcNext = pcCurrent + 4;
+    temp_addr = 'd0;
+    addr_to_dmem = 'd0;
+    store_we_to_dmem = 4'b0000;
+    flag_div = 1'b0;
+    if (insn_ecall) begin
+      // ecall
+      halt = 1'b1;
+    end
+    case (insn_opcode)
+      OpMiscMem: begin
+        pcNext = ((pcCurrent + 4) & 32'b11111111111111111111111111111100);
+        addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
+      end
+      OpLui: begin
+        regfile_we = 1'b1;
+        data_rd = {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
+      end
+      OpAuipc: begin
+        regfile_we = 1'b1;
+        data_rd = pcCurrent + {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
+      end
+      OpRegImm: begin
+        regfile_we = 1'b1;  //re-enable regfile when changing data_rd
+        case (insn_from_imem[14:12])
+          3'b000: begin
+            //addi
+            data_rd = cla_ops.sum;
+          end
+          3'b001: begin
+            //slli
+            data_rd = data_rs1 << imm_shamt;  //imm_shamt for shift_amount
+          end
+          3'b010: begin
+            //slti
+            data_rd = ($signed(data_rs1) < $signed(imm_i_sext)) ? 1 : 0;
+          end
+          3'b011: begin
+            //stliu
+            data_rd = data_rs1 < imm_i_sext ? 1 : 0;
+          end
+          3'b100: begin
+            //xori
+            data_rd = data_rs1 ^ imm_i_sext;
+          end
+          3'b101: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //srli
+              data_rd = data_rs1 >> imm_shamt;
+            end else begin
+              //srai
+              data_rd = $signed(data_rs1) >>> imm_shamt;
+            end
+          end
+          3'b110: begin
+            //ori
+            data_rd = data_rs1 | imm_i_sext;
+          end
+          3'b111: begin
+            //andi
+            data_rd = data_rs1 & imm_i_sext;
+          end
+          default: begin
+            regfile_we   = 1'b0;
+            illegal_insn = 1'b1;
+          end
+        endcase
+      end
+      OpBranch: begin
+        regfile_we = 1'b0;
+        // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
+        case (insn_from_imem[14:12])
+          3'b000: begin
+            //beq
+            if (data_rs1 == data_rs2) begin
+              pcNext = pcCurrent + imm_b_sext;
+            end
+          end
+          3'b001: begin
+            //bne
+            if (data_rs1 != data_rs2) begin
+              pcNext = pcCurrent + imm_b_sext;
+            end
+          end
+          3'b100: begin
+            if ($signed(data_rs1) < $signed(data_rs2)) begin
+              pcNext = pcCurrent + imm_b_sext;
+            end
+          end
+          3'b101: begin
+            //bge
+            if ($signed(data_rs1) >= $signed(data_rs2)) begin
+              pcNext = pcCurrent + imm_b_sext;
+            end
+          end
+          3'b110: begin
+            //bltu
+            if (data_rs1 < data_rs2) begin
+              pcNext = pcCurrent + imm_b_sext;
+            end
+          end
+          3'b111: begin
+            //bgeu
+            if (data_rs1 >= data_rs2) begin
+              pcNext = pcCurrent + imm_b_sext;
+            end
+          end
+          default: begin
+            illegal_insn = 1'b1;
+            regfile_we   = 1'b0;
+          end
+        endcase
+      end
+      OpRegReg: begin
+        regfile_we = 1'b1;
+        case (insn_from_imem[14:12])
+          3'b000: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //add
+              data_rd = cla_reg_add.sum;
+            end else if (insn_from_imem[31:25] == 7'b0100000) begin
+              //sub
+              data_rd = cla_reg_sub.sum;
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //mul
+              data_rd = (data_rs1 * data_rs2) & 32'h00000000ffffffff;
+            end
+          end
+          3'b001: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //sll
+              data_rd = data_rs1 << (data_rs2[4:0]);
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //mulh
+              logic [63:0] inter_mulh;
+              inter_mulh = ($signed(data_rs1) * $signed(data_rs2));
+              data_rd = inter_mulh[63:32];
+            end
+          end
+          3'b010: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //slt
+              data_rd = $signed(data_rs1) < $signed(data_rs2) ? 1 : 0;
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //mulhsu
+              logic [63:0] inter_mulhsu;
+              inter_mulhsu = $signed(data_rs1) * $signed({1'b0, data_rs2});
+              data_rd = (inter_mulhsu[63:32]);
+              //still fw it somehow at the start
+              //* data_rs1[31] * (|data_rs2));
+              //data_rd = inter_mulhsu[63:32];
+            end
+          end
+          3'b011: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //sltu
+              data_rd = data_rs1 < data_rs2 ? 1 : 0;
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //mulhu
+              logic [63:0] inter_mulhu;
+              inter_mulhu = ($unsigned(data_rs1) * $unsigned(data_rs2));
+              data_rd = inter_mulhu[63:32];
+            end
+          end
+          3'b100: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //xor
+              data_rd = data_rs1 ^ data_rs2;
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //div
+              if (data_rs1[31] != data_rs2[31]) begin
+                data_rd = ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
+                //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
+              end else begin
+                data_rd = div_qot_reg;  // case falls here (should be 3)
+              end
+              if (flag_div) begin
+                flag_div = 1'b0;
+              end else begin
+                flag_div = 1'b1;
+              end
+            end
+          end
+          3'b101: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //srl
+              data_rd = data_rs1 >> (data_rs2[4:0]);
+            end else if (insn_from_imem[31:25] == 7'b0100000) begin
+              //sra
+              data_rd = $signed(data_rs1) >>> $signed(data_rs2[4:0]);
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //divu
+              data_rd = div_u_qot_reg;
+              if (flag_div) begin
+                flag_div = 1'b0;
+              end else begin
+                flag_div = 1'b1;
+              end
+            end
+          end
+          3'b110: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //or
+              data_rd = data_rs1 | data_rs2;
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //rem
+              if (data_rs1[31]) begin
+                data_rd = ((~div_rem_reg) + 1'b1);
+              end else begin
+                data_rd = div_rem_reg;
+              end
+              if (flag_div) begin
+                flag_div = 1'b0;
+              end else begin
+                flag_div = 1'b1;
+              end
+            end
+          end
+          3'b111: begin
+            if (insn_from_imem[31:25] == 7'd0) begin
+              //and
+              data_rd = data_rs1 & data_rs2;
+            end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              //remu
+              data_rd = div_u_rem_reg;
+              if (flag_div) begin
+                flag_div = 1'b0;
+              end else begin
+                flag_div = 1'b1;
+              end
+            end
+          end
+          default: begin
+            illegal_insn = 1'b1;
+            regfile_we   = 1'b0;
+          end
+        endcase
+      end
+      OpJal: begin
+        regfile_we = 1'b1;
+        data_rd = pcCurrent + 4;
+        pcNext = pcCurrent + imm_j_sext;
+      end
+      OpJalr: begin
+        regfile_we = 1'b1;
+        data_rd = pcCurrent + 4;
+        pcNext = ((data_rs1 + imm_i_sext) & (32'b11111111111111111111111111111110));
+      end
+      OpLoad: begin
+        regfile_we = 1'b1;
+        // addr_to_dmem = {{temp_load_casing[31:2]}, 2'b00};
+        case (insn_from_imem[14:12])
+          3'b000: begin
+            // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
+            // Ensure addres is aligned
+            temp_addr = data_rs1 + imm_i_sext;
+            case (temp_addr[1:0])
+              2'b00:
+              // aligned so we grab the first byte
+              data_rd = {
+                {24{load_data_from_dmem[7]}}, load_data_from_dmem[7:0]
+              };
+              2'b01:
+              // mod 1 -> grab the second byte
+              data_rd = {
+                {24{load_data_from_dmem[15]}}, load_data_from_dmem[15:8]
+              };
+              2'b10:
+              // mod 2 -> grab the third byte
+              data_rd = {
+                {24{load_data_from_dmem[23]}}, load_data_from_dmem[23:16]
+              };
+              2'b11:
+              // mod 3 -> grab the 4th byte
+              data_rd = {
+                {24{load_data_from_dmem[31]}}, load_data_from_dmem[31:24]
+              };
+              default: begin
+                illegal_insn = 1'b1;
+                regfile_we   = 1'b0;
+              end
+            endcase
+          end
+          3'b001: begin
+            // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
+            // Align to the nearest lower half-word boundary
+            // Assuming memory access returns a 32-bit word
+            temp_addr = data_rs1 + imm_i_sext;
+            case (temp_addr[1])
+              1'b0: begin
+                // Aligned access so we grab the first 16 bits
+                data_rd = {{16{load_data_from_dmem[15]}}, load_data_from_dmem[15:0]};
+              end
+              1'b1: begin
+                // Unaligned access, half-word crosses 32-bit word boundary
+                // Grab the second 16 bits
+                data_rd = {{16{load_data_from_dmem[31]}}, load_data_from_dmem[31:16]};
+              end
+              default: begin
+                illegal_insn = 1'b1;
+                regfile_we   = 1'b0;
+              end
+            endcase
+          end
+          3'b010: begin
+            // lw loads a 32-bit value from memory into rd
+            // Calculate memory address to load from
+            temp_addr = data_rs1 + imm_i_sext;
+            data_rd   = load_data_from_dmem;  // Data loaded from memory
+          end
+          3'b100: begin
+            // lbu loads an 8-bit value from mem, zext to 32 bits, then stores in rd
+            // Sign-extend based on the lowest 2 bits of the address
+            temp_addr = data_rs1 + imm_i_sext;
+            case (temp_addr[1:0])
+              2'b00: data_rd = {24'b0, load_data_from_dmem[7:0]};  //mul of 4 (mod 0)
+              2'b01: data_rd = {24'b0, load_data_from_dmem[15:8]};  //mod 1
+              2'b10: data_rd = {24'b0, load_data_from_dmem[23:16]};  // mod 2
+              2'b11: data_rd = {24'b0, load_data_from_dmem[31:24]};  // mod 3
+              default: begin
+                regfile_we   = 1'b0;
+                illegal_insn = 1'b1;
+              end
+            endcase
+          end
+          3'b101: begin
+            // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
+            // Assuming memory access returns a 32-bit word
+            temp_addr = data_rs1 + imm_i_sext;
+            case (temp_addr[1])
+              1'b0: begin
+                // Aligned access
+                data_rd = {16'b0, load_data_from_dmem[15:0]};
+              end
+              1'b1: begin
+                // Unaligned access, half-word crosses 32-bit word boundary
+                // Grab the second 16 bits
+                data_rd = {16'b0, load_data_from_dmem[31:16]};
+              end
+              default: begin
+                illegal_insn = 1'b1;
+                regfile_we   = 1'b0;
+              end
+            endcase
+          end
+          default: begin
+            temp_addr = 'd0;
+            illegal_insn = 1'b1;
+            regfile_we = 1'b0;
+          end
+        endcase
+        addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+      end
+      OpStore: begin
+        // temp_addr = data_rs1 + imm_s_sext;
+        temp_addr = data_rs1 + imm_s_sext;
+        if (insn_sb) begin
+          //store byte
+          // addr_to_dmem = {temp_addr[31:2], 2'b00};
+          case (temp_addr[1:0])
+            //aligned
+            2'b00: begin
+              store_data_to_dmem[7:0] = data_rs2[7:0];
+              store_we_to_dmem = 4'b0001;
+            end
+            2'b01: begin
+              store_data_to_dmem[15:8] = data_rs2[7:0];
+              //mod 1
+              store_we_to_dmem = 4'b0010;
+            end
+            2'b10: begin
+              store_data_to_dmem[23 : 16] = data_rs2[7:0];
+              //mod 2
+              store_we_to_dmem = 4'b0100;
+            end
+            //mod3
+            2'b11: begin
+              store_data_to_dmem[31 : 24] = data_rs2[7:0];
+              store_we_to_dmem = 4'b1000;
+            end
+            default: begin
+              regfile_we   = 1'b0;
+              illegal_insn = 1'b1;
+            end
+          endcase
+        end else if (insn_sh) begin
+          //store half
+          temp_addr = data_rs1 + imm_s_sext;
+          // addr_to_dmem = {temp_add[31:2], 2'b00};
+          //allignment
+          case (temp_addr[1])
+            1'b0: begin
+              //aligned
+              store_data_to_dmem[15:0] = data_rs2[15:0];
+              store_we_to_dmem = 4'b0011;
+            end
+            1'b1: begin
+              // mod 1
+              store_data_to_dmem[31:16] = data_rs2[15:0];
+              store_we_to_dmem = 4'b1100;
+            end
+            default: begin
+              regfile_we   = 1'b0;
+              illegal_insn = 1'b1;
+            end
+          endcase
+        end else if (insn_sw) begin
+          //store word -> assuming fullt aligned
+          store_we_to_dmem = 4'b1111;
+          temp_addr = data_rs1 + imm_s_sext;
+          // addr_to_dmem = {temp_add[31:2], 2'b00};
+          store_data_to_dmem[31:0] = data_rs2;
+        end else begin
+          temp_addr = 'd0;
+          regfile_we = 1'b0;
+          illegal_insn = 1'b1;
+        end
+        addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+      end
+      default: begin
+      end
+    endcase
+    // pcNext = pcCurrent+4
+    //^^^^^ relocated to inside case statements to allow for branching logic
+  end
 endmodule
+
+
+
 
 module MemorySingleCycle #(
     parameter int NUM_WORDS = 512

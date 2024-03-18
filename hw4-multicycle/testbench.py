@@ -367,7 +367,7 @@ RV_TEST_BINARIES = [
 
 rvTestFactory = TestFactory(test_function=riscvTest)
 if 'RVTEST_ALUBR' in os.environ:
-    RV_TEST_BINARIES = RV_TEST_BINARIES[:27]
+    RV_TEST_BINARIES = RV_TEST_BINARIES[35:40]
     pass
 rvTestFactory.add_option(name='binaryPath', optionlist=RV_TEST_BINARIES)
 rvTestFactory.generate_tests()
