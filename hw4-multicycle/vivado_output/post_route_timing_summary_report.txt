@@ -1,0 +1,1546 @@
+Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
+| Date         : Mon Mar 18 21:50:14 2024
+| Host         : big16.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Command      : report_timing_summary -file ./vivado_output/post_route_timing_summary_report.txt
+| Design       : RiscvSystem
+| Device       : 7z020-clg484
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+--------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (3616)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (96)
+5. checking no_input_delay (2)
+6. checking no_output_delay (8)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (3616)
+---------------------------
+ There are 64 register/latch pins with no clock driven by root clock pin: datapath/flag_div_reg/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[10].regs_reg[10][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[10].regs_reg[10][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[11].regs_reg[11][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[11].regs_reg[11][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[12].regs_reg[12][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[12].regs_reg[12][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[13].regs_reg[13][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[13].regs_reg[13][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[14].regs_reg[14][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[14].regs_reg[14][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[15].regs_reg[15][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[15].regs_reg[15][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[16].regs_reg[16][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[16].regs_reg[16][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[17].regs_reg[17][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[17].regs_reg[17][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[18].regs_reg[18][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[18].regs_reg[18][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[19].regs_reg[19][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[19].regs_reg[19][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[20].regs_reg[20][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[20].regs_reg[20][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[21].regs_reg[21][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[21].regs_reg[21][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[22].regs_reg[22][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[22].regs_reg[22][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[23].regs_reg[23][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[23].regs_reg[23][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[24].regs_reg[24][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[24].regs_reg[24][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[25].regs_reg[25][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[25].regs_reg[25][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[26].regs_reg[26][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[26].regs_reg[26][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[27].regs_reg[27][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[27].regs_reg[27][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[28].regs_reg[28][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[28].regs_reg[28][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[29].regs_reg[29][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[29].regs_reg[29][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[2].regs_reg[2][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[2].regs_reg[2][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[30].regs_reg[30][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[30].regs_reg[30][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[31].regs_reg[31][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[31].regs_reg[31][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[3].regs_reg[3][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[3].regs_reg[3][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[4].regs_reg[4][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[4].regs_reg[4][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[5].regs_reg[5][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[5].regs_reg[5][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[6].regs_reg[6][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[6].regs_reg[6][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[7].regs_reg[7][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[7].regs_reg[7][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[8].regs_reg[8][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[8].regs_reg[8][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[9].regs_reg[9][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/gen_other_regs[9].regs_reg[9][1]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/regs_reg[1][0]/Q (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: datapath/rf/regs_reg[1][1]/Q (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_0/DOBDO[0] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_0/DOBDO[1] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_0/DOBDO[2] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_0/DOBDO[3] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_1/DOBDO[0] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_1/DOBDO[1] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_1/DOBDO[2] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_0_1/DOBDO[3] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_1_0/DOBDO[0] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_1_1/DOBDO[0] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_1_1/DOBDO[1] (HIGH)
+
+ There are 96 register/latch pins with no clock driven by root clock pin: mem/mem_reg_1_1/DOBDO[2] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_1_1/DOBDO[3] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_2_0/DOBDO[0] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_2_0/DOBDO[1] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_2_0/DOBDO[2] (HIGH)
+
+ There are 32 register/latch pins with no clock driven by root clock pin: mem/mem_reg_2_0/DOBDO[3] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_0/DOBDO[1] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_0/DOBDO[2] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_0/DOBDO[3] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_1/DOBDO[0] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_1/DOBDO[1] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_1/DOBDO[2] (HIGH)
+
+ There are 64 register/latch pins with no clock driven by root clock pin: mem/mem_reg_3_1/DOBDO[3] (HIGH)
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (96)
+-------------------------------------------------
+ There are 96 pins that are not constrained for maximum delay. (HIGH)
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (2)
+------------------------------
+ There are 2 input ports with no input delay specified. (HIGH)
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (8)
+-------------------------------
+ There are 8 ports with no output delay specified. (HIGH)
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+     -6.534     -384.035                     68                 2086        0.122        0.000                      0                 2086        3.000        0.000                       0                  1625  
+
+
+Timing constraints are not met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock                 Waveform(ns)       Period(ns)      Frequency(MHz)
+-----                 ------------       ----------      --------------
+CLOCK_100MHz          {0.000 5.000}      10.000          100.000         
+  clk_mem_clk_wiz_0   {19.231 57.692}    76.923          13.000          
+  clk_proc_clk_wiz_0  {0.000 38.462}     76.923          13.000          
+  clkfbout_clk_wiz_0  {0.000 5.000}      10.000          100.000         
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock                     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----                     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+CLOCK_100MHz                                                                                                                                                            3.000        0.000                       0                     1  
+  clk_mem_clk_wiz_0        20.527        0.000                      0                  759        0.122        0.000                      0                  759       37.962        0.000                       0                   395  
+  clk_proc_clk_wiz_0       14.650        0.000                      0                 1223        0.131        0.000                      0                 1223       37.962        0.000                       0                  1226  
+  clkfbout_clk_wiz_0                                                                                                                                                    7.845        0.000                       0                     3  
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock          To Clock                WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------          --------                -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+clk_proc_clk_wiz_0  clk_mem_clk_wiz_0        15.033        0.000                      0                  352       20.224        0.000                      0                  352  
+clk_mem_clk_wiz_0   clk_proc_clk_wiz_0       -6.534     -384.035                     68                 1215       19.918        0.000                      0                 1215  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  CLOCK_100MHz
+  To Clock:  CLOCK_100MHz
+
+Setup :           NA  Failing Endpoints,  Worst Slack           NA  ,  Total Violation           NA
+Hold  :           NA  Failing Endpoints,  Worst Slack           NA  ,  Total Violation           NA
+PW    :            0  Failing Endpoints,  Worst Slack        3.000ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         CLOCK_100MHz
+Waveform(ns):       { 0.000 5.000 }
+Period(ns):         10.000
+Sources:            { CLOCK_100MHz }
+
+Check Type        Corner  Lib Pin            Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location         Pin
+Min Period        n/a     MMCME2_ADV/CLKIN1  n/a            1.249         10.000      8.751      MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKIN1
+Max Period        n/a     MMCME2_ADV/CLKIN1  n/a            100.000       10.000      90.000     MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKIN1
+Low Pulse Width   Slow    MMCME2_ADV/CLKIN1  n/a            2.000         5.000       3.000      MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKIN1
+High Pulse Width  Slow    MMCME2_ADV/CLKIN1  n/a            2.000         5.000       3.000      MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKIN1
+
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk_mem_clk_wiz_0
+  To Clock:  clk_mem_clk_wiz_0
+
+Setup :            0  Failing Endpoints,  Worst Slack       20.527ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.122ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack       37.962ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             20.527ns  (required time - arrival time)
+  Source:                 mem/mem_reg_2_0/CLKBWRCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Destination:            oled_device/mem_reg[2][4][0]/CE
+                            (falling edge-triggered cell FDRE clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Path Group:             clk_mem_clk_wiz_0
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            38.462ns  (clk_mem_clk_wiz_0 fall@57.692ns - clk_mem_clk_wiz_0 rise@19.231ns)
+  Data Path Delay:        17.533ns  (logic 5.446ns (31.062%)  route 12.087ns (68.938%))
+  Logic Levels:           18  (CARRY4=7 LUT2=1 LUT4=1 LUT5=3 LUT6=5 MUXF7=1)
+  Clock Path Skew:        -0.098ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.418ns = ( 56.274 - 57.692 ) 
+    Source Clock Delay      (SCD):    -0.844ns = ( 18.387 - 19.231 ) 
+    Clock Pessimism Removal (CPR):    0.476ns
+  Clock Uncertainty:      0.101ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.189ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_mem_clk_wiz_0 rise edge)
+                                                     19.231    19.231 r  
+    Y9                                                0.000    19.231 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    19.231    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.490    20.721 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.285    22.006    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -7.343    14.663 r  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           1.855    16.518    mmcm/clk_mem_clk_wiz_0
+    BUFGCTRL_X0Y1        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.101    16.619 r  mmcm/clkout2_buf/O
+                         net (fo=384, routed)         1.767    18.387    mem/clock_mem
+    RAMB36_X3Y1          RAMB36E1                                     r  mem/mem_reg_2_0/CLKBWRCLK
+  -------------------------------------------------------------------    -------------------
+    RAMB36_X3Y1          RAMB36E1 (Prop_ramb36e1_CLKBWRCLK_DOBDO[0])
+                                                      2.454    20.841 r  mem/mem_reg_2_0/DOBDO[0]
+                         net (fo=260, routed)         1.603    22.444    datapath/rf/insn_from_imem[10]
+    SLICE_X62Y3          LUT6 (Prop_lut6_I2_O)        0.124    22.568 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[18]_i_11/O
+                         net (fo=1, routed)           0.000    22.568    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[18]_i_11_n_2
+    SLICE_X62Y3          MUXF7 (Prop_muxf7_I1_O)      0.214    22.782 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[18]_i_4/O
+                         net (fo=1, routed)           0.860    23.642    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[18]_i_4_n_2
+    SLICE_X54Y2          LUT6 (Prop_lut6_I3_O)        0.297    23.939 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[18]_i_1/O
+                         net (fo=59, routed)          1.318    25.257    datapath/rf/A[2]
+    SLICE_X45Y0          LUT2 (Prop_lut2_I0_O)        0.124    25.381 r  datapath/rf/mem_reg_0_0_i_59/O
+                         net (fo=1, routed)           0.000    25.381    datapath/rf/mem_reg_0_0_i_59_n_2
+    SLICE_X45Y0          CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398    25.779 r  datapath/rf/mem_reg_0_0_i_26/CO[3]
+                         net (fo=1, routed)           0.000    25.779    datapath/rf/mem_reg_0_0_i_26_n_2
+    SLICE_X45Y1          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    25.893 r  datapath/rf/mem_reg_0_0_i_24/CO[3]
+                         net (fo=1, routed)           0.000    25.893    datapath/rf/mem_reg_0_0_i_24_n_2
+    SLICE_X45Y2          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.007 r  datapath/rf/mem_reg_0_0_i_22/CO[3]
+                         net (fo=1, routed)           0.000    26.007    datapath/rf/mem_reg_0_0_i_22_n_2
+    SLICE_X45Y3          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.121 r  datapath/rf/mem_reg_0_0_i_20/CO[3]
+                         net (fo=1, routed)           0.000    26.121    datapath/rf/mem_reg_0_0_i_20_n_2
+    SLICE_X45Y4          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.235 r  datapath/rf/mem_reg_0_0_i_84/CO[3]
+                         net (fo=1, routed)           0.000    26.235    datapath/rf/mem_reg_0_0_i_84_n_2
+    SLICE_X45Y5          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.349 r  datapath/rf/mem_reg_0_0_i_79/CO[3]
+                         net (fo=1, routed)           0.000    26.349    datapath/rf/mem_reg_0_0_i_79_n_2
+    SLICE_X45Y6          CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.222    26.571 f  datapath/rf/mem_reg_0_0_i_68/O[0]
+                         net (fo=1, routed)           1.116    27.687    mem/mem_reg_0_0_i_71_0[0]
+    SLICE_X46Y4          LUT5 (Prop_lut5_I4_O)        0.299    27.986 f  mem/data_rd_reg[31]_i_67/O
+                         net (fo=2, routed)           1.126    29.113    mem/addr_from_proc[24]
+    SLICE_X48Y2          LUT4 (Prop_lut4_I2_O)        0.124    29.237 f  mem/mem_reg_0_0_i_92/O
+                         net (fo=1, routed)           0.280    29.516    mem/mem_reg_0_0_i_92_n_2
+    SLICE_X48Y2          LUT5 (Prop_lut5_I4_O)        0.124    29.640 f  mem/mem_reg_0_0_i_74/O
+                         net (fo=1, routed)           0.571    30.211    mem/mem_reg_0_0_i_74_n_2
+    SLICE_X49Y3          LUT6 (Prop_lut6_I5_O)        0.124    30.335 f  mem/mem_reg_0_0_i_66/O
+                         net (fo=1, routed)           0.151    30.487    mem/mem_reg_0_0_i_66_n_2
+    SLICE_X49Y3          LUT6 (Prop_lut6_I5_O)        0.124    30.611 f  mem/mem_reg_0_0_i_27/O
+                         net (fo=5, routed)           2.036    32.646    mem/mem_reg_0_0_i_27_n_2
+    SLICE_X26Y4          LUT5 (Prop_lut5_I0_O)        0.124    32.770 f  mem/mem[3][0][7]_i_2/O
+                         net (fo=16, routed)          1.595    34.365    mem/mem[3][0][7]_i_2_n_2
+    SLICE_X12Y6          LUT6 (Prop_lut6_I2_O)        0.124    34.489 r  mem/mem[2][4][7]_i_1/O
+                         net (fo=8, routed)           1.430    35.920    oled_device/mem_reg[2][4][7]_0[0]
+    SLICE_X7Y5           FDRE                                         r  oled_device/mem_reg[2][4][0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_mem_clk_wiz_0 fall edge)
+                                                     57.692    57.692 f  
+    Y9                                                0.000    57.692 f  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    57.692    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.420    59.112 f  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    60.274    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -7.438    52.836 f  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           1.691    54.528    mmcm/clk_mem_clk_wiz_0
+    BUFGCTRL_X0Y1        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.091    54.619 f  mmcm/clkout2_buf/O
+                         net (fo=384, routed)         1.655    56.274    oled_device/clock_mem
+    SLICE_X7Y5           FDRE                                         r  oled_device/mem_reg[2][4][0]/C  (IS_INVERTED)
+                         clock pessimism              0.476    56.750    
+                         clock uncertainty           -0.101    56.649    
+    SLICE_X7Y5           FDRE (Setup_fdre_C_CE)      -0.202    56.447    oled_device/mem_reg[2][4][0]
+  -------------------------------------------------------------------
+                         required time                         56.447    
+                         arrival time                         -35.920    
+  -------------------------------------------------------------------
+                         slack                                 20.527    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.122ns  (arrival time - required time)
+  Source:                 mmcm/seq_reg2_reg[0]/C
+                            (rising edge-triggered cell FDCE clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Destination:            mmcm/seq_reg2_reg[1]/D
+                            (rising edge-triggered cell FDCE clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Path Group:             clk_mem_clk_wiz_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_mem_clk_wiz_0 rise@19.231ns - clk_mem_clk_wiz_0 rise@19.231ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.000ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -1.299ns = ( 17.932 - 19.231 ) 
+    Source Clock Delay      (SCD):    -1.035ns = ( 18.196 - 19.231 ) 
+    Clock Pessimism Removal (CPR):    -0.264ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_mem_clk_wiz_0 rise edge)
+                                                     19.231    19.231 r  
+    Y9                                                0.000    19.231 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    19.231    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.258    19.489 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440    19.929    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -2.421    17.509 r  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           0.398    17.907    mmcm/clk_mem_clk_wiz_0
+    BUFHCE_X0Y1          BUFH (Prop_bufh_I_O)         0.020    17.927 r  mmcm/clkout2_buf_en/O
+                         net (fo=8, routed)           0.269    18.196    mmcm/clk_mem_clk_wiz_0_en_clk
+    SLICE_X49Y46         FDCE                                         r  mmcm/seq_reg2_reg[0]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X49Y46         FDCE (Prop_fdce_C_Q)         0.141    18.337 r  mmcm/seq_reg2_reg[0]/Q
+                         net (fo=1, routed)           0.056    18.393    mmcm/seq_reg2[0]
+    SLICE_X49Y46         FDCE                                         r  mmcm/seq_reg2_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_mem_clk_wiz_0 rise edge)
+                                                     19.231    19.231 r  
+    Y9                                                0.000    19.231 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    19.231    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.446    19.677 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480    20.157    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -3.204    16.953 r  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           0.442    17.395    mmcm/clk_mem_clk_wiz_0
+    BUFHCE_X0Y1          BUFH (Prop_bufh_I_O)         0.043    17.438 r  mmcm/clkout2_buf_en/O
+                         net (fo=8, routed)           0.494    17.932    mmcm/clk_mem_clk_wiz_0_en_clk
+    SLICE_X49Y46         FDCE                                         r  mmcm/seq_reg2_reg[1]/C
+                         clock pessimism              0.264    18.196    
+    SLICE_X49Y46         FDCE (Hold_fdce_C_D)         0.075    18.271    mmcm/seq_reg2_reg[1]
+  -------------------------------------------------------------------
+                         required time                        -18.271    
+                         arrival time                          18.393    
+  -------------------------------------------------------------------
+                         slack                                  0.122    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clk_mem_clk_wiz_0
+Waveform(ns):       { 19.231 57.692 }
+Period(ns):         76.923
+Sources:            { mmcm/mmcm_adv_inst/CLKOUT1 }
+
+Check Type        Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location         Pin
+Min Period        n/a     RAMB36E1/CLKARDCLK  n/a            2.944         76.923      73.979     RAMB36_X1Y1      mem/mem_reg_0_0/CLKARDCLK
+Max Period        n/a     MMCME2_ADV/CLKOUT1  n/a            213.360       76.923      136.437    MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKOUT1
+Low Pulse Width   Fast    FDRE/C              n/a            0.500         38.462      37.962     SLICE_X14Y18     oled_device/FSM_onehot_state_reg[0]/C
+High Pulse Width  Slow    FDRE/C              n/a            0.500         38.462      37.962     SLICE_X13Y7      oled_device/load_data_reg[7]/C
+
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk_proc_clk_wiz_0
+  To Clock:  clk_proc_clk_wiz_0
+
+Setup :            0  Failing Endpoints,  Worst Slack       14.650ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.131ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack       37.962ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             14.650ns  (required time - arrival time)
+  Source:                 datapath/rf/gen_other_regs[30].regs_reg[30][5]/C
+                            (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Destination:            datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]/D
+                            (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Path Group:             clk_proc_clk_wiz_0
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            76.923ns  (clk_proc_clk_wiz_0 rise@76.923ns - clk_proc_clk_wiz_0 rise@0.000ns)
+  Data Path Delay:        62.136ns  (logic 18.199ns (29.289%)  route 43.937ns (70.711%))
+  Logic Levels:           91  (CARRY4=56 LUT2=2 LUT3=2 LUT4=4 LUT5=11 LUT6=15 MUXF7=1)
+  Clock Path Skew:        -0.065ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.524ns = ( 75.399 - 76.923 ) 
+    Source Clock Delay      (SCD):    -0.883ns
+    Clock Pessimism Removal (CPR):    0.577ns
+  Clock Uncertainty:      0.101ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.189ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                      0.000     0.000 r  
+    Y9                                                0.000     0.000 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000     0.000    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.490     1.490 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.285     2.775    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.343    -4.568 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           1.855    -2.713    mmcm/clk_proc_clk_wiz_0
+    BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.101    -2.612 r  mmcm/clkout1_buf/O
+                         net (fo=1215, routed)        1.729    -0.883    datapath/rf/clock_processor
+    SLICE_X61Y1          FDRE                                         r  datapath/rf/gen_other_regs[30].regs_reg[30][5]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X61Y1          FDRE (Prop_fdre_C_Q)         0.419    -0.464 r  datapath/rf/gen_other_regs[30].regs_reg[30][5]/Q
+                         net (fo=2, routed)           1.872     1.409    datapath/rf/regs[30]_76[5]
+    SLICE_X69Y9          LUT6 (Prop_lut6_I1_O)        0.296     1.705 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[5]_i_7/O
+                         net (fo=1, routed)           0.000     1.705    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[5]_i_7_n_2
+    SLICE_X69Y9          MUXF7 (Prop_muxf7_I1_O)      0.245     1.950 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[5]_i_2/O
+                         net (fo=1, routed)           0.951     2.901    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[5]_i_2_n_2
+    SLICE_X66Y9          LUT6 (Prop_lut6_I0_O)        0.298     3.199 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[5]_i_1/O
+                         net (fo=79, routed)          1.242     4.441    datapath/rf/mem_reg_3_0_2[4]
+    SLICE_X51Y12         LUT2 (Prop_lut2_I0_O)        0.124     4.565 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[7]_i_4/O
+                         net (fo=1, routed)           0.000     4.565    datapath/rf/i_divisor1[5]
+    SLICE_X51Y12         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     5.115 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     5.115    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[7]_i_1_n_2
+    SLICE_X51Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     5.229 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     5.229    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[11]_i_1_n_2
+    SLICE_X51Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     5.343 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[15]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     5.343    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[15]_i_1_n_2
+    SLICE_X51Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     5.457 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[19]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     5.457    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[19]_i_1_n_2
+    SLICE_X51Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     5.571 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[23]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     5.571    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[23]_i_1_n_2
+    SLICE_X51Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     5.685 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[27]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     5.685    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[27]_i_1_n_2
+    SLICE_X51Y18         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.348     6.033 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[31]_i_1/O[1]
+                         net (fo=49, routed)          0.851     6.884    datapath/div_sr_alu_n/i_divisor[29]
+    SLICE_X52Y18         LUT2 (Prop_lut2_I1_O)        0.303     7.187 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[15]_i_9__0/O
+                         net (fo=1, routed)           0.000     7.187    datapath/rf/S[2]
+    SLICE_X52Y18         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398     7.585 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[15]_i_2__0/CO[3]
+                         net (fo=233, routed)         1.416     9.002    datapath/rf/div_sr_alu_n/g_div_iteration[0].g_reg_iter.div_mod_a/less_than
+    SLICE_X55Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.126 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_49__0/O
+                         net (fo=1, routed)           0.816     9.942    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_49__0_n_2
+    SLICE_X52Y19         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    10.468 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_24__0/CO[3]
+                         net (fo=1, routed)           0.000    10.468    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_24__0_n_2
+    SLICE_X52Y20         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    10.582 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    10.582    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12__0_n_2
+    SLICE_X52Y21         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    10.696 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    10.696    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3__0_n_2
+    SLICE_X52Y22         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    10.810 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_2__0/CO[3]
+                         net (fo=148, routed)         1.571    12.381    datapath/rf/div_sr_alu_n/g_div_iteration[1].g_reg_iter.div_mod_a/less_than
+    SLICE_X56Y13         LUT4 (Prop_lut4_I3_O)        0.124    12.505 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_95__0/O
+                         net (fo=1, routed)           0.622    13.128    datapath/rf/div_sr_alu_n/store_remainder[2]_2[8]
+    SLICE_X56Y13         LUT4 (Prop_lut4_I2_O)        0.124    13.252 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_40__0/O
+                         net (fo=1, routed)           0.637    13.888    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_40__0_n_2
+    SLICE_X55Y16         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    14.414 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    14.414    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_12__0_n_2
+    SLICE_X55Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.528 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    14.528    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3__0_n_2
+    SLICE_X55Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    14.642 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_2__0/CO[3]
+                         net (fo=45, routed)          1.359    16.001    datapath/rf/div_sr_alu_n/g_div_iteration[2].g_reg_iter.div_mod_a/less_than
+    SLICE_X57Y22         LUT6 (Prop_lut6_I5_O)        0.124    16.125 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_38__0/O
+                         net (fo=9, routed)           1.000    17.125    datapath/rf/div_sr_alu_n/store_remainder[3]_4[21]
+    SLICE_X59Y16         LUT4 (Prop_lut4_I1_O)        0.124    17.249 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_17__0/O
+                         net (fo=1, routed)           0.000    17.249    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_17__0_n_2
+    SLICE_X59Y16         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401    17.650 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    17.650    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_3__0_n_2
+    SLICE_X59Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    17.764 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_2__0/CO[3]
+                         net (fo=159, routed)         1.498    19.262    datapath/rf/div_sr_alu_n/g_div_iteration[3].g_reg_iter.div_mod_a/less_than
+    SLICE_X60Y25         LUT3 (Prop_lut3_I2_O)        0.124    19.386 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_25__0/O
+                         net (fo=2, routed)           0.549    19.934    datapath/rf/div_sr_alu_n/store_remainder[4]_6[26]
+    SLICE_X60Y25         LUT6 (Prop_lut6_I4_O)        0.124    20.058 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_6__0/O
+                         net (fo=1, routed)           0.474    20.532    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_6__0_n_2
+    SLICE_X61Y26         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    21.039 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_2__0/CO[3]
+                         net (fo=75, routed)          1.455    22.495    datapath/rf/div_sr_alu_n/g_div_iteration[4].g_reg_iter.div_mod_a/less_than
+    SLICE_X60Y23         LUT5 (Prop_lut5_I4_O)        0.124    22.619 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_38__0/O
+                         net (fo=8, routed)           0.892    23.510    datapath/rf/div_sr_alu_n/store_remainder[5]_8[21]
+    SLICE_X59Y24         LUT4 (Prop_lut4_I1_O)        0.124    23.634 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_17__0/O
+                         net (fo=1, routed)           0.000    23.634    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_17__0_n_2
+    SLICE_X59Y24         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401    24.035 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.009    24.044    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3__0_n_2
+    SLICE_X59Y25         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    24.158 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_2__0/CO[3]
+                         net (fo=156, routed)         1.357    25.515    datapath/rf/div_sr_alu_n/g_div_iteration[5].g_reg_iter.div_mod_a/less_than
+    SLICE_X58Y16         LUT5 (Prop_lut5_I4_O)        0.124    25.639 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_34__0/O
+                         net (fo=9, routed)           0.614    26.253    datapath/rf/div_sr_alu_n/store_remainder[6]_10[1]
+    SLICE_X60Y14         LUT6 (Prop_lut6_I1_O)        0.124    26.377 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_58/O
+                         net (fo=1, routed)           0.630    27.007    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_58_n_2
+    SLICE_X63Y16         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    27.514 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    27.514    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29_n_2
+    SLICE_X63Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    27.628 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    27.628    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12__0_n_2
+    SLICE_X63Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    27.742 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    27.742    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3__0_n_2
+    SLICE_X63Y19         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    27.856 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_2__0/CO[3]
+                         net (fo=79, routed)          1.569    29.425    datapath/rf/div_sr_alu_n/g_div_iteration[6].g_reg_iter.div_mod_a/less_than
+    SLICE_X63Y13         LUT5 (Prop_lut5_I4_O)        0.124    29.549 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[14]_i_6__0/O
+                         net (fo=9, routed)           0.563    30.112    datapath/rf/div_sr_alu_n/store_remainder[7]_12[5]
+    SLICE_X64Y13         LUT6 (Prop_lut6_I1_O)        0.124    30.236 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_52/O
+                         net (fo=1, routed)           0.553    30.789    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_52_n_2
+    SLICE_X64Y15         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385    31.174 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    31.174    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29_n_2
+    SLICE_X64Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.288 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    31.288    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12__0_n_2
+    SLICE_X64Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.402 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    31.402    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3__0_n_2
+    SLICE_X64Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.516 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_2__0/CO[3]
+                         net (fo=153, routed)         1.479    32.995    datapath/rf/div_sr_alu_n/g_div_iteration[7].g_reg_iter.div_mod_a/less_than
+    SLICE_X64Y13         LUT5 (Prop_lut5_I4_O)        0.124    33.119 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[15]_i_29__0/O
+                         net (fo=9, routed)           0.749    33.869    datapath/rf/div_sr_alu_n/store_remainder[8]_14[7]
+    SLICE_X68Y11         LUT6 (Prop_lut6_I1_O)        0.124    33.993 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_33__0/O
+                         net (fo=1, routed)           0.625    34.617    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_33__0_n_2
+    SLICE_X66Y14         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.550    35.167 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    35.167    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_12__0_n_2
+    SLICE_X66Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    35.284 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    35.284    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3__0_n_2
+    SLICE_X66Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    35.401 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_2__0/CO[3]
+                         net (fo=83, routed)          1.275    36.676    datapath/rf/div_sr_alu_n/g_div_iteration[8].g_reg_iter.div_mod_a/less_than
+    SLICE_X64Y14         LUT5 (Prop_lut5_I4_O)        0.124    36.800 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_5__0/O
+                         net (fo=9, routed)           0.651    37.451    datapath/rf/div_sr_alu_n/store_remainder[9]_16[5]
+    SLICE_X68Y20         LUT6 (Prop_lut6_I1_O)        0.124    37.575 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_45/O
+                         net (fo=1, routed)           0.684    38.259    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_45_n_2
+    SLICE_X66Y17         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.396    38.655 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    38.655    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_29_n_2
+    SLICE_X66Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    38.772 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    38.772    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12__0_n_2
+    SLICE_X66Y19         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    38.889 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    38.889    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3__0_n_2
+    SLICE_X66Y20         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    39.006 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_2__0/CO[3]
+                         net (fo=150, routed)         1.451    40.457    datapath/rf/div_sr_alu_n/g_div_iteration[9].g_reg_iter.div_mod_a/less_than
+    SLICE_X68Y11         LUT5 (Prop_lut5_I4_O)        0.124    40.581 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[9]_i_6__0/O
+                         net (fo=9, routed)           0.502    41.083    datapath/rf/div_sr_alu_n/store_remainder[10]_18[3]
+    SLICE_X69Y12         LUT6 (Prop_lut6_I1_O)        0.124    41.207 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_54/O
+                         net (fo=1, routed)           0.686    41.893    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_54_n_2
+    SLICE_X69Y15         CARRY4 (Prop_carry4_DI[2]_CO[3])
+                                                      0.398    42.291 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    42.291    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_29_n_2
+    SLICE_X69Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    42.405 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    42.405    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12__0_n_2
+    SLICE_X69Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    42.519 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    42.519    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3__0_n_2
+    SLICE_X69Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    42.633 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_2__0/CO[3]
+                         net (fo=87, routed)          1.180    43.813    datapath/rf/div_sr_alu_n/g_div_iteration[10].g_reg_iter.div_mod_a/less_than
+    SLICE_X69Y11         LUT5 (Prop_lut5_I4_O)        0.124    43.937 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[6]_i_4__0/O
+                         net (fo=9, routed)           0.663    44.600    datapath/rf/div_sr_alu_n/store_remainder[11]_20[1]
+    SLICE_X70Y10         LUT6 (Prop_lut6_I1_O)        0.124    44.724 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_42__0/O
+                         net (fo=1, routed)           0.331    45.055    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_42__0_n_2
+    SLICE_X71Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    45.562 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_26/CO[3]
+                         net (fo=1, routed)           0.000    45.562    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_26_n_2
+    SLICE_X71Y12         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    45.676 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    45.676    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12__0_n_2
+    SLICE_X71Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    45.790 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    45.790    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3__0_n_2
+    SLICE_X71Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    45.904 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_2__0/CO[3]
+                         net (fo=147, routed)         1.307    47.211    datapath/rf/div_sr_alu_n/g_div_iteration[11].g_reg_iter.div_mod_a/less_than
+    SLICE_X69Y13         LUT5 (Prop_lut5_I4_O)        0.124    47.335 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_5__0/O
+                         net (fo=9, routed)           0.622    47.957    datapath/rf/div_sr_alu_n/store_remainder[12]_22[7]
+    SLICE_X75Y12         LUT6 (Prop_lut6_I1_O)        0.124    48.081 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_30/O
+                         net (fo=1, routed)           0.512    48.594    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_30_n_2
+    SLICE_X73Y12         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    49.120 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    49.120    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_12__0_n_2
+    SLICE_X73Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    49.234 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    49.234    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3__0_n_2
+    SLICE_X73Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    49.348 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_2__0/CO[3]
+                         net (fo=91, routed)          1.291    50.639    datapath/rf/div_sr_alu_n/g_div_iteration[12].g_reg_iter.div_mod_a/less_than
+    SLICE_X80Y13         LUT5 (Prop_lut5_I4_O)        0.124    50.763 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_3__0/O
+                         net (fo=9, routed)           0.493    51.256    datapath/rf/div_sr_alu_n/store_remainder[13]_24[9]
+    SLICE_X80Y13         LUT6 (Prop_lut6_I1_O)        0.124    51.380 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_25/O
+                         net (fo=1, routed)           0.666    52.046    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_25_n_2
+    SLICE_X72Y13         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    52.553 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    52.553    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12__0_n_2
+    SLICE_X72Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    52.667 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    52.667    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3__0_n_2
+    SLICE_X72Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    52.781 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_2__0/CO[3]
+                         net (fo=144, routed)         1.099    53.879    datapath/rf/div_sr_alu_n/g_div_iteration[13].g_reg_iter.div_mod_a/less_than
+    SLICE_X77Y12         LUT5 (Prop_lut5_I4_O)        0.124    54.003 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[3]_i_2__0/O
+                         net (fo=8, routed)           0.677    54.680    datapath/rf/div_sr_alu_n/store_remainder[14]_26[1]
+    SLICE_X81Y15         LUT6 (Prop_lut6_I1_O)        0.124    54.804 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_119/O
+                         net (fo=1, routed)           0.632    55.436    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_119_n_2
+    SLICE_X75Y15         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    55.943 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_87/CO[3]
+                         net (fo=1, routed)           0.000    55.943    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_87_n_2
+    SLICE_X75Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    56.057 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51__0/CO[3]
+                         net (fo=1, routed)           0.000    56.057    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51__0_n_2
+    SLICE_X75Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    56.171 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15__0/CO[3]
+                         net (fo=1, routed)           0.000    56.171    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15__0_n_2
+    SLICE_X75Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    56.285 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_4__0/CO[3]
+                         net (fo=88, routed)          1.159    57.444    datapath/rf/div_sr_alu_n/g_div_iteration[14].g_reg_iter.div_mod_a/less_than
+    SLICE_X75Y14         LUT5 (Prop_lut5_I4_O)        0.124    57.568 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[10]_i_2__0/O
+                         net (fo=4, routed)           0.684    58.252    datapath/rf/div_sr_alu_n/store_remainder[15]_28[9]
+    SLICE_X77Y13         LUT6 (Prop_lut6_I1_O)        0.124    58.376 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_103__0/O
+                         net (fo=1, routed)           0.474    58.849    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_103__0_n_2
+    SLICE_X77Y15         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    59.356 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64/CO[3]
+                         net (fo=1, routed)           0.000    59.356    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64_n_2
+    SLICE_X77Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    59.470 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27__0/CO[3]
+                         net (fo=1, routed)           0.000    59.470    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27__0_n_2
+    SLICE_X77Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    59.584 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_6__0/CO[3]
+                         net (fo=32, routed)          1.545    61.129    datapath/rf/div_sr_alu_n/g_div_iteration[15].g_reg_iter.div_mod_a/less_than
+    SLICE_X80Y18         LUT3 (Prop_lut3_I2_O)        0.124    61.253 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[24]_i_1__0/O
+                         net (fo=1, routed)           0.000    61.253    datapath/div_sr_alu_n/o_remainder[24]
+    SLICE_X80Y18         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                     76.923    76.923 r  
+    Y9                                                0.000    76.923 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    76.923    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.420    78.343 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    79.505    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.438    72.067 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           1.691    73.758    mmcm/clk_proc_clk_wiz_0
+    BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.091    73.849 r  mmcm/clkout1_buf/O
+                         net (fo=1215, routed)        1.549    75.399    datapath/div_sr_alu_n/clock_processor
+    SLICE_X80Y18         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]/C
+                         clock pessimism              0.577    75.975    
+                         clock uncertainty           -0.101    75.874    
+    SLICE_X80Y18         FDRE (Setup_fdre_C_D)        0.029    75.903    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]
+  -------------------------------------------------------------------
+                         required time                         75.903    
+                         arrival time                         -61.253    
+  -------------------------------------------------------------------
+                         slack                                 14.650    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.131ns  (arrival time - required time)
+  Source:                 mmcm/seq_reg1_reg[0]/C
+                            (rising edge-triggered cell FDCE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Destination:            mmcm/seq_reg1_reg[1]/D
+                            (rising edge-triggered cell FDCE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Path Group:             clk_proc_clk_wiz_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_proc_clk_wiz_0 rise@0.000ns - clk_proc_clk_wiz_0 rise@0.000ns)
+  Data Path Delay:        0.206ns  (logic 0.141ns (68.336%)  route 0.065ns (31.664%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.000ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -1.299ns
+    Source Clock Delay      (SCD):    -1.035ns
+    Clock Pessimism Removal (CPR):    -0.264ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                      0.000     0.000 r  
+    Y9                                                0.000     0.000 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000     0.000    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.258     0.258 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.698    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.421    -1.722 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           0.398    -1.324    mmcm/clk_proc_clk_wiz_0
+    BUFHCE_X0Y0          BUFH (Prop_bufh_I_O)         0.020    -1.304 r  mmcm/clkout1_buf_en/O
+                         net (fo=8, routed)           0.269    -1.035    mmcm/clk_proc_clk_wiz_0_en_clk
+    SLICE_X48Y46         FDCE                                         r  mmcm/seq_reg1_reg[0]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X48Y46         FDCE (Prop_fdce_C_Q)         0.141    -0.894 r  mmcm/seq_reg1_reg[0]/Q
+                         net (fo=1, routed)           0.065    -0.829    mmcm/seq_reg1[0]
+    SLICE_X48Y46         FDCE                                         r  mmcm/seq_reg1_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                      0.000     0.000 r  
+    Y9                                                0.000     0.000 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000     0.000    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.446     0.446 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.926    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.204    -2.278 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           0.442    -1.836    mmcm/clk_proc_clk_wiz_0
+    BUFHCE_X0Y0          BUFH (Prop_bufh_I_O)         0.043    -1.793 r  mmcm/clkout1_buf_en/O
+                         net (fo=8, routed)           0.494    -1.299    mmcm/clk_proc_clk_wiz_0_en_clk
+    SLICE_X48Y46         FDCE                                         r  mmcm/seq_reg1_reg[1]/C
+                         clock pessimism              0.264    -1.035    
+    SLICE_X48Y46         FDCE (Hold_fdce_C_D)         0.075    -0.960    mmcm/seq_reg1_reg[1]
+  -------------------------------------------------------------------
+                         required time                          0.960    
+                         arrival time                          -0.829    
+  -------------------------------------------------------------------
+                         slack                                  0.131    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clk_proc_clk_wiz_0
+Waveform(ns):       { 0.000 38.462 }
+Period(ns):         76.923
+Sources:            { mmcm/mmcm_adv_inst/CLKOUT0 }
+
+Check Type        Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location         Pin
+Min Period        n/a     BUFGCTRL/I0         n/a            2.155         76.923      74.768     BUFGCTRL_X0Y0    mmcm/clkout1_buf/I0
+Max Period        n/a     MMCME2_ADV/CLKOUT0  n/a            213.360       76.923      136.437    MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKOUT0
+Low Pulse Width   Fast    FDRE/C              n/a            0.500         38.462      37.962     SLICE_X51Y13     datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[10]/C
+High Pulse Width  Slow    FDRE/C              n/a            0.500         38.462      37.962     SLICE_X66Y9      datapath/rf/gen_other_regs[9].regs_reg[9][25]/C
+
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clkfbout_clk_wiz_0
+  To Clock:  clkfbout_clk_wiz_0
+
+Setup :           NA  Failing Endpoints,  Worst Slack           NA  ,  Total Violation           NA
+Hold  :           NA  Failing Endpoints,  Worst Slack           NA  ,  Total Violation           NA
+PW    :            0  Failing Endpoints,  Worst Slack        7.845ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clkfbout_clk_wiz_0
+Waveform(ns):       { 0.000 5.000 }
+Period(ns):         10.000
+Sources:            { mmcm/mmcm_adv_inst/CLKFBOUT }
+
+Check Type  Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location         Pin
+Min Period  n/a     BUFG/I              n/a            2.155         10.000      7.845      BUFGCTRL_X0Y4    mmcm/clkf_buf/I
+Max Period  n/a     MMCME2_ADV/CLKFBIN  n/a            100.000       10.000      90.000     MMCME2_ADV_X0Y0  mmcm/mmcm_adv_inst/CLKFBIN
+
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk_proc_clk_wiz_0
+  To Clock:  clk_mem_clk_wiz_0
+
+Setup :            0  Failing Endpoints,  Worst Slack       15.033ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack       20.224ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             15.033ns  (required time - arrival time)
+  Source:                 datapath/pcCurrent_reg[10]/C
+                            (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Destination:            mem/mem_reg_1_0/ADDRBWRADDR[10]
+                            (rising edge-triggered cell RAMB36E1 clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Path Group:             clk_mem_clk_wiz_0
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            19.231ns  (clk_mem_clk_wiz_0 rise@19.231ns - clk_proc_clk_wiz_0 rise@0.000ns)
+  Data Path Delay:        3.189ns  (logic 0.518ns (16.242%)  route 2.671ns (83.758%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.221ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.455ns = ( 17.776 - 19.231 ) 
+    Source Clock Delay      (SCD):    -0.946ns
+    Clock Pessimism Removal (CPR):    0.288ns
+  Clock Uncertainty:      0.221ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.189ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                      0.000     0.000 r  
+    Y9                                                0.000     0.000 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000     0.000    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.490     1.490 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.285     2.775    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.343    -4.568 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           1.855    -2.713    mmcm/clk_proc_clk_wiz_0
+    BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.101    -2.612 r  mmcm/clkout1_buf/O
+                         net (fo=1215, routed)        1.666    -0.946    datapath/clock_processor
+    SLICE_X42Y0          FDRE                                         r  datapath/pcCurrent_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X42Y0          FDRE (Prop_fdre_C_Q)         0.518    -0.428 r  datapath/pcCurrent_reg[10]/Q
+                         net (fo=14, routed)          2.671     2.244    mem/Q[10]
+    RAMB36_X1Y0          RAMB36E1                                     r  mem/mem_reg_1_0/ADDRBWRADDR[10]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_mem_clk_wiz_0 rise edge)
+                                                     19.231    19.231 r  
+    Y9                                                0.000    19.231 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    19.231    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.420    20.651 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    21.812    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -7.438    14.375 r  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           1.691    16.066    mmcm/clk_mem_clk_wiz_0
+    BUFGCTRL_X0Y1        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.091    16.157 r  mmcm/clkout2_buf/O
+                         net (fo=384, routed)         1.619    17.776    mem/clock_mem
+    RAMB36_X1Y0          RAMB36E1                                     r  mem/mem_reg_1_0/CLKBWRCLK
+                         clock pessimism              0.288    18.064    
+                         clock uncertainty           -0.221    17.843    
+    RAMB36_X1Y0          RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ADDRBWRADDR[10])
+                                                     -0.566    17.277    mem/mem_reg_1_0
+  -------------------------------------------------------------------
+                         required time                         17.277    
+                         arrival time                          -2.244    
+  -------------------------------------------------------------------
+                         slack                                 15.033    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             20.224ns  (arrival time - required time)
+  Source:                 datapath/rf/gen_other_regs[29].regs_reg[29][0]/C
+                            (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Destination:            mem/mem_reg_1_1/ADDRARDADDR[2]
+                            (falling edge-triggered cell RAMB36E1 clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Path Group:             clk_mem_clk_wiz_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            -19.231ns  (clk_mem_clk_wiz_0 fall@57.692ns - clk_proc_clk_wiz_0 rise@76.923ns)
+  Data Path Delay:        1.780ns  (logic 0.624ns (35.056%)  route 1.156ns (64.944%))
+  Logic Levels:           5  (CARRY4=1 LUT5=1 LUT6=2 MUXF7=1)
+  Clock Path Skew:        0.383ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.794ns = ( 56.898 - 57.692 ) 
+    Source Clock Delay      (SCD):    -0.622ns = ( 76.301 - 76.923 ) 
+    Clock Pessimism Removal (CPR):    -0.556ns
+  Clock Uncertainty:      0.221ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.189ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                     76.923    76.923 r  
+    Y9                                                0.000    76.923 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    76.923    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.258    77.181 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440    77.621    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.421    75.201 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           0.518    75.719    mmcm/clk_proc_clk_wiz_0
+    BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.026    75.745 r  mmcm/clkout1_buf/O
+                         net (fo=1215, routed)        0.557    76.301    datapath/rf/clock_processor
+    SLICE_X52Y1          FDRE                                         r  datapath/rf/gen_other_regs[29].regs_reg[29][0]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X52Y1          FDRE (Prop_fdre_C_Q)         0.141    76.442 r  datapath/rf/gen_other_regs[29].regs_reg[29][0]/Q
+                         net (fo=2, routed)           0.151    76.594    datapath/rf/regs[29]_75[0]
+    SLICE_X53Y1          LUT6 (Prop_lut6_I3_O)        0.045    76.639 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[16]_i_7/O
+                         net (fo=1, routed)           0.000    76.639    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[16]_i_7_n_2
+    SLICE_X53Y1          MUXF7 (Prop_muxf7_I1_O)      0.065    76.704 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[16]_i_2/O
+                         net (fo=1, routed)           0.193    76.897    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[16]_i_2_n_2
+    SLICE_X53Y2          LUT6 (Prop_lut6_I0_O)        0.108    77.005 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[16]_i_1/O
+                         net (fo=60, routed)          0.356    77.361    datapath/rf/A[0]
+    SLICE_X44Y0          CARRY4 (Prop_carry4_DI[0]_O[2])
+                                                      0.157    77.518 r  datapath/rf/mem_reg_0_0_i_25/O[2]
+                         net (fo=2, routed)           0.119    77.637    mem/mem_reg_3_1_21[2]
+    SLICE_X46Y0          LUT5 (Prop_lut5_I1_O)        0.108    77.745 r  mem/mem_reg_0_0_i_14/O
+                         net (fo=32, routed)          0.337    78.081    mem/mem_reg_0_1_0[0]
+    RAMB36_X3Y0          RAMB36E1                                     r  mem/mem_reg_1_1/ADDRARDADDR[2]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_mem_clk_wiz_0 fall edge)
+                                                     57.692    57.692 f  
+    Y9                                                0.000    57.692 f  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    57.692    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.446    58.138 f  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480    58.618    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -3.204    55.414 f  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           0.564    55.978    mmcm/clk_mem_clk_wiz_0
+    BUFGCTRL_X0Y1        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.029    56.007 f  mmcm/clkout2_buf/O
+                         net (fo=384, routed)         0.890    56.898    mem/clock_mem
+    RAMB36_X3Y0          RAMB36E1                                     r  mem/mem_reg_1_1/CLKARDCLK  (IS_INVERTED)
+                         clock pessimism              0.556    57.454    
+                         clock uncertainty            0.221    57.675    
+    RAMB36_X3Y0          RAMB36E1 (Hold_ramb36e1_CLKARDCLK_ADDRARDADDR[2])
+                                                      0.183    57.858    mem/mem_reg_1_1
+  -------------------------------------------------------------------
+                         required time                        -57.858    
+                         arrival time                          78.081    
+  -------------------------------------------------------------------
+                         slack                                 20.224    
+
+
+
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk_mem_clk_wiz_0
+  To Clock:  clk_proc_clk_wiz_0
+
+Setup :           68  Failing Endpoints,  Worst Slack       -6.534ns,  Total Violation     -384.036ns
+Hold  :            0  Failing Endpoints,  Worst Slack       19.918ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (VIOLATED) :        -6.534ns  (required time - arrival time)
+  Source:                 mem/mem_reg_2_1/CLKBWRCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Destination:            datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]/D
+                            (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Path Group:             clk_proc_clk_wiz_0
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            57.692ns  (clk_proc_clk_wiz_0 rise@76.923ns - clk_mem_clk_wiz_0 rise@19.231ns)
+  Data Path Delay:        63.646ns  (logic 20.062ns (31.521%)  route 43.584ns (68.479%))
+  Logic Levels:           91  (CARRY4=56 LUT2=2 LUT3=2 LUT4=4 LUT5=11 LUT6=15 MUXF7=1)
+  Clock Path Skew:        -0.389ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.524ns = ( 75.399 - 76.923 ) 
+    Source Clock Delay      (SCD):    -0.847ns = ( 18.384 - 19.231 ) 
+    Clock Pessimism Removal (CPR):    0.288ns
+  Clock Uncertainty:      0.221ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.189ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_mem_clk_wiz_0 rise edge)
+                                                     19.231    19.231 r  
+    Y9                                                0.000    19.231 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    19.231    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.490    20.721 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.285    22.006    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -7.343    14.663 r  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           1.855    16.518    mmcm/clk_mem_clk_wiz_0
+    BUFGCTRL_X0Y1        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.101    16.619 r  mmcm/clkout2_buf/O
+                         net (fo=384, routed)         1.764    18.384    mem/clock_mem
+    RAMB36_X3Y2          RAMB36E1                                     r  mem/mem_reg_2_1/CLKBWRCLK
+  -------------------------------------------------------------------    -------------------
+    RAMB36_X3Y2          RAMB36E1 (Prop_ramb36e1_CLKBWRCLK_DOBDO[1])
+                                                      2.454    20.838 r  mem/mem_reg_2_1/DOBDO[1]
+                         net (fo=348, routed)         1.519    22.357    datapath/rf/insn_from_imem[15]
+    SLICE_X69Y9          LUT6 (Prop_lut6_I2_O)        0.124    22.481 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[5]_i_7/O
+                         net (fo=1, routed)           0.000    22.481    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[5]_i_7_n_2
+    SLICE_X69Y9          MUXF7 (Prop_muxf7_I1_O)      0.245    22.726 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[5]_i_2/O
+                         net (fo=1, routed)           0.951    23.677    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[5]_i_2_n_2
+    SLICE_X66Y9          LUT6 (Prop_lut6_I0_O)        0.298    23.975 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[5]_i_1/O
+                         net (fo=79, routed)          1.242    25.217    datapath/rf/mem_reg_3_0_2[4]
+    SLICE_X51Y12         LUT2 (Prop_lut2_I0_O)        0.124    25.341 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[7]_i_4/O
+                         net (fo=1, routed)           0.000    25.341    datapath/rf/i_divisor1[5]
+    SLICE_X51Y12         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550    25.891 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[7]_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.891    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[7]_i_1_n_2
+    SLICE_X51Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.005 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[11]_i_1/CO[3]
+                         net (fo=1, routed)           0.000    26.005    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[11]_i_1_n_2
+    SLICE_X51Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.119 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[15]_i_1/CO[3]
+                         net (fo=1, routed)           0.000    26.119    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[15]_i_1_n_2
+    SLICE_X51Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.233 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[19]_i_1/CO[3]
+                         net (fo=1, routed)           0.000    26.233    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[19]_i_1_n_2
+    SLICE_X51Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.347 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[23]_i_1/CO[3]
+                         net (fo=1, routed)           0.000    26.347    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[23]_i_1_n_2
+    SLICE_X51Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    26.461 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[27]_i_1/CO[3]
+                         net (fo=1, routed)           0.000    26.461    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[27]_i_1_n_2
+    SLICE_X51Y18         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.348    26.809 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[31]_i_1/O[1]
+                         net (fo=49, routed)          0.851    27.661    datapath/div_sr_alu_n/i_divisor[29]
+    SLICE_X52Y18         LUT2 (Prop_lut2_I1_O)        0.303    27.964 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[15]_i_9__0/O
+                         net (fo=1, routed)           0.000    27.964    datapath/rf/S[2]
+    SLICE_X52Y18         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398    28.362 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[15]_i_2__0/CO[3]
+                         net (fo=233, routed)         1.416    29.778    datapath/rf/div_sr_alu_n/g_div_iteration[0].g_reg_iter.div_mod_a/less_than
+    SLICE_X55Y14         LUT6 (Prop_lut6_I4_O)        0.124    29.902 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_49__0/O
+                         net (fo=1, routed)           0.816    30.718    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_49__0_n_2
+    SLICE_X52Y19         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    31.244 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_24__0/CO[3]
+                         net (fo=1, routed)           0.000    31.244    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_24__0_n_2
+    SLICE_X52Y20         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.358 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    31.358    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12__0_n_2
+    SLICE_X52Y21         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.472 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    31.472    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3__0_n_2
+    SLICE_X52Y22         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.586 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_2__0/CO[3]
+                         net (fo=148, routed)         1.571    33.158    datapath/rf/div_sr_alu_n/g_div_iteration[1].g_reg_iter.div_mod_a/less_than
+    SLICE_X56Y13         LUT4 (Prop_lut4_I3_O)        0.124    33.282 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_95__0/O
+                         net (fo=1, routed)           0.622    33.904    datapath/rf/div_sr_alu_n/store_remainder[2]_2[8]
+    SLICE_X56Y13         LUT4 (Prop_lut4_I2_O)        0.124    34.028 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_40__0/O
+                         net (fo=1, routed)           0.637    34.665    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_40__0_n_2
+    SLICE_X55Y16         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    35.191 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    35.191    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_12__0_n_2
+    SLICE_X55Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    35.305 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    35.305    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3__0_n_2
+    SLICE_X55Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    35.419 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_2__0/CO[3]
+                         net (fo=45, routed)          1.359    36.777    datapath/rf/div_sr_alu_n/g_div_iteration[2].g_reg_iter.div_mod_a/less_than
+    SLICE_X57Y22         LUT6 (Prop_lut6_I5_O)        0.124    36.901 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_38__0/O
+                         net (fo=9, routed)           1.000    37.901    datapath/rf/div_sr_alu_n/store_remainder[3]_4[21]
+    SLICE_X59Y16         LUT4 (Prop_lut4_I1_O)        0.124    38.025 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_17__0/O
+                         net (fo=1, routed)           0.000    38.025    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_17__0_n_2
+    SLICE_X59Y16         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401    38.426 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    38.426    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_3__0_n_2
+    SLICE_X59Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    38.540 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_2__0/CO[3]
+                         net (fo=159, routed)         1.498    40.038    datapath/rf/div_sr_alu_n/g_div_iteration[3].g_reg_iter.div_mod_a/less_than
+    SLICE_X60Y25         LUT3 (Prop_lut3_I2_O)        0.124    40.162 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_25__0/O
+                         net (fo=2, routed)           0.549    40.711    datapath/rf/div_sr_alu_n/store_remainder[4]_6[26]
+    SLICE_X60Y25         LUT6 (Prop_lut6_I4_O)        0.124    40.835 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_6__0/O
+                         net (fo=1, routed)           0.474    41.309    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_6__0_n_2
+    SLICE_X61Y26         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    41.816 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_2__0/CO[3]
+                         net (fo=75, routed)          1.455    43.271    datapath/rf/div_sr_alu_n/g_div_iteration[4].g_reg_iter.div_mod_a/less_than
+    SLICE_X60Y23         LUT5 (Prop_lut5_I4_O)        0.124    43.395 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_38__0/O
+                         net (fo=8, routed)           0.892    44.287    datapath/rf/div_sr_alu_n/store_remainder[5]_8[21]
+    SLICE_X59Y24         LUT4 (Prop_lut4_I1_O)        0.124    44.411 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_17__0/O
+                         net (fo=1, routed)           0.000    44.411    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_17__0_n_2
+    SLICE_X59Y24         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401    44.812 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.009    44.821    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3__0_n_2
+    SLICE_X59Y25         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    44.935 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_2__0/CO[3]
+                         net (fo=156, routed)         1.357    46.292    datapath/rf/div_sr_alu_n/g_div_iteration[5].g_reg_iter.div_mod_a/less_than
+    SLICE_X58Y16         LUT5 (Prop_lut5_I4_O)        0.124    46.416 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_34__0/O
+                         net (fo=9, routed)           0.614    47.030    datapath/rf/div_sr_alu_n/store_remainder[6]_10[1]
+    SLICE_X60Y14         LUT6 (Prop_lut6_I1_O)        0.124    47.154 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_58/O
+                         net (fo=1, routed)           0.630    47.783    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_58_n_2
+    SLICE_X63Y16         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    48.290 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    48.290    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29_n_2
+    SLICE_X63Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    48.404 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    48.404    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12__0_n_2
+    SLICE_X63Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    48.518 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    48.518    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3__0_n_2
+    SLICE_X63Y19         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    48.632 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_2__0/CO[3]
+                         net (fo=79, routed)          1.569    50.202    datapath/rf/div_sr_alu_n/g_div_iteration[6].g_reg_iter.div_mod_a/less_than
+    SLICE_X63Y13         LUT5 (Prop_lut5_I4_O)        0.124    50.326 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[14]_i_6__0/O
+                         net (fo=9, routed)           0.563    50.889    datapath/rf/div_sr_alu_n/store_remainder[7]_12[5]
+    SLICE_X64Y13         LUT6 (Prop_lut6_I1_O)        0.124    51.013 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_52/O
+                         net (fo=1, routed)           0.553    51.565    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_52_n_2
+    SLICE_X64Y15         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.385    51.950 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    51.950    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29_n_2
+    SLICE_X64Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    52.064 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    52.064    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12__0_n_2
+    SLICE_X64Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    52.178 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    52.178    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3__0_n_2
+    SLICE_X64Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    52.292 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_2__0/CO[3]
+                         net (fo=153, routed)         1.479    53.772    datapath/rf/div_sr_alu_n/g_div_iteration[7].g_reg_iter.div_mod_a/less_than
+    SLICE_X64Y13         LUT5 (Prop_lut5_I4_O)        0.124    53.896 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[15]_i_29__0/O
+                         net (fo=9, routed)           0.749    54.645    datapath/rf/div_sr_alu_n/store_remainder[8]_14[7]
+    SLICE_X68Y11         LUT6 (Prop_lut6_I1_O)        0.124    54.769 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_33__0/O
+                         net (fo=1, routed)           0.625    55.394    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_33__0_n_2
+    SLICE_X66Y14         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.550    55.944 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    55.944    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_12__0_n_2
+    SLICE_X66Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    56.061 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    56.061    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3__0_n_2
+    SLICE_X66Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    56.178 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_2__0/CO[3]
+                         net (fo=83, routed)          1.275    57.453    datapath/rf/div_sr_alu_n/g_div_iteration[8].g_reg_iter.div_mod_a/less_than
+    SLICE_X64Y14         LUT5 (Prop_lut5_I4_O)        0.124    57.577 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_5__0/O
+                         net (fo=9, routed)           0.651    58.227    datapath/rf/div_sr_alu_n/store_remainder[9]_16[5]
+    SLICE_X68Y20         LUT6 (Prop_lut6_I1_O)        0.124    58.351 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_45/O
+                         net (fo=1, routed)           0.684    59.035    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_45_n_2
+    SLICE_X66Y17         CARRY4 (Prop_carry4_DI[3]_CO[3])
+                                                      0.396    59.431 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    59.431    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_29_n_2
+    SLICE_X66Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    59.548 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    59.548    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12__0_n_2
+    SLICE_X66Y19         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    59.665 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    59.665    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3__0_n_2
+    SLICE_X66Y20         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    59.782 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_2__0/CO[3]
+                         net (fo=150, routed)         1.451    61.233    datapath/rf/div_sr_alu_n/g_div_iteration[9].g_reg_iter.div_mod_a/less_than
+    SLICE_X68Y11         LUT5 (Prop_lut5_I4_O)        0.124    61.357 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[9]_i_6__0/O
+                         net (fo=9, routed)           0.502    61.859    datapath/rf/div_sr_alu_n/store_remainder[10]_18[3]
+    SLICE_X69Y12         LUT6 (Prop_lut6_I1_O)        0.124    61.983 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_54/O
+                         net (fo=1, routed)           0.686    62.669    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_54_n_2
+    SLICE_X69Y15         CARRY4 (Prop_carry4_DI[2]_CO[3])
+                                                      0.398    63.067 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_29/CO[3]
+                         net (fo=1, routed)           0.000    63.067    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_29_n_2
+    SLICE_X69Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    63.181 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    63.181    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12__0_n_2
+    SLICE_X69Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    63.295 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    63.295    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3__0_n_2
+    SLICE_X69Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    63.409 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_2__0/CO[3]
+                         net (fo=87, routed)          1.180    64.589    datapath/rf/div_sr_alu_n/g_div_iteration[10].g_reg_iter.div_mod_a/less_than
+    SLICE_X69Y11         LUT5 (Prop_lut5_I4_O)        0.124    64.713 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[6]_i_4__0/O
+                         net (fo=9, routed)           0.663    65.376    datapath/rf/div_sr_alu_n/store_remainder[11]_20[1]
+    SLICE_X70Y10         LUT6 (Prop_lut6_I1_O)        0.124    65.500 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_42__0/O
+                         net (fo=1, routed)           0.331    65.831    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_42__0_n_2
+    SLICE_X71Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    66.338 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_26/CO[3]
+                         net (fo=1, routed)           0.000    66.338    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_26_n_2
+    SLICE_X71Y12         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    66.452 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    66.452    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12__0_n_2
+    SLICE_X71Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    66.566 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    66.566    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3__0_n_2
+    SLICE_X71Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    66.680 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_2__0/CO[3]
+                         net (fo=147, routed)         1.307    67.987    datapath/rf/div_sr_alu_n/g_div_iteration[11].g_reg_iter.div_mod_a/less_than
+    SLICE_X69Y13         LUT5 (Prop_lut5_I4_O)        0.124    68.111 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_5__0/O
+                         net (fo=9, routed)           0.622    68.733    datapath/rf/div_sr_alu_n/store_remainder[12]_22[7]
+    SLICE_X75Y12         LUT6 (Prop_lut6_I1_O)        0.124    68.857 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_30/O
+                         net (fo=1, routed)           0.512    69.370    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_30_n_2
+    SLICE_X73Y12         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    69.896 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    69.896    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_12__0_n_2
+    SLICE_X73Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    70.010 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    70.010    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3__0_n_2
+    SLICE_X73Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    70.124 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_2__0/CO[3]
+                         net (fo=91, routed)          1.291    71.415    datapath/rf/div_sr_alu_n/g_div_iteration[12].g_reg_iter.div_mod_a/less_than
+    SLICE_X80Y13         LUT5 (Prop_lut5_I4_O)        0.124    71.539 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_3__0/O
+                         net (fo=9, routed)           0.493    72.032    datapath/rf/div_sr_alu_n/store_remainder[13]_24[9]
+    SLICE_X80Y13         LUT6 (Prop_lut6_I1_O)        0.124    72.156 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_25/O
+                         net (fo=1, routed)           0.666    72.822    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_25_n_2
+    SLICE_X72Y13         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    73.329 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    73.329    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12__0_n_2
+    SLICE_X72Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    73.443 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    73.443    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3__0_n_2
+    SLICE_X72Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    73.557 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_2__0/CO[3]
+                         net (fo=144, routed)         1.099    74.656    datapath/rf/div_sr_alu_n/g_div_iteration[13].g_reg_iter.div_mod_a/less_than
+    SLICE_X77Y12         LUT5 (Prop_lut5_I4_O)        0.124    74.780 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[3]_i_2__0/O
+                         net (fo=8, routed)           0.677    75.456    datapath/rf/div_sr_alu_n/store_remainder[14]_26[1]
+    SLICE_X81Y15         LUT6 (Prop_lut6_I1_O)        0.124    75.580 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_119/O
+                         net (fo=1, routed)           0.632    76.212    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_119_n_2
+    SLICE_X75Y15         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    76.719 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_87/CO[3]
+                         net (fo=1, routed)           0.000    76.719    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_87_n_2
+    SLICE_X75Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    76.833 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51__0/CO[3]
+                         net (fo=1, routed)           0.000    76.833    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51__0_n_2
+    SLICE_X75Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    76.947 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15__0/CO[3]
+                         net (fo=1, routed)           0.000    76.947    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15__0_n_2
+    SLICE_X75Y18         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    77.061 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_4__0/CO[3]
+                         net (fo=88, routed)          1.159    78.220    datapath/rf/div_sr_alu_n/g_div_iteration[14].g_reg_iter.div_mod_a/less_than
+    SLICE_X75Y14         LUT5 (Prop_lut5_I4_O)        0.124    78.344 f  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[10]_i_2__0/O
+                         net (fo=4, routed)           0.684    79.028    datapath/rf/div_sr_alu_n/store_remainder[15]_28[9]
+    SLICE_X77Y13         LUT6 (Prop_lut6_I1_O)        0.124    79.152 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_103__0/O
+                         net (fo=1, routed)           0.474    79.626    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_103__0_n_2
+    SLICE_X77Y15         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    80.133 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64/CO[3]
+                         net (fo=1, routed)           0.000    80.133    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64_n_2
+    SLICE_X77Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    80.247 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27__0/CO[3]
+                         net (fo=1, routed)           0.000    80.247    datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27__0_n_2
+    SLICE_X77Y17         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    80.361 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_6__0/CO[3]
+                         net (fo=32, routed)          1.545    81.905    datapath/rf/div_sr_alu_n/g_div_iteration[15].g_reg_iter.div_mod_a/less_than
+    SLICE_X80Y18         LUT3 (Prop_lut3_I2_O)        0.124    82.029 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[24]_i_1__0/O
+                         net (fo=1, routed)           0.000    82.029    datapath/div_sr_alu_n/o_remainder[24]
+    SLICE_X80Y18         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                     76.923    76.923 r  
+    Y9                                                0.000    76.923 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    76.923    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         1.420    78.343 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    79.505    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.438    72.067 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           1.691    73.758    mmcm/clk_proc_clk_wiz_0
+    BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.091    73.849 r  mmcm/clkout1_buf/O
+                         net (fo=1215, routed)        1.549    75.399    datapath/div_sr_alu_n/clock_processor
+    SLICE_X80Y18         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]/C
+                         clock pessimism              0.288    75.687    
+                         clock uncertainty           -0.221    75.466    
+    SLICE_X80Y18         FDRE (Setup_fdre_C_D)        0.029    75.495    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[24]
+  -------------------------------------------------------------------
+                         required time                         75.495    
+                         arrival time                         -82.029    
+  -------------------------------------------------------------------
+                         slack                                 -6.534    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             19.918ns  (arrival time - required time)
+  Source:                 mem/mem_reg_2_1/CLKBWRCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by clk_mem_clk_wiz_0  {rise@19.231ns fall@57.692ns period=76.923ns})
+  Destination:            datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@38.462ns period=76.923ns})
+  Path Group:             clk_proc_clk_wiz_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            -19.231ns  (clk_proc_clk_wiz_0 rise@0.000ns - clk_mem_clk_wiz_0 rise@19.231ns)
+  Data Path Delay:        1.260ns  (logic 0.700ns (55.544%)  route 0.560ns (44.456%))
+  Logic Levels:           2  (CARRY4=1 LUT6=1)
+  Clock Path Skew:        0.250ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.864ns
+    Source Clock Delay      (SCD):    -0.558ns = ( 18.673 - 19.231 ) 
+    Clock Pessimism Removal (CPR):    -0.556ns
+  Clock Uncertainty:      0.221ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.189ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_mem_clk_wiz_0 rise edge)
+                                                     19.231    19.231 r  
+    Y9                                                0.000    19.231 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000    19.231    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.258    19.489 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440    19.929    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT1)
+                                                     -2.421    17.509 r  mmcm/mmcm_adv_inst/CLKOUT1
+                         net (fo=2, routed)           0.518    18.027    mmcm/clk_mem_clk_wiz_0
+    BUFGCTRL_X0Y1        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.026    18.053 r  mmcm/clkout2_buf/O
+                         net (fo=384, routed)         0.620    18.673    mem/clock_mem
+    RAMB36_X3Y2          RAMB36E1                                     r  mem/mem_reg_2_1/CLKBWRCLK
+  -------------------------------------------------------------------    -------------------
+    RAMB36_X3Y2          RAMB36E1 (Prop_ramb36e1_CLKBWRCLK_DOBDO[3])
+                                                      0.585    19.258 r  mem/mem_reg_2_1/DOBDO[3]
+                         net (fo=144, routed)         0.560    19.818    datapath/rf/insn_from_imem[17]
+    SLICE_X51Y11         LUT6 (Prop_lut6_I4_O)        0.045    19.863 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[0]_i_1/O
+                         net (fo=52, routed)          0.000    19.863    datapath/rf/data_rs2[0]
+    SLICE_X51Y11         CARRY4 (Prop_carry4_S[0]_O[0])
+                                                      0.070    19.933 r  datapath/rf/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[3]_i_1/O[0]
+                         net (fo=49, routed)          0.000    19.933    datapath/div_sr_alu_n/i_divisor[0]
+    SLICE_X51Y11         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_proc_clk_wiz_0 rise edge)
+                                                      0.000     0.000 r  
+    Y9                                                0.000     0.000 r  CLOCK_100MHz (IN)
+                         net (fo=0)                   0.000     0.000    mmcm/CLOCK_100MHz
+    Y9                   IBUF (Prop_ibuf_I_O)         0.446     0.446 r  mmcm/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.926    mmcm/clk_in1_clk_wiz_0
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.204    -2.278 r  mmcm/mmcm_adv_inst/CLKOUT0
+                         net (fo=2, routed)           0.564    -1.714    mmcm/clk_proc_clk_wiz_0
+    BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
+                                                      0.029    -1.685 r  mmcm/clkout1_buf/O
+                         net (fo=1215, routed)        0.821    -0.864    datapath/div_sr_alu_n/clock_processor
+    SLICE_X51Y11         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[0]/C
+                         clock pessimism              0.556    -0.308    
+                         clock uncertainty            0.221    -0.087    
+    SLICE_X51Y11         FDRE (Hold_fdre_C_D)         0.102     0.015    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[0]
+  -------------------------------------------------------------------
+                         required time                         -0.015    
+                         arrival time                          19.933    
+  -------------------------------------------------------------------
+                         slack                                 19.918    
+
+
+
+
+
