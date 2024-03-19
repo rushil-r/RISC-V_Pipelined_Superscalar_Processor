@@ -315,8 +315,8 @@ module DatapathMultiCycle (
   divider_unsigned_pipelined div_sr_alu_n (
       .clk(clk),
       .rst(rst),
-      .i_dividend((({32{data_rs1[31]}} ^ data_rs1) + {31'b0, data_rs1[31]})),
-      .i_divisor((({32{data_rs2[31]}} ^ data_rs2) + {31'b0, data_rs2[31]})),
+      .i_dividend(({32{data_rs1[31]}} + data_rs1) ^ {32{data_rs1[31]}}),
+      .i_divisor((({32{data_rs2[31]}} + data_rs2) ^ {32{data_rs1[31]}})),
       .o_remainder(div_rem_reg),
       .o_quotient(div_qot_reg)
   );
@@ -506,30 +506,16 @@ module DatapathMultiCycle (
               data_rd = data_rs1 ^ data_rs2;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //div
-              //  //div IN PROGRESS
-              // if(flag_div == 0) begin
-              //   regfile_we = 1'b0;
-              //   // Compute absolute value of rs1_data
-              //   abs_rs1_data = data_rs1[31] ? (~data_rs1 + 1'b1) : data_rs1;
-              //   // Compute absolute value of rs2_data
-              //   abs_rs2_data = data_rs2[31] ? (~data_rs2 + 1'b1) : data_rs2;
-              //   data_rs1 = abs_rs1_data;
-              //   data_rs2 = abs_rs2_data;
-              // end else if (flag_div == 1) begin
-              //   regfile_we = 1'b1;
-              //   if (data_rs1[31] != data_rs2[31]) begin
-              //     data_rd = ~div_qot_reg + 1'b1;
-              //   end else begin
-              //     data_rd = div_qot_reg;  // case falls here (should be 3)
-              //   end
-              // end
-
-              if (data_rs1[31] != data_rs2[31]) begin
-                data_rd = ~div_qot_reg + 1'b1;
-                // data_rd = ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
-                //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
-              end else begin
-                data_rd = div_qot_reg;  // case falls here (should be 3)
+              //div IN PROGRESS
+              if(flag_div == 0) begin
+                regfile_we = 1'b0;
+              end else if (flag_div == 1) begin
+                regfile_we = 1'b1;
+                if (data_rs1[31] != data_rs2[31]) begin
+                  data_rd = ~div_qot_reg + 1'b1;
+                end else begin
+                  data_rd = div_qot_reg;  // case falls here (should be 3)
+                end
               end
             end
           end
