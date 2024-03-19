@@ -230,14 +230,14 @@ module DatapathMultiCycle (
   always @(posedge clk) begin
     if (rst) begin
       pcCurrent <= 32'd0;
-      flag_div <= 0;
+      flag_div  <= 0;
     end else if ((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) begin
-      flag_div <= 1; //done with 1 cycle
+      flag_div <= 1;  //done with 1 cycle
     end else begin
       pcCurrent <= pcNext;
     end
-    if( flag_div == 1)begin
-      flag_div <= 0; //reset
+    if (flag_div == 1) begin
+      flag_div <= 0;  //reset
     end
   end
   assign pc_to_imem = pcCurrent;
@@ -329,7 +329,7 @@ module DatapathMultiCycle (
       pcNext = pcCurrent + 4;
     end
     regfile_we = 1'b0;
-    pcNext = pcCurrent + 4;
+    //pcNext = pcCurrent + 4;
     temp_addr = 'd0;
     addr_to_dmem = 'd0;
     store_we_to_dmem = 4'b0000;
@@ -457,7 +457,7 @@ module DatapathMultiCycle (
             end
           end
           3'b001: begin
-                      regfile_we = 1'b1;
+            regfile_we = 1'b1;
 
             if (insn_from_imem[31:25] == 7'd0) begin
               //sll
@@ -470,7 +470,7 @@ module DatapathMultiCycle (
             end
           end
           3'b010: begin
-                        regfile_we = 1'b1;
+            regfile_we = 1'b1;
 
             if (insn_from_imem[31:25] == 7'd0) begin
               //slt
@@ -486,7 +486,7 @@ module DatapathMultiCycle (
             end
           end
           3'b011: begin
-                        regfile_we = 1'b1;
+            regfile_we = 1'b1;
 
             if (insn_from_imem[31:25] == 7'd0) begin
               //sltu
@@ -523,8 +523,9 @@ module DatapathMultiCycle (
               //     data_rd = div_qot_reg;  // case falls here (should be 3)
               //   end
               // end
-
-              if (data_rs1[31] != data_rs2[31]) begin
+              if (data_rs2 == 0) begin
+                data_rd = 32'hFFFF_FFFF;  // div by 0 error
+              end else if (data_rs1[31] != data_rs2[31]) begin
                 data_rd = ~div_qot_reg + 1'b1;
                 // data_rd = ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
                 //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
@@ -536,21 +537,23 @@ module DatapathMultiCycle (
           3'b101: begin
             if (insn_from_imem[31:25] == 7'd0) begin
               //srl
+              regfile_we = 1'b1;
               data_rd = data_rs1 >> (data_rs2[4:0]);
             end else if (insn_from_imem[31:25] == 7'b0100000) begin
               //sra
-              data_rd = $signed(data_rs1) >>> $signed(data_rs2[4:0]);
+              regfile_we = 1'b1;
+              data_rd = $signed(data_rs1) >>> $signed((data_rs2[4:0]));
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //divu
               if (flag_div == 1) begin
-                regfile_we = 1'b1; //enable writing back to RF
-                if(data_rs2 == 0) begin
-                  data_rd = 32'hFFFF_FFFF; // div by 0 error
+                regfile_we = 1'b1;  //enable writing back to RF
+                if (data_rs2 == 0) begin
+                  data_rd = 32'hFFFF_FFFF;  // div by 0 error
                 end else begin
-                  data_rd = div_u_qot_reg; //we can write the quotient
+                  data_rd = div_u_qot_reg;  //we can write the quotient
                 end
               end else begin
-                regfile_we = 1'b0; //disable writing back to RF
+                regfile_we = 1'b0;  //disable writing back to RF
               end
             end
           end
@@ -879,7 +882,7 @@ module RiscvProcessor (
     output logic halt
 );
 
-  wire [`REG_SIZE] pc_to_imem, insn_from_imem, mem_data_addr, mem_data_loaded_value, mem_data_to_write;
+  wire [`REG_SIZE] pc_to_imem, insn_from_imem,mem_data_addr,mem_data_loaded_value,mem_data_to_write;
   wire [3:0] mem_data_we;
 
   MemorySingleCycle #(
