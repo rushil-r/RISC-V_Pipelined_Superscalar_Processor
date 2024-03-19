@@ -230,10 +230,14 @@ module DatapathMultiCycle (
   always @(posedge clk) begin
     if (rst) begin
       pcCurrent <= 32'd0;
-    end else if (flag_div) begin
-      pcCurrent <= pcCurrent;
+      flag_div <= 0;
+    end else if ((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) begin
+      flag_div <= 1; //done with 1 cycle
     end else begin
       pcCurrent <= pcNext;
+    end
+    if( flag_div == 1)begin
+      flag_div <= 0; //reset
     end
   end
   assign pc_to_imem = pcCurrent;
@@ -321,12 +325,14 @@ module DatapathMultiCycle (
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
+    if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu))) begin
+      pcNext = pcCurrent + 4;
+    end
     regfile_we = 1'b0;
     pcNext = pcCurrent + 4;
     temp_addr = 'd0;
     addr_to_dmem = 'd0;
     store_we_to_dmem = 4'b0000;
-    flag_div = 1'b0;
     if (insn_ecall) begin
       // ecall
       halt = 1'b1;
@@ -436,9 +442,9 @@ module DatapathMultiCycle (
         endcase
       end
       OpRegReg: begin
-        regfile_we = 1'b1;
         case (insn_from_imem[14:12])
           3'b000: begin
+            regfile_we = 1'b1;
             if (insn_from_imem[31:25] == 7'd0) begin
               //add
               data_rd = cla_reg_add.sum;
@@ -451,6 +457,8 @@ module DatapathMultiCycle (
             end
           end
           3'b001: begin
+                      regfile_we = 1'b1;
+
             if (insn_from_imem[31:25] == 7'd0) begin
               //sll
               data_rd = data_rs1 << (data_rs2[4:0]);
@@ -462,6 +470,8 @@ module DatapathMultiCycle (
             end
           end
           3'b010: begin
+                        regfile_we = 1'b1;
+
             if (insn_from_imem[31:25] == 7'd0) begin
               //slt
               data_rd = $signed(data_rs1) < $signed(data_rs2) ? 1 : 0;
@@ -476,6 +486,8 @@ module DatapathMultiCycle (
             end
           end
           3'b011: begin
+                        regfile_we = 1'b1;
+
             if (insn_from_imem[31:25] == 7'd0) begin
               //sltu
               data_rd = data_rs1 < data_rs2 ? 1 : 0;
@@ -487,21 +499,37 @@ module DatapathMultiCycle (
             end
           end
           3'b100: begin
+            regfile_we = 1'b1;
+
             if (insn_from_imem[31:25] == 7'd0) begin
               //xor
               data_rd = data_rs1 ^ data_rs2;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //div
+              //  //div IN PROGRESS
+              // if(flag_div == 0) begin
+              //   regfile_we = 1'b0;
+              //   // Compute absolute value of rs1_data
+              //   abs_rs1_data = data_rs1[31] ? (~data_rs1 + 1'b1) : data_rs1;
+              //   // Compute absolute value of rs2_data
+              //   abs_rs2_data = data_rs2[31] ? (~data_rs2 + 1'b1) : data_rs2;
+              //   data_rs1 = abs_rs1_data;
+              //   data_rs2 = abs_rs2_data;
+              // end else if (flag_div == 1) begin
+              //   regfile_we = 1'b1;
+              //   if (data_rs1[31] != data_rs2[31]) begin
+              //     data_rd = ~div_qot_reg + 1'b1;
+              //   end else begin
+              //     data_rd = div_qot_reg;  // case falls here (should be 3)
+              //   end
+              // end
+
               if (data_rs1[31] != data_rs2[31]) begin
-                data_rd = ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
+                data_rd = ~div_qot_reg + 1'b1;
+                // data_rd = ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
                 //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
               end else begin
                 data_rd = div_qot_reg;  // case falls here (should be 3)
-              end
-              if (flag_div) begin
-                flag_div = 1'b0;
-              end else begin
-                flag_div = 1'b1;
               end
             end
           end
@@ -514,15 +542,20 @@ module DatapathMultiCycle (
               data_rd = $signed(data_rs1) >>> $signed(data_rs2[4:0]);
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //divu
-              data_rd = div_u_qot_reg;
-              if (flag_div) begin
-                flag_div = 1'b0;
+              if (flag_div == 1) begin
+                regfile_we = 1'b1; //enable writing back to RF
+                if(data_rs2 == 0) begin
+                  data_rd = 32'hFFFF_FFFF; // div by 0 error
+                end else begin
+                  data_rd = div_u_qot_reg; //we can write the quotient
+                end
               end else begin
-                flag_div = 1'b1;
+                regfile_we = 1'b0; //disable writing back to RF
               end
             end
           end
           3'b110: begin
+            regfile_we = 1'b1;
             if (insn_from_imem[31:25] == 7'd0) begin
               //or
               data_rd = data_rs1 | data_rs2;
@@ -533,25 +566,26 @@ module DatapathMultiCycle (
               end else begin
                 data_rd = div_rem_reg;
               end
-              if (flag_div) begin
-                flag_div = 1'b0;
-              end else begin
-                flag_div = 1'b1;
-              end
+              // if (flag_div) begin
+              //   flag_div = 1'b0;
+              // end else begin
+              //   flag_div = 1'b1;
+              // end
             end
           end
           3'b111: begin
+            regfile_we = 1'b1;
             if (insn_from_imem[31:25] == 7'd0) begin
               //and
               data_rd = data_rs1 & data_rs2;
             end else if (insn_from_imem[31:25] == 7'b0000001) begin
               //remu
               data_rd = div_u_rem_reg;
-              if (flag_div) begin
-                flag_div = 1'b0;
-              end else begin
-                flag_div = 1'b1;
-              end
+              // if (flag_div) begin
+              //   flag_div = 1'b0;
+              // end else begin
+              //   flag_div = 1'b1;
+              // end
             end
           end
           default: begin
