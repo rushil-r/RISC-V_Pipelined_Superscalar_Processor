@@ -349,7 +349,7 @@ RV_TEST_BINARIES = [
     RISCV_TESTS_PATH / 'rv32ui-p-sh',
     RISCV_TESTS_PATH / 'rv32ui-p-sw',
 
-    # self-modifying code and fence.i insn
+    # # self-modifying code and fence.i insn
     RISCV_TESTS_PATH / 'rv32ui-p-fence_i', # 39
 
     RISCV_TESTS_PATH / 'rv32um-p-mul', # 40
@@ -362,7 +362,7 @@ RV_TEST_BINARIES = [
     RISCV_TESTS_PATH / 'rv32um-p-remu',
 
     # misaligned accesses, we don't support these
-    #RISCV_TESTS_PATH / 'rv32ui-p-ma_data',
+    # RISCV_TESTS_PATH / 'rv32ui-p-ma_data',
 ]
 
 rvTestFactory = TestFactory(test_function=riscvTest)

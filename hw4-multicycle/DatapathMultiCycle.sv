@@ -1,4 +1,7 @@
-/* INSERT NAME AND PENNKEY HERE */
+/* INSERT NAME AND PENNKEY HERE
+Rushil Roy (rushilr)
+Ahmed Abdellah (abdellah)
+*/
 
 `timescale 1ns / 1ns
 
