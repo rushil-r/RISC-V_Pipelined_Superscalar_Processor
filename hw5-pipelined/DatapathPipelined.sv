@@ -52,7 +52,7 @@ module RegFile (
     input logic rst
 );
   localparam int NumRegs = 32;
-  genvar i;
+  // use latergenvar i;
   logic [`REG_SIZE] regs[NumRegs];
 
   // TODO: your code here
@@ -182,7 +182,6 @@ module DatapathPipelined (
   localparam bit [`OPCODE_SIZE] OpcodeAuipc = 7'b00_101_11;
   localparam bit [`OPCODE_SIZE] OpcodeLui = 7'b01_101_11;
 
-  logic f_pc_next;
 
   wire insn_lui = insn_opcode == OpcodeLui;
   wire insn_auipc = insn_opcode == OpcodeAuipc;
@@ -277,7 +276,7 @@ module DatapathPipelined (
   /* FETCH STAGE */
   /***************/
 
-  logic [`REG_SIZE] f_pc_current;
+  logic [`REG_SIZE] f_pc_current, f_pc_next;
   wire [`REG_SIZE] f_insn;
   cycle_status_e f_cycle_status;
 
