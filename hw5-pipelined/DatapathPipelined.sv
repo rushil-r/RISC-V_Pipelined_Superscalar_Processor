@@ -121,21 +121,13 @@ typedef struct packed {
   logic [`REG_SIZE] pc;
   cycle_status_e cycle_status;
 
-  logic [0:0] regfile_we;
-
-  logic [`REG_SIZE] data_rd;
-  logic [`REG_SIZE] data_rs1;
-  logic [`REG_SIZE] data_rs2;
-
   logic [`OPCODE_SIZE] insn_opcode;
 
-  logic [`REG_SIZE] imm_i_sext;
-  logic [`REG_SIZE] imm_b_sext;
-  logic [`REG_SIZE] imm_u_sext;
+  logic [4:0] insn_rd;
+  logic [4:0] insn_rs1;
+  logic [4:0] insn_rs2;
 
-  logic [0:0] is_branch;
-  logic [0:0] is_arith;
-  logic [0:0] is_write;
+
 } stage_execute_t;
 /** state at the start of Memory stage */
 // stores: result of ALU, data to write (store insn), register for detinations, and flags indicating for mem_read and read_write
@@ -410,14 +402,14 @@ module DatapathPipelined (
   logic [31:0] store_data_to_dmem_temp;
 
   RegFile rf (
-      .rd(insn_rd),
+      .rd(stage_memory_t.rd),
       .rd_data(data_rd),
-      .rs1(insn_rs1),
+      .rs1(stage_execute_t.insn_rs1),
       .rs1_data(data_rs1),
-      .rs2(insn_rs2),
+      .rs2(stage_execute_t.insn_rs2),
       .rs2_data(data_rs2),
       .clk(clk),
-      .we(regfile_we),
+      .we(stage_execute_t.regfile_we),
       .rst(rst)
   );
 
