@@ -46,7 +46,6 @@ module RegFile (
     output logic [`REG_SIZE] rs1_data,
     input logic [4:0] rs2,
     output logic [`REG_SIZE] rs2_data,
-
     input logic clk,
     input logic we,
     input logic rst
@@ -120,14 +119,10 @@ typedef struct packed {
 typedef struct packed {
   logic [`REG_SIZE] pc;
   cycle_status_e cycle_status;
-
   logic [`OPCODE_SIZE] insn_opcode;
-
   logic [4:0] insn_rd;
   logic [4:0] insn_rs1;
   logic [4:0] insn_rs2;
-
-
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -256,13 +251,6 @@ module DatapathPipelined (
       .disasm(d_disasm)
   );
 
-  // TODO: your code here, though you will also need to modify some of the code above
-
-  /*******************/
-  /*    EXECUTION    */
-  /*******************/
-
-
   logic [0:0] regfile_we;
   logic [`REG_SIZE] data_rd;
   logic [`REG_SIZE] data_rs1;
@@ -388,6 +376,32 @@ module DatapathPipelined (
   wire insn_ecall = insn_opcode == OpcodeEnviron && insn_from_imem[31:7] == 25'd0;
   wire insn_fence = insn_opcode == OpcodeMiscMem;
 
+  // TODO: your code here, though you will also need to modify some of the code above
+
+  /*******************/
+  /*    EXECUTION    */
+  /*******************/
+
+
+  // USE STRUCT VALS TO ESTABLISH CONSTs
+  // logic [0:0] regfile_we;
+  // logic [`REG_SIZE] data_rd;
+  // logic [`REG_SIZE] data_rs1;
+  // logic [`REG_SIZE] data_rs2;
+  // logic [4:0] regfile_rd;
+  // logic [4:0] regfile_rs1;
+  // logic [4:0] regfile_rs2;
+
+  // components of the instruction
+
+  // MIGHT NEED LATER
+  // wire [6:0] insn_funct7;
+  // wire [4:0] insn_rs2;
+  // wire [4:0] insn_rs1;
+  // wire [2:0] insn_funct3;
+  // wire [4:0] insn_rd;
+  // wire [`OPCODE_SIZE] insn_opcode;
+
   // TODO: the testbench requires that your register file instance is named `rf`
 
   logic [31:0] temp_addr;
@@ -407,14 +421,14 @@ module DatapathPipelined (
   logic [31:0] store_data_to_dmem_temp;
 
   RegFile rf (
-      .rd(stage_memory_t.rd),
+      .rd(insn_rd),  //.rd(stage_memory_t.rd),
       .rd_data(data_rd),
-      .rs1(stage_execute_t.insn_rs1),
+      .rs1(insn_rs1),  //.rs1(stage_execute_t.insn_rs1),
       .rs1_data(data_rs1),
-      .rs2(stage_execute_t.insn_rs2),
+      .rs2(insn_rs2),  //.rs2(stage_execute_t.insn_rs2),
       .rs2_data(data_rs2),
       .clk(clk),
-      .we(stage_execute_t.regfile_we),
+      .we(regfile_we),  //.we(stage_execute_t.regfile_we),
       .rst(rst)
   );
 
