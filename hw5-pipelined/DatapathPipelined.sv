@@ -118,6 +118,92 @@ module DatapathPipelined (
     output cycle_status_e trace_writeback_cycle_status
 );
 
+
+  // opcodes - see section 19 of RiscV spec
+  localparam bit [`OPCODE_SIZE] OpcodeLoad = 7'b00_000_11;
+  localparam bit [`OPCODE_SIZE] OpcodeStore = 7'b01_000_11;
+  localparam bit [`OPCODE_SIZE] OpcodeBranch = 7'b11_000_11;
+  localparam bit [`OPCODE_SIZE] OpcodeJalr = 7'b11_001_11;
+  localparam bit [`OPCODE_SIZE] OpcodeMiscMem = 7'b00_011_11;
+  localparam bit [`OPCODE_SIZE] OpcodeJal = 7'b11_011_11;
+
+  localparam bit [`OPCODE_SIZE] OpcodeRegImm = 7'b00_100_11;
+  localparam bit [`OPCODE_SIZE] OpcodeRegReg = 7'b01_100_11;
+  localparam bit [`OPCODE_SIZE] OpcodeEnviron = 7'b11_100_11;
+
+  localparam bit [`OPCODE_SIZE] OpcodeAuipc = 7'b00_101_11;
+  localparam bit [`OPCODE_SIZE] OpcodeLui = 7'b01_101_11;
+
+  // cycle counter, not really part of any stage but useful for orienting within GtkWave
+  // do not rename this as the testbench uses this value
+  logic [`REG_SIZE] cycles_current;
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      cycles_current <= 0;
+    end else begin
+      cycles_current <= cycles_current + 1;
+    end
+  end
+
+  /***************/
+  /* FETCH STAGE */
+  /***************/
+
+  logic [`REG_SIZE] f_pc_current, f_pc_next;
+  wire [`REG_SIZE] f_insn;
+  cycle_status_e f_cycle_status;
+
+  // program counter
+  logic flag_div;
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      f_pc_current   <= 32'd0;
+      // NB: use CYCLE_NO_STALL since this is the value that will persist after the last reset cycle
+      f_cycle_status <= CYCLE_NO_STALL;
+    end else begin
+      f_cycle_status <= CYCLE_NO_STALL;
+      f_pc_current   <= f_pc_current + 4;
+    end
+  end
+  // send PC to imem
+  assign pc_to_imem = f_pc_current;
+  assign f_insn = insn_from_imem;
+
+  // Here's how to disassemble an insn into a string you can view in GtkWave.
+  // Use PREFIX to provide a 1-character tag to identify which stage the insn comes from.
+  wire [255:0] f_disasm;
+  Disasm #(
+      .PREFIX("F")
+  ) disasm_0fetch (
+      .insn  (f_insn),
+      .disasm(f_disasm)
+  );
+
+  /****************/
+  /* DECODE STAGE */
+  /****************/
+
+  // this shows how to package up state in a `struct packed`, and how to pass it between stages
+  stage_decode_t decode_state;
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      decode_state <= '{pc: 0, insn: 0, cycle_status: CYCLE_RESET};
+    end else begin
+      begin
+        decode_state <= '{pc: f_pc_current, insn: f_insn, cycle_status: f_cycle_status};
+      end
+    end
+  end
+  wire [255:0] d_disasm;
+  Disasm #(
+      .PREFIX("D")
+  ) disasm_1decode (
+      .insn  (decode_state.insn),
+      .disasm(d_disasm)
+  );
+
+  // TODO: your code here, though you will also need to modify some of the code above
+
   logic [0:0] regfile_we;
   logic [`REG_SIZE] data_rd;
   logic [`REG_SIZE] data_rs1;
@@ -160,28 +246,11 @@ module DatapathPipelined (
   wire [19:0] imm_u;
   assign imm_u = insn_from_imem[31:12];
 
-
   wire [`REG_SIZE] imm_i_sext = {{20{imm_i[11]}}, imm_i[11:0]};
   wire [`REG_SIZE] imm_s_sext = {{20{imm_s[11]}}, imm_s[11:0]};
   wire [`REG_SIZE] imm_b_sext = {{19{imm_b[12]}}, imm_b[12:0]};
   wire [`REG_SIZE] imm_j_sext = {{11{imm_j[20]}}, imm_j[20:0]};
   wire [`REG_SIZE] imm_u_sext = {{12{imm_u[19]}}, imm_u[19:0]};
-
-  // opcodes - see section 19 of RiscV spec
-  localparam bit [`OPCODE_SIZE] OpcodeLoad = 7'b00_000_11;
-  localparam bit [`OPCODE_SIZE] OpcodeStore = 7'b01_000_11;
-  localparam bit [`OPCODE_SIZE] OpcodeBranch = 7'b11_000_11;
-  localparam bit [`OPCODE_SIZE] OpcodeJalr = 7'b11_001_11;
-  localparam bit [`OPCODE_SIZE] OpcodeMiscMem = 7'b00_011_11;
-  localparam bit [`OPCODE_SIZE] OpcodeJal = 7'b11_011_11;
-
-  localparam bit [`OPCODE_SIZE] OpcodeRegImm = 7'b00_100_11;
-  localparam bit [`OPCODE_SIZE] OpcodeRegReg = 7'b01_100_11;
-  localparam bit [`OPCODE_SIZE] OpcodeEnviron = 7'b11_100_11;
-
-  localparam bit [`OPCODE_SIZE] OpcodeAuipc = 7'b00_101_11;
-  localparam bit [`OPCODE_SIZE] OpcodeLui = 7'b01_101_11;
-
 
   wire insn_lui = insn_opcode == OpcodeLui;
   wire insn_auipc = insn_opcode == OpcodeAuipc;
@@ -260,76 +329,6 @@ module DatapathPipelined (
   wire insn_ecall = insn_opcode == OpcodeEnviron && insn_from_imem[31:7] == 25'd0;
   wire insn_fence = insn_opcode == OpcodeMiscMem;
 
-
-  // cycle counter, not really part of any stage but useful for orienting within GtkWave
-  // do not rename this as the testbench uses this value
-  logic [`REG_SIZE] cycles_current;
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      cycles_current <= 0;
-    end else begin
-      cycles_current <= cycles_current + 1;
-    end
-  end
-
-  /***************/
-  /* FETCH STAGE */
-  /***************/
-
-  logic [`REG_SIZE] f_pc_current, f_pc_next;
-  wire [`REG_SIZE] f_insn;
-  cycle_status_e f_cycle_status;
-
-  // program counter
-  logic flag_div;
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      f_pc_current   <= 32'd0;
-      // NB: use CYCLE_NO_STALL since this is the value that will persist after the last reset cycle
-      f_cycle_status <= CYCLE_NO_STALL;
-    end else begin
-      f_cycle_status <= CYCLE_NO_STALL;
-      f_pc_current   <= f_pc_current + 4;
-    end
-  end
-  // send PC to imem
-  assign pc_to_imem = f_pc_current;
-  assign f_insn = insn_from_imem;
-
-  // Here's how to disassemble an insn into a string you can view in GtkWave.
-  // Use PREFIX to provide a 1-character tag to identify which stage the insn comes from.
-  wire [255:0] f_disasm;
-  Disasm #(
-      .PREFIX("F")
-  ) disasm_0fetch (
-      .insn  (f_insn),
-      .disasm(f_disasm)
-  );
-
-  /****************/
-  /* DECODE STAGE */
-  /****************/
-
-  // this shows how to package up state in a `struct packed`, and how to pass it between stages
-  stage_decode_t decode_state;
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      decode_state <= '{pc: 0, insn: 0, cycle_status: CYCLE_RESET};
-    end else begin
-      begin
-        decode_state <= '{pc: f_pc_current, insn: f_insn, cycle_status: f_cycle_status};
-      end
-    end
-  end
-  wire [255:0] d_disasm;
-  Disasm #(
-      .PREFIX("D")
-  ) disasm_1decode (
-      .insn  (decode_state.insn),
-      .disasm(d_disasm)
-  );
-
-  // TODO: your code here, though you will also need to modify some of the code above
   // TODO: the testbench requires that your register file instance is named `rf`
 
   logic [31:0] temp_addr;
