@@ -52,11 +52,34 @@ module RegFile (
     input logic rst
 );
   localparam int NumRegs = 32;
-  // use latergenvar i;
+  genvar i;
   logic [`REG_SIZE] regs[NumRegs];
 
   // TODO: your code here
+  assign regs[0]  = 32'd0;
+  assign rs1_data = regs[rs1];
+  assign rs2_data = regs[rs2];
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      regs[1] <= 32'd0;
+    end else begin
+      if (we && rd == 1) begin
+        regs[1] <= rd_data;
+      end
+    end
+  end
 
+  for (i = 2; i < 32; i = i + 1) begin : gen_other_regs
+    always_ff @(posedge clk) begin
+      if (rst) begin
+        regs[i] <= 32'd0;
+      end else begin
+        if (we && rd == i) begin
+          regs[i] <= rd_data;
+        end
+      end
+    end
+  end
 endmodule
 
 /**
@@ -96,6 +119,26 @@ typedef struct packed {
   cycle_status_e cycle_status;
 } stage_decode_t;
 
+typedef struct packed {
+  logic [`REG_SIZE] pc;
+  cycle_status_e cycle_status;
+
+  logic [0:0] regfile_we;
+
+  logic [`REG_SIZE] data_rd;
+  logic [`REG_SIZE] data_rs1;
+  logic [`REG_SIZE] data_rs2;
+
+  logic [`OPCODE_SIZE] insn_opcode;
+
+  logic [`REG_SIZE] imm_i_sext;
+  logic [`REG_SIZE] imm_b_sext;
+  logic [`REG_SIZE] imm_u_sext;
+
+  logic [0:0] is_branch;
+  logic [0:0] is_arith;
+  logic [0:0] is_write;
+} stage_execute_t;
 
 module DatapathPipelined (
     input wire clk,
@@ -207,6 +250,8 @@ module DatapathPipelined (
   /*******************/
   /*    EXECUTION    */
   /*******************/
+
+
   logic [0:0] regfile_we;
   logic [`REG_SIZE] data_rd;
   logic [`REG_SIZE] data_rs1;
@@ -397,6 +442,8 @@ module DatapathPipelined (
       .o_remainder(div_rem_reg),
       .o_quotient(div_qot_reg)
   );
+
+
 
   always_comb begin
     halt = 1'b0;
