@@ -204,6 +204,9 @@ module DatapathPipelined (
 
   // TODO: your code here, though you will also need to modify some of the code above
 
+  /*******************/
+  /*    EXECUTION    */
+  /*******************/
   logic [0:0] regfile_we;
   logic [`REG_SIZE] data_rd;
   logic [`REG_SIZE] data_rs1;
