@@ -137,6 +137,7 @@ typedef struct packed {
   logic [0:0] is_arith;
   logic [0:0] is_write;
 } stage_execute_t;
+
 /** state at the start of Memory stage */
 // stores: result of ALU, data to write (store insn), register for detinations, and flags indicating for mem_read and read_write
 typedef struct packed {
@@ -145,6 +146,8 @@ typedef struct packed {
   logic [4:0] rd;
   logic mem_read;
   logic mem_write;
+  cycle_status_e cycle_status;
+  logic is_write;
 } stage_memory_t;
 
 /** state at the start of Writeback stage */
@@ -152,6 +155,8 @@ typedef struct packed {
 typedef struct packed {
   logic [`REG_SIZE] alu_result;
   logic [4:0] rd;
+  cycle_status_e cycle_status;
+  logic is_write;
 } stage_writeback_t;
 
 module DatapathPipelined (
