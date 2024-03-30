@@ -182,6 +182,86 @@ module DatapathPipelined (
   localparam bit [`OPCODE_SIZE] OpcodeAuipc = 7'b00_101_11;
   localparam bit [`OPCODE_SIZE] OpcodeLui = 7'b01_101_11;
 
+  logic f_pc_next;
+
+  wire insn_lui = insn_opcode == OpcodeLui;
+  wire insn_auipc = insn_opcode == OpcodeAuipc;
+  wire insn_jal = insn_opcode == OpcodeJal;
+  wire insn_jalr = insn_opcode == OpcodeJalr;
+
+  wire insn_beq = insn_opcode == OpcodeBranch && insn_from_imem[14:12] == 3'b000;
+  wire insn_bne = insn_opcode == OpcodeBranch && insn_from_imem[14:12] == 3'b001;
+  wire insn_blt = insn_opcode == OpcodeBranch && insn_from_imem[14:12] == 3'b100;
+  wire insn_bge = insn_opcode == OpcodeBranch && insn_from_imem[14:12] == 3'b101;
+  wire insn_bltu = insn_opcode == OpcodeBranch && insn_from_imem[14:12] == 3'b110;
+  wire insn_bgeu = insn_opcode == OpcodeBranch && insn_from_imem[14:12] == 3'b111;
+
+  wire insn_lb = insn_opcode == OpcodeLoad && insn_from_imem[14:12] == 3'b000;
+  wire insn_lh = insn_opcode == OpcodeLoad && insn_from_imem[14:12] == 3'b001;
+  wire insn_lw = insn_opcode == OpcodeLoad && insn_from_imem[14:12] == 3'b010;
+  wire insn_lbu = insn_opcode == OpcodeLoad && insn_from_imem[14:12] == 3'b100;
+  wire insn_lhu = insn_opcode == OpcodeLoad && insn_from_imem[14:12] == 3'b101;
+
+  wire insn_sb = insn_opcode == OpcodeStore && insn_from_imem[14:12] == 3'b000;
+  wire insn_sh = insn_opcode == OpcodeStore && insn_from_imem[14:12] == 3'b001;
+  wire insn_sw = insn_opcode == OpcodeStore && insn_from_imem[14:12] == 3'b010;
+
+  wire insn_addi = insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b000;
+  wire insn_slti = insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b010;
+  wire insn_sltiu = insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b011;
+  wire insn_xori = insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b100;
+  wire insn_ori = insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b110;
+  wire insn_andi = insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b111;
+
+  wire insn_slli = (insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b001
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_srli = (insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_srai = (insn_opcode == OpcodeRegImm && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'b0100000);
+
+  wire insn_add = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b000
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_sub = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b000
+     && insn_from_imem[31:25] == 7'b0100000);
+  wire insn_sll = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b001
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_slt = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b010
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_sltu = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b011
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_xor = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b100
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_srl = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_sra  = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b101
+     && insn_from_imem[31:25] == 7'b0100000);
+  wire insn_or = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b110
+     && insn_from_imem[31:25] == 7'd0);
+  wire insn_and = (insn_opcode == OpcodeRegReg && insn_from_imem[14:12] == 3'b111
+     && insn_from_imem[31:25] == 7'd0);
+
+  wire insn_mul    = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b000);
+  wire insn_mulh   = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b001);
+  wire insn_mulhsu = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b010);
+  wire insn_mulhu  = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b011);
+  wire insn_div    = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b100);
+  wire insn_divu   = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b101);
+  wire insn_rem    = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b110);
+  wire insn_remu   = (insn_opcode == OpcodeRegReg && insn_from_imem[31:25] == 7'd1
+     && insn_from_imem[14:12] == 3'b111);
+
+  wire insn_ecall = insn_opcode == OpcodeEnviron && insn_from_imem[31:7] == 25'd0;
+  wire insn_fence = insn_opcode == OpcodeMiscMem;
+
+
   // cycle counter, not really part of any stage but useful for orienting within GtkWave
   // do not rename this as the testbench uses this value
   logic [`REG_SIZE] cycles_current;
@@ -202,6 +282,7 @@ module DatapathPipelined (
   cycle_status_e f_cycle_status;
 
   // program counter
+  logic flag_div;
   always_ff @(posedge clk) begin
     if (rst) begin
       f_pc_current   <= 32'd0;
@@ -251,6 +332,23 @@ module DatapathPipelined (
 
   // TODO: your code here, though you will also need to modify some of the code above
   // TODO: the testbench requires that your register file instance is named `rf`
+
+  logic [31:0] temp_addr;
+  logic [31:0] temp_load_casing;
+  logic illegal_insn;
+
+  wire [31:0] cla_sum;
+  wire [31:0] cla_sum_reg;
+  wire [31:0] cla_diff_reg;
+  wire [31:0] div_u_rem_reg;
+  wire [31:0] div_u_qot_reg;
+  wire [31:0] div_rem_reg;
+  wire [31:0] div_qot_reg;
+  wire [31:0] div_rem_reg_bn;
+  wire [31:0] div_qot_reg_bn;
+  logic [3:0] store_we_to_dmem_temp;
+  logic [31:0] store_data_to_dmem_temp;
+
   RegFile rf (
       .rd(insn_rd),
       .rd_data(data_rd),
@@ -304,10 +402,10 @@ module DatapathPipelined (
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
     if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu))) begin
-      pcNext = pcCurrent + 4;
+      f_pc_next = f_pc_current + 4;
     end
     regfile_we = 1'b0;
-    //pcNext = pcCurrent + 4;
+    //f_pc_next = f_pc_current + 4;
     temp_addr = 'd0;
     addr_to_dmem = 'd0;
     store_we_to_dmem = 4'b0000;
@@ -316,19 +414,19 @@ module DatapathPipelined (
       halt = 1'b1;
     end
     case (insn_opcode)
-      OpMiscMem: begin
-        pcNext = ((pcCurrent + 4) & 32'b11111111111111111111111111111100);
+      OpcodeMiscMem: begin
+        f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
         addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
       end
-      OpLui: begin
+      OpcodeLui: begin
         regfile_we = 1'b1;
         data_rd = {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
       end
-      OpAuipc: begin
+      OpcodeAuipc: begin
         regfile_we = 1'b1;
-        data_rd = pcCurrent + {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
+        data_rd = f_pc_current + {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
       end
-      OpRegImm: begin
+      OpcodeRegImm: begin
         regfile_we = 1'b1;  //re-enable regfile when changing data_rd
         case (insn_from_imem[14:12])
           3'b000: begin
@@ -374,43 +472,43 @@ module DatapathPipelined (
           end
         endcase
       end
-      OpBranch: begin
+      OpcodeBranch: begin
         regfile_we = 1'b0;
         // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
         case (insn_from_imem[14:12])
           3'b000: begin
             //beq
             if (data_rs1 == data_rs2) begin
-              pcNext = pcCurrent + imm_b_sext;
+              f_pc_next = f_pc_current + imm_b_sext;
             end
           end
           3'b001: begin
             //bne
             if (data_rs1 != data_rs2) begin
-              pcNext = pcCurrent + imm_b_sext;
+              f_pc_next = f_pc_current + imm_b_sext;
             end
           end
           3'b100: begin
             if ($signed(data_rs1) < $signed(data_rs2)) begin
-              pcNext = pcCurrent + imm_b_sext;
+              f_pc_next = f_pc_current + imm_b_sext;
             end
           end
           3'b101: begin
             //bge
             if ($signed(data_rs1) >= $signed(data_rs2)) begin
-              pcNext = pcCurrent + imm_b_sext;
+              f_pc_next = f_pc_current + imm_b_sext;
             end
           end
           3'b110: begin
             //bltu
             if (data_rs1 < data_rs2) begin
-              pcNext = pcCurrent + imm_b_sext;
+              f_pc_next = f_pc_current + imm_b_sext;
             end
           end
           3'b111: begin
             //bgeu
             if (data_rs1 >= data_rs2) begin
-              pcNext = pcCurrent + imm_b_sext;
+              f_pc_next = f_pc_current + imm_b_sext;
             end
           end
           default: begin
@@ -419,7 +517,7 @@ module DatapathPipelined (
           end
         endcase
       end
-      OpRegReg: begin
+      OpcodeRegReg: begin
         case (insn_from_imem[14:12])
           3'b000: begin
             regfile_we = 1'b1;
@@ -575,17 +673,17 @@ module DatapathPipelined (
           end
         endcase
       end
-      OpJal: begin
+      OpcodeJal: begin
         regfile_we = 1'b1;
-        data_rd = pcCurrent + 4;
-        pcNext = pcCurrent + imm_j_sext;
+        data_rd = f_pc_current + 4;
+        f_pc_next = f_pc_current + imm_j_sext;
       end
-      OpJalr: begin
+      OpcodeJalr: begin
         regfile_we = 1'b1;
-        data_rd = pcCurrent + 4;
-        pcNext = ((data_rs1 + imm_i_sext) & (32'b11111111111111111111111111111110));
+        data_rd = f_pc_current + 4;
+        f_pc_next = ((data_rs1 + imm_i_sext) & (32'b11111111111111111111111111111110));
       end
-      OpLoad: begin
+      OpcodeLoad: begin
         regfile_we = 1'b1;
         // addr_to_dmem = {{temp_load_casing[31:2]}, 2'b00};
         case (insn_from_imem[14:12])
@@ -690,7 +788,7 @@ module DatapathPipelined (
         endcase
         addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
       end
-      OpStore: begin
+      OpcodeStore: begin
         // temp_addr = data_rs1 + imm_s_sext;
         temp_addr = data_rs1 + imm_s_sext;
         if (insn_sb) begin
@@ -759,7 +857,7 @@ module DatapathPipelined (
       default: begin
       end
     endcase
-    // pcNext = pcCurrent+4
+    // f_pc_next = f_pc_current+4
     //^^^^^ relocated to inside case statements to allow for branching logic
   end
 
