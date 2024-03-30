@@ -114,6 +114,8 @@ typedef struct packed {
   logic [`REG_SIZE] pc;
   logic [`INSN_SIZE] insn;
   cycle_status_e cycle_status;
+  logic [`INSN_SIZE] insn;
+
 } stage_decode_t;
 
 typedef struct packed {
@@ -124,6 +126,9 @@ typedef struct packed {
   logic [4:0] insn_rd;
   logic [4:0] insn_rs1;
   logic [4:0] insn_rs2;
+  logic [`REG_SIZE] data_rd;
+  logic [`REG_SIZE] data_rs1;
+  logic [`REG_SIZE] data_rs2;
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -384,30 +389,6 @@ module DatapathPipelined (
 
   // TODO: your code here, though you will also need to modify some of the code above
 
-  /*******************/
-  /*    EXECUTION    */
-  /*******************/
-
-  stage_execute_t execute_state;
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      execute_state <= '{pc: 0, cycle_status: CYCLE_RESET, insn: 0, insn_opcode: 0,
-      insn_rd: 0, insn_rs1: 0, insn_rs2: 0};
-    end else begin
-      execute_state <= '{pc: decode_state.pc, cycle_status: decode_state.cycle_status,
-      insn: decode_state.insn,
-      insn_opcode: insn_opcode,insn_rd: insn_rd, insn_rs1: insn_rs1, insn_rs2: insn_rs2};
-    end
-  end
-
-  wire [255:0] e_disasm;
-  Disasm #(
-      .PREFIX("E")
-  ) disasm_2execute (
-      .insn  (execute_state.insn),
-      .disasm(e_disasm)
-  );
-
   // USE STRUCT VALS TO ESTABLISH CONSTs
   // logic [0:0] regfile_we;
   // logic [`REG_SIZE] data_rd;
@@ -458,14 +439,14 @@ module DatapathPipelined (
   //   end
   // end
   RegFile rf (
-      .rd(insn_rd),  //.rd(stage_memory_t.rd),
-      .rd_data(data_rd),
-      .rs1(insn_rs1),  //.rs1(stage_execute_t.insn_rs1),
-      .rs1_data(data_rs1),
-      .rs2(insn_rs2),  //.rs2(stage_execute_t.insn_rs2),
-      .rs2_data(data_rs2),
+      .rd(insn_rd),  //note: derived from decode_state.insn
+      .rd_data(execute_state.data_rd),
+      .rs1(insn_rs1),  //note: derived from decode_state.insn
+      .rs1_data(execute_state.data_rs1),
+      .rs2(insn_rs2),  //note: derived from decode_state.insn
+      .rs2_data(execute_state.data_rs2),
       .clk(clk),
-      .we(regfile_we),  //.we(stage_execute_t.regfile_we),
+      .we(regfile_we),  //note: derived from decode_state.insn
       .rst(rst)
   );
 
@@ -506,6 +487,29 @@ module DatapathPipelined (
   );
 
 
+  /*******************/
+  /*    EXECUTION    */
+  /*******************/
+
+  stage_execute_t execute_state;
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      execute_state <= '{pc: 0, cycle_status: CYCLE_RESET, insn: 0, insn_opcode: 0,
+      insn_rd: 0, insn_rs1: 0, insn_rs2: 0};
+    end else begin
+      execute_state <= '{pc: decode_state.pc, cycle_status: decode_state.cycle_status,
+      insn: decode_state.insn,
+      insn_opcode: insn_opcode,insn_rd: insn_rd, insn_rs1: insn_rs1, insn_rs2: insn_rs2};
+    end
+  end
+
+  wire [255:0] e_disasm;
+  Disasm #(
+      .PREFIX("E")
+  ) disasm_2execute (
+      .insn  (execute_state.insn),
+      .disasm(e_disasm)
+  );
 
   always_comb begin
     halt = 1'b0;
