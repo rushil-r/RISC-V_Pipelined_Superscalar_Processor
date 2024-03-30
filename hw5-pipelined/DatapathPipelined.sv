@@ -54,7 +54,6 @@ module RegFile (
   localparam int NumRegs = 32;
   genvar i;
   logic [`REG_SIZE] regs[NumRegs];
-
   // TODO: your code here
   assign regs[0]  = 32'd0;
   assign rs1_data = regs[rs1];
@@ -81,7 +80,6 @@ module RegFile (
     end
   end
 endmodule
-
 /**
  * This enum is used to classify each cycle as it comes through the Writeback stage, identifying
  * if a valid insn is present or, if it is a stall cycle instead, the reason for the stall. The
@@ -139,6 +137,22 @@ typedef struct packed {
   logic [0:0] is_arith;
   logic [0:0] is_write;
 } stage_execute_t;
+/** state at the start of Memory stage */
+// stores: result of ALU, data to write (store insn), register for detinations, and flags indicating for mem_read and read_write
+typedef struct packed {
+  logic [31:0] alu_result;
+  logic [31:0] write_data;
+  logic [4:0] rd;
+  logic mem_read;
+  logic mem_write;
+} stage_memory_t;
+
+/** state at the start of Writeback stage */
+// stores: result of ALU and destination register
+typedef struct packed {
+  logic [`REG_SIZE] alu_result;
+  logic [4:0] rd;
+} stage_writeback_t;
 
 module DatapathPipelined (
     input wire clk,
