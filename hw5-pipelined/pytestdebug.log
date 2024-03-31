@@ -1,0 +1,1021 @@
+versions pytest-6.2.5, py-1.10.0, python-3.10.12.final.0
+cwd=/home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined
+args=('-s', 'testbench.py', '--debug')
+
+  pytest_cmdline_main [hook]
+      config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+    pytest_plugin_registered [hook]
+        plugin: <Session CIS5710HWs exitstatus='<UNSET>' testsfailed=0 testscollected=0>
+        manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+    finish pytest_plugin_registered --> [] [hook]
+    pytest_configure [hook]
+        config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.LFPlugin object at 0x7fcc54a92c20>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.NFPlugin object at 0x7fcc54ac5d50>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+    early skip of rewriting module: faulthandler [assertion]
+      pytest_configure [hook]
+          config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+      finish pytest_configure --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.faulthandler.FaultHandlerHooks object at 0x7fcc54ac6380>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+    early skip of rewriting module: pdb [assertion]
+    early skip of rewriting module: cmd [assertion]
+    early skip of rewriting module: code [assertion]
+    early skip of rewriting module: codeop [assertion]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.mark' from '/usr/lib/python3/dist-packages/_pytest/mark/__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.main' from '/usr/lib/python3/dist-packages/_pytest/main.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.runner' from '/usr/lib/python3/dist-packages/_pytest/runner.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.fixtures' from '/usr/lib/python3/dist-packages/_pytest/fixtures.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.helpconfig' from '/usr/lib/python3/dist-packages/_pytest/helpconfig.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.python' from '/usr/lib/python3/dist-packages/_pytest/python.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.terminal' from '/usr/lib/python3/dist-packages/_pytest/terminal.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.debugging' from '/usr/lib/python3/dist-packages/_pytest/debugging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unittest' from '/usr/lib/python3/dist-packages/_pytest/unittest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.capture' from '/usr/lib/python3/dist-packages/_pytest/capture.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.skipping' from '/usr/lib/python3/dist-packages/_pytest/skipping.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.tmpdir' from '/usr/lib/python3/dist-packages/_pytest/tmpdir.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.monkeypatch' from '/usr/lib/python3/dist-packages/_pytest/monkeypatch.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.recwarn' from '/usr/lib/python3/dist-packages/_pytest/recwarn.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.pastebin' from '/usr/lib/python3/dist-packages/_pytest/pastebin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.nose' from '/usr/lib/python3/dist-packages/_pytest/nose.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.assertion' from '/usr/lib/python3/dist-packages/_pytest/assertion/__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.junitxml' from '/usr/lib/python3/dist-packages/_pytest/junitxml.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.doctest' from '/usr/lib/python3/dist-packages/_pytest/doctest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.cacheprovider' from '/usr/lib/python3/dist-packages/_pytest/cacheprovider.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.freeze_support' from '/usr/lib/python3/dist-packages/_pytest/freeze_support.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setuponly' from '/usr/lib/python3/dist-packages/_pytest/setuponly.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setupplan' from '/usr/lib/python3/dist-packages/_pytest/setupplan.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.stepwise' from '/usr/lib/python3/dist-packages/_pytest/stepwise.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.warnings' from '/usr/lib/python3/dist-packages/_pytest/warnings.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.logging' from '/usr/lib/python3/dist-packages/_pytest/logging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.reports' from '/usr/lib/python3/dist-packages/_pytest/reports.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unraisableexception' from '/usr/lib/python3/dist-packages/_pytest/unraisableexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.threadexception' from '/usr/lib/python3/dist-packages/_pytest/threadexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.faulthandler' from '/usr/lib/python3/dist-packages/_pytest/faulthandler.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <CaptureManager _method='no' _global_capturing=<MultiCapture out=None err=None in_=None _state='suspended' _in_suspended=False> _capture_fixture=None>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'conftest' from '/home/penn/CIS571_partner/CIS5710HWs/conftest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.LFPlugin object at 0x7fcc54a92c20>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.NFPlugin object at 0x7fcc54ac5d50>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.faulthandler.FaultHandlerHooks object at 0x7fcc54ac6380>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.terminal.TerminalReporter object at 0x7fcc54ac4f40>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.logging.LoggingPlugin object at 0x7fcc54b1c490>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+    finish pytest_configure --> [] [hook]
+    pytest_sessionstart [hook]
+        session: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.mark' from '/usr/lib/python3/dist-packages/_pytest/mark/__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.main' from '/usr/lib/python3/dist-packages/_pytest/main.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.runner' from '/usr/lib/python3/dist-packages/_pytest/runner.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.fixtures' from '/usr/lib/python3/dist-packages/_pytest/fixtures.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.helpconfig' from '/usr/lib/python3/dist-packages/_pytest/helpconfig.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.python' from '/usr/lib/python3/dist-packages/_pytest/python.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.terminal' from '/usr/lib/python3/dist-packages/_pytest/terminal.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.debugging' from '/usr/lib/python3/dist-packages/_pytest/debugging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unittest' from '/usr/lib/python3/dist-packages/_pytest/unittest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.capture' from '/usr/lib/python3/dist-packages/_pytest/capture.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.skipping' from '/usr/lib/python3/dist-packages/_pytest/skipping.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.tmpdir' from '/usr/lib/python3/dist-packages/_pytest/tmpdir.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.monkeypatch' from '/usr/lib/python3/dist-packages/_pytest/monkeypatch.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.recwarn' from '/usr/lib/python3/dist-packages/_pytest/recwarn.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.pastebin' from '/usr/lib/python3/dist-packages/_pytest/pastebin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.nose' from '/usr/lib/python3/dist-packages/_pytest/nose.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.assertion' from '/usr/lib/python3/dist-packages/_pytest/assertion/__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.junitxml' from '/usr/lib/python3/dist-packages/_pytest/junitxml.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.doctest' from '/usr/lib/python3/dist-packages/_pytest/doctest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.cacheprovider' from '/usr/lib/python3/dist-packages/_pytest/cacheprovider.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.freeze_support' from '/usr/lib/python3/dist-packages/_pytest/freeze_support.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setuponly' from '/usr/lib/python3/dist-packages/_pytest/setuponly.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setupplan' from '/usr/lib/python3/dist-packages/_pytest/setupplan.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.stepwise' from '/usr/lib/python3/dist-packages/_pytest/stepwise.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.warnings' from '/usr/lib/python3/dist-packages/_pytest/warnings.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.logging' from '/usr/lib/python3/dist-packages/_pytest/logging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.reports' from '/usr/lib/python3/dist-packages/_pytest/reports.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unraisableexception' from '/usr/lib/python3/dist-packages/_pytest/unraisableexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.threadexception' from '/usr/lib/python3/dist-packages/_pytest/threadexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.faulthandler' from '/usr/lib/python3/dist-packages/_pytest/faulthandler.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <CaptureManager _method='no' _global_capturing=<MultiCapture out=None err=None in_=None _state='suspended' _in_suspended=False> _capture_fixture=None>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'conftest' from '/home/penn/CIS571_partner/CIS5710HWs/conftest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.LFPlugin object at 0x7fcc54a92c20>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.NFPlugin object at 0x7fcc54ac5d50>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.faulthandler.FaultHandlerHooks object at 0x7fcc54ac6380>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.terminal.TerminalReporter object at 0x7fcc54ac4f40>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.logging.LoggingPlugin object at 0x7fcc54b1c490>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.fixtures.FixtureManager object at 0x7fcc54a92b00>
+          manager: <_pytest.config.PytestPluginManager object at 0x7fcc553b72e0>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_report_header [hook]
+          config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          startdir: /home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined
+      finish pytest_report_header --> [['rootdir: /home/penn/CIS571_partner/CIS5710HWs, configfile: pytest.ini'], ['using: pytest-6.2.5 pylib-1.10.0']] [hook]
+    finish pytest_sessionstart --> [] [hook]
+    pytest_collection [hook]
+        session: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+    perform_collect <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0> ['testbench.py'] [collection]
+        pytest_collectstart [hook]
+            collector: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+        finish pytest_collectstart --> [] [hook]
+        pytest_make_collect_report [hook]
+            collector: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+        processing argument (local('/home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/testbench.py'), []) [collection]
+            pytest_collect_file [hook]
+                path: /home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/testbench.py
+                parent: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+              pytest_pycollect_makemodule [hook]
+                  path: /home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/testbench.py
+                  parent: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+              finish pytest_pycollect_makemodule --> <Module hw5-pipelined/testbench.py> [hook]
+            finish pytest_collect_file --> [<Module hw5-pipelined/testbench.py>] [hook]
+          matchnodes [<Module hw5-pipelined/testbench.py>] [] [collection]
+            matchnodes finished ->  1 nodes [collection]
+        finish pytest_make_collect_report --> <CollectReport '' lenresult=1 outcome='passed'> [hook]
+        pytest_collectreport [hook]
+            report: <CollectReport '' lenresult=1 outcome='passed'>
+        finish pytest_collectreport --> [] [hook]
+    genitems <Module hw5-pipelined/testbench.py> [collection]
+      pytest_collectstart [hook]
+          collector: <Module hw5-pipelined/testbench.py>
+      finish pytest_collectstart --> [] [hook]
+      pytest_make_collect_report [hook]
+          collector: <Module hw5-pipelined/testbench.py>
+      find_module called for: testbench [assertion]
+      matched test file (was specified on cmdline): '/home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/testbench.py' [assertion]
+      found cached rewritten pyc for /home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/testbench.py [assertion]
+      early skip of rewriting module: cocotb [assertion]
+      early skip of rewriting module: cocotb.handle [assertion]
+      early skip of rewriting module: ctypes [assertion]
+      early skip of rewriting module: _ctypes [assertion]
+      early skip of rewriting module: ctypes._endian [assertion]
+      early skip of rewriting module: cocotb.simulator [assertion]
+      early skip of rewriting module: cocotb.binary [assertion]
+      early skip of rewriting module: cocotb.log [assertion]
+      early skip of rewriting module: cocotb.ANSI [assertion]
+      early skip of rewriting module: cocotb.utils [assertion]
+      early skip of rewriting module: cocotb.types [assertion]
+      early skip of rewriting module: cocotb.types.array [assertion]
+      early skip of rewriting module: cocotb.types.range [assertion]
+      early skip of rewriting module: cocotb.types.logic [assertion]
+      early skip of rewriting module: cocotb.types.logic_array [assertion]
+      early skip of rewriting module: cocotb._deprecation [assertion]
+      early skip of rewriting module: cocotb.regression [assertion]
+      early skip of rewriting module: hashlib [assertion]
+      early skip of rewriting module: _hashlib [assertion]
+      early skip of rewriting module: _blake2 [assertion]
+      early skip of rewriting module: cocotb.decorators [assertion]
+      early skip of rewriting module: cocotb.triggers [assertion]
+      early skip of rewriting module: cocotb.outcomes [assertion]
+      early skip of rewriting module: cocotb.task [assertion]
+      early skip of rewriting module: asyncio [assertion]
+      early skip of rewriting module: asyncio.base_events [assertion]
+      early skip of rewriting module: concurrent [assertion]
+      early skip of rewriting module: concurrent.futures [assertion]
+      early skip of rewriting module: concurrent.futures._base [assertion]
+      early skip of rewriting module: heapq [assertion]
+      early skip of rewriting module: _heapq [assertion]
+      early skip of rewriting module: ssl [assertion]
+      early skip of rewriting module: _ssl [assertion]
+      early skip of rewriting module: asyncio.constants [assertion]
+      early skip of rewriting module: asyncio.coroutines [assertion]
+      early skip of rewriting module: asyncio.base_futures [assertion]
+      early skip of rewriting module: asyncio.format_helpers [assertion]
+      early skip of rewriting module: asyncio.log [assertion]
+      early skip of rewriting module: asyncio.events [assertion]
+      early skip of rewriting module: contextvars [assertion]
+      early skip of rewriting module: _contextvars [assertion]
+      early skip of rewriting module: _asyncio [assertion]
+      early skip of rewriting module: asyncio.exceptions [assertion]
+      early skip of rewriting module: asyncio.base_tasks [assertion]
+      early skip of rewriting module: asyncio.futures [assertion]
+      early skip of rewriting module: asyncio.protocols [assertion]
+      early skip of rewriting module: asyncio.sslproto [assertion]
+      early skip of rewriting module: asyncio.transports [assertion]
+      early skip of rewriting module: asyncio.staggered [assertion]
+      early skip of rewriting module: asyncio.locks [assertion]
+      early skip of rewriting module: asyncio.mixins [assertion]
+      early skip of rewriting module: asyncio.tasks [assertion]
+      early skip of rewriting module: asyncio.trsock [assertion]
+      early skip of rewriting module: asyncio.runners [assertion]
+      early skip of rewriting module: asyncio.queues [assertion]
+      early skip of rewriting module: asyncio.streams [assertion]
+      early skip of rewriting module: asyncio.subprocess [assertion]
+      early skip of rewriting module: asyncio.threads [assertion]
+      early skip of rewriting module: asyncio.unix_events [assertion]
+      early skip of rewriting module: asyncio.base_subprocess [assertion]
+      early skip of rewriting module: asyncio.selector_events [assertion]
+      early skip of rewriting module: cocotb.result [assertion]
+      early skip of rewriting module: cocotb.xunit_reporter [assertion]
+      early skip of rewriting module: cocotb.scheduler [assertion]
+      early skip of rewriting module: cocotb._py_compat [assertion]
+      early skip of rewriting module: cocotb._version [assertion]
+      early skip of rewriting module: cocotb.clock [assertion]
+      early skip of rewriting module: cocotb.runner [assertion]
+      early skip of rewriting module: xml.etree.cElementTree [assertion]
+      early skip of rewriting module: find_libpython [assertion]
+      early skip of rewriting module: ctypes.util [assertion]
+      early skip of rewriting module: sysconfig [assertion]
+      early skip of rewriting module: find_libpython._version [assertion]
+      early skip of rewriting module: _sysconfigdata__x86_64-linux-gnu [assertion]
+      early skip of rewriting module: cocotb.config [assertion]
+      early skip of rewriting module: riscv_binary_utils [assertion]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: @py_builtins
+            obj: <module 'builtins' (built-in)>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: @pytest_ar
+            obj: <module '_pytest.assertion.rewrite' from '/usr/lib/python3/dist-packages/_pytest/assertion/rewrite.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: cocotb
+            obj: <module 'cocotb' from '/usr/local/lib/python3.10/dist-packages/cocotb/__init__.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: json
+            obj: <module 'json' from '/usr/lib/python3.10/json/__init__.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: os
+            obj: <module 'os' from '/usr/lib/python3.10/os.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: shutil
+            obj: <module 'shutil' from '/usr/lib/python3.10/shutil.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: subprocess
+            obj: <module 'subprocess' from '/usr/lib/python3.10/subprocess.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: Path
+            obj: <class 'pathlib.Path'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: Clock
+            obj: <class 'cocotb.clock.Clock'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: TestFactory
+            obj: <class 'cocotb.regression.TestFactory'>
+        finish pytest_pycollect_makeitem --> <Class TestFactory> [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: SimTimeoutError
+            obj: <class 'cocotb.result.SimTimeoutError'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: __warningregistry__
+            obj: {'version': 12}
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: get_runner
+            obj: <function get_runner at 0x7fcc541c5d80>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: get_results
+            obj: <function get_results at 0x7fcc541c53f0>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: RisingEdge
+            obj: <class 'cocotb.triggers.RisingEdge'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: ClockCycles
+            obj: <class 'cocotb.triggers.ClockCycles'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: Timer
+            obj: <class 'cocotb.triggers.Timer'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: sys
+            obj: <module 'sys' (built-in)>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: p
+            obj: /home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/../common/python
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscv_binary_utils
+            obj: <module 'riscv_binary_utils' from '/home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined/../common/python/riscv_binary_utils.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: SIM_BUILD_DIR
+            obj: sim_build
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: TEMP_MACHINE_CODE_FILE
+            obj: .tmp.riscv.o
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: BIN_2_MEMORY_ADDRESS_OFFSET
+            obj: 2147483648
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: ASSEMBLER
+            obj: riscv64-unknown-elf-as
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: READELF
+            obj: riscv64-unknown-elf-readelf
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: RISCV_TESTS_PATH
+            obj: ../../riscv-tests/isa
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: RISCV_BENCHMARKS_PATH
+            obj: ../../riscv-tests/benchmarks
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: TIMEOUT_CYCLES
+            obj: 1000
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: TRACING_MODE
+            obj: compare
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: asm
+            obj: <function asm at 0x7fcc54b21240>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: loadBinaryIntoMemory
+            obj: <function loadBinaryIntoMemory at 0x7fcc54196170>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: oneTimeSetup
+            obj: <function oneTimeSetup at 0x7fcc541c7490>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: preTestSetup
+            obj: <function preTestSetup at 0x7fcc541c7520>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: runCocotbTests
+            obj: <function runCocotbTests at 0x7fcc541c75b0>
+          pytest_generate_tests [hook]
+              metafunc: <_pytest.python.Metafunc object at 0x7fcc541bf280>
+          finish pytest_generate_tests --> [] [hook]
+        finish pytest_pycollect_makeitem --> [<Function runCocotbTests>] [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testLui
+            obj: testLui
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testLuiLui
+            obj: testLuiLui
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testMX1
+            obj: testMX1
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testMX2
+            obj: testMX2
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testWX1
+            obj: testWX1
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testLoadUse1
+            obj: testLoadUse1
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testLoadUse2
+            obj: testLoadUse2
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testLoadFalseUse
+            obj: testLoadFalseUse
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testWMData
+            obj: testWMData
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testWMAddress
+            obj: testWMAddress
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testFence
+            obj: testFence
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testDiv
+            obj: testDiv
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testDivUse
+            obj: testDivUse
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: testTraceRvLw
+            obj: testTraceRvLw
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: handleTrace
+            obj: <function handleTrace at 0x7fcc541c7640>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest
+            obj: <function riscvTest at 0x7fcc541c7eb0>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: RV_TEST_BINARIES
+            obj: [PosixPath('../../riscv-tests/isa/rv32ui-p-simple'), PosixPath('../../riscv-tests/isa/rv32ui-p-lui'), PosixPath('../../riscv-tests/isa/rv32ui-p-and'), PosixPath('../../riscv-tests/isa/rv32ui-p-or'), PosixPath('../../riscv-tests/isa/rv32ui-p-xor'), PosixPath('../../riscv-tests/isa/rv32ui-p-sll'), PosixPath('../../riscv-tests/isa/rv32ui-p-sra'), PosixPath('../../riscv-tests/isa/rv32ui-p-srl'), PosixPath('../../riscv-tests/isa/rv32ui-p-slt'), PosixPath('../../riscv-tests/isa/rv32ui-p-add'), PosixPath('../../riscv-tests/isa/rv32ui-p-sub'), PosixPath('../../riscv-tests/isa/rv32ui-p-andi'), PosixPath('../../riscv-tests/isa/rv32ui-p-ori'), PosixPath('../../riscv-tests/isa/rv32ui-p-slli'), PosixPath('../../riscv-tests/isa/rv32ui-p-srai'), PosixPath('../../riscv-tests/isa/rv32ui-p-srli'), PosixPath('../../riscv-tests/isa/rv32ui-p-xori'), PosixPath('../../riscv-tests/isa/rv32ui-p-slti'), PosixPath('../../riscv-tests/isa/rv32ui-p-sltiu'), PosixPath('../../riscv-tests/isa/rv32ui-p-sltu'), PosixPath('../../riscv-tests/isa/rv32ui-p-addi'), PosixPath('../../riscv-tests/isa/rv32ui-p-beq'), PosixPath('../../riscv-tests/isa/rv32ui-p-bge'), PosixPath('../../riscv-tests/isa/rv32ui-p-bgeu'), PosixPath('../../riscv-tests/isa/rv32ui-p-blt'), PosixPath('../../riscv-tests/isa/rv32ui-p-bltu'), PosixPath('../../riscv-tests/isa/rv32ui-p-bne')]
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: rvTestFactory
+            obj: <cocotb.regression.TestFactory object at 0x7fcc541be0e0>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_001
+            obj: riscvTest_001
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_002
+            obj: riscvTest_002
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_003
+            obj: riscvTest_003
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_004
+            obj: riscvTest_004
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_005
+            obj: riscvTest_005
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_006
+            obj: riscvTest_006
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_007
+            obj: riscvTest_007
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_008
+            obj: riscvTest_008
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_009
+            obj: riscvTest_009
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_010
+            obj: riscvTest_010
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_011
+            obj: riscvTest_011
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_012
+            obj: riscvTest_012
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_013
+            obj: riscvTest_013
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_014
+            obj: riscvTest_014
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_015
+            obj: riscvTest_015
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_016
+            obj: riscvTest_016
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_017
+            obj: riscvTest_017
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_018
+            obj: riscvTest_018
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_019
+            obj: riscvTest_019
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_020
+            obj: riscvTest_020
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_021
+            obj: riscvTest_021
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_022
+            obj: riscvTest_022
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_023
+            obj: riscvTest_023
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_024
+            obj: riscvTest_024
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_025
+            obj: riscvTest_025
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_026
+            obj: riscvTest_026
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: riscvTest_027
+            obj: riscvTest_027
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: dhrystone
+            obj: dhrystone
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module hw5-pipelined/testbench.py>
+            name: __annotations__
+            obj: <attribute '__annotations__' of 'module' objects>
+        finish pytest_pycollect_makeitem --> None [hook]
+      finish pytest_make_collect_report --> <CollectReport 'hw5-pipelined/testbench.py' lenresult=2 outcome='passed'> [hook]
+    genitems <Function runCocotbTests> [collection]
+      pytest_itemcollected [hook]
+          item: <Function runCocotbTests>
+      finish pytest_itemcollected --> [] [hook]
+    genitems <Class TestFactory> [collection]
+      pytest_collectstart [hook]
+          collector: <Class TestFactory>
+      finish pytest_collectstart --> [] [hook]
+      pytest_make_collect_report [hook]
+          collector: <Class TestFactory>
+      finish pytest_make_collect_report --> <CollectReport 'hw5-pipelined/testbench.py::TestFactory' lenresult=0 outcome='passed'> [hook]
+      pytest_collectreport [hook]
+          report: <CollectReport 'hw5-pipelined/testbench.py::TestFactory' lenresult=0 outcome='passed'>
+      finish pytest_collectreport --> [] [hook]
+      pytest_collectreport [hook]
+          report: <CollectReport 'hw5-pipelined/testbench.py' lenresult=2 outcome='passed'>
+      finish pytest_collectreport --> [] [hook]
+      pytest_collection_modifyitems [hook]
+          session: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+          config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          items: [<Function runCocotbTests>]
+      finish pytest_collection_modifyitems --> [] [hook]
+      pytest_collection_finish [hook]
+          session: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+        pytest_report_collectionfinish [hook]
+            config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+            startdir: /home/penn/CIS571_partner/CIS5710HWs/hw5-pipelined
+            items: [<Function runCocotbTests>]
+        finish pytest_report_collectionfinish --> [] [hook]
+      finish pytest_collection_finish --> [] [hook]
+    finish pytest_collection --> None [hook]
+    pytest_runtestloop [hook]
+        session: <Session CIS5710HWs exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=1>
+      pytest_runtest_protocol [hook]
+          item: <Function runCocotbTests>
+          nextitem: None
+        pytest_runtest_logstart [hook]
+            nodeid: hw5-pipelined/testbench.py::runCocotbTests
+            location: ('hw5-pipelined/testbench.py', 115, 'runCocotbTests')
+        finish pytest_runtest_logstart --> [] [hook]
+        pytest_runtest_setup [hook]
+            item: <Function runCocotbTests>
+          pytest_fixture_setup [hook]
+              fixturedef: <FixtureDef argname='pytestconfig' scope='session' baseid=''>
+              request: <SubRequest 'pytestconfig' for <Function runCocotbTests>>
+          finish pytest_fixture_setup --> <_pytest.config.Config object at 0x7fcc54bf78b0> [hook]
+        finish pytest_runtest_setup --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Function runCocotbTests>
+            call: <CallInfo when='setup' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='setup' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='setup' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='setup' outcome='passed'>
+              config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          finish pytest_report_teststatus --> ('', '', '') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_call [hook]
+            item: <Function runCocotbTests>
+          pytest_pyfunc_call [hook]
+              pyfuncitem: <Function runCocotbTests>
+        pytest_runtest_makereport [hook]
+            item: <Function runCocotbTests>
+            call: <CallInfo when='call' excinfo=<ExceptionInfo SystemExit('ERROR: Failed 27 of 42 tests.') tblen=28>>
+        finish pytest_runtest_makereport --> <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='call' outcome='failed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='call' outcome='failed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='call' outcome='failed'>
+              config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          finish pytest_report_teststatus --> ('failed', 'F', 'FAILED') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_exception_interact [hook]
+            node: <Function runCocotbTests>
+            call: <CallInfo when='call' excinfo=<ExceptionInfo SystemExit('ERROR: Failed 27 of 42 tests.') tblen=1>>
+            report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='call' outcome='failed'>
+        finish pytest_exception_interact --> [] [hook]
+        pytest_runtest_teardown [hook]
+            item: <Function runCocotbTests>
+            nextitem: None
+          pytest_fixture_post_finalizer [hook]
+              fixturedef: <FixtureDef argname='pytestconfig' scope='session' baseid=''>
+              request: <SubRequest 'pytestconfig' for <Function runCocotbTests>>
+          finish pytest_fixture_post_finalizer --> [] [hook]
+        finish pytest_runtest_teardown --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Function runCocotbTests>
+            call: <CallInfo when='teardown' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='teardown' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='teardown' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='teardown' outcome='passed'>
+              config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+          finish pytest_report_teststatus --> ('', '', '') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_logfinish [hook]
+            nodeid: hw5-pipelined/testbench.py::runCocotbTests
+            location: ('hw5-pipelined/testbench.py', 115, 'runCocotbTests')
+        finish pytest_runtest_logfinish --> [] [hook]
+      finish pytest_runtest_protocol --> True [hook]
+    finish pytest_runtestloop --> True [hook]
+    pytest_sessionfinish [hook]
+        session: <Session CIS5710HWs exitstatus=<ExitCode.TESTS_FAILED: 1> testsfailed=1 testscollected=1>
+        exitstatus: ExitCode.TESTS_FAILED
+      pytest_terminal_summary [hook]
+          terminalreporter: <_pytest.terminal.TerminalReporter object at 0x7fcc54ac4f40>
+          exitstatus: ExitCode.TESTS_FAILED
+          config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+      early skip of rewriting module: pygments [assertion]
+      early skip of rewriting module: pygments.formatters [assertion]
+      early skip of rewriting module: pygments.formatters._mapping [assertion]
+      early skip of rewriting module: pygments.plugin [assertion]
+      early skip of rewriting module: pygments.util [assertion]
+      early skip of rewriting module: pygments.formatters.terminal [assertion]
+      early skip of rewriting module: pygments.formatter [assertion]
+      early skip of rewriting module: pygments.styles [assertion]
+      early skip of rewriting module: pygments.token [assertion]
+      early skip of rewriting module: pygments.console [assertion]
+      early skip of rewriting module: pygments.lexers [assertion]
+      early skip of rewriting module: pygments.lexers._mapping [assertion]
+      early skip of rewriting module: pygments.modeline [assertion]
+      early skip of rewriting module: pygments.lexers.python [assertion]
+      early skip of rewriting module: pygments.lexer [assertion]
+      early skip of rewriting module: pygments.filter [assertion]
+      early skip of rewriting module: pygments.filters [assertion]
+      early skip of rewriting module: pygments.regexopt [assertion]
+      early skip of rewriting module: pygments.unistring [assertion]
+      early skip of rewriting module: pygments.styles.default [assertion]
+      early skip of rewriting module: pygments.style [assertion]
+        pytest_report_teststatus [hook]
+            report: <TestReport 'hw5-pipelined/testbench.py::runCocotbTests' when='call' outcome='failed'>
+            config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+        finish pytest_report_teststatus --> ('failed', 'F', 'FAILED') [hook]
+      finish pytest_terminal_summary --> [] [hook]
+    finish pytest_sessionfinish --> [] [hook]
+    pytest_unconfigure [hook]
+        config: <_pytest.config.Config object at 0x7fcc54bf78b0>
+    finish pytest_unconfigure --> [] [hook]
