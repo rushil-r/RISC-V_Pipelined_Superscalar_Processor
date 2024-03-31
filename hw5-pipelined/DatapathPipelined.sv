@@ -284,7 +284,7 @@ module DatapathPipelined (
   // I - short immediates and loads
   wire [11:0] imm_i;
   assign imm_i = decode_state.insn_d[31:20];
-  wire [ 4:0] imm_shamt = decode_state.insn_d[24:20];
+  wire [4:0] imm_shamt = decode_state.insn_d[24:20];
 
   // S - stores
   wire [11:0] imm_s;
