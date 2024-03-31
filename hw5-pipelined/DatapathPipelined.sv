@@ -997,7 +997,7 @@ module DatapathPipelined (
       };
     end else begin
       memory_state <= '{
-          alu_result_m: data_rd,
+          alu_result_m: execute_state.data_rd_e,
           insn_m: execute_state.insn_e,
           mem_read_m: is_read_insn,
           mem_write_m: is_write_insn,
@@ -1012,6 +1012,27 @@ module DatapathPipelined (
       .insn  (memory_state.insn_m),
       .disasm(m_disasm)
   );
+
+  stage_writeback_t writeback_state;
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      writeback_state <= '{
+          alu_result_w: 0,
+          insn_w: 0,
+          rd_w: 0,
+          cycle_status_w: CYCLE_RESET,
+          is_write_w: 0
+      };
+    end else begin
+      writeback_state <= '{
+          alu_result_w: memory_state.alu_result_m,
+          insn_w: memory_state.insn_m,
+          rd_w: execute_state.insn_rd_e,
+          cycle_status_w: memory_state.cycle_status_m,
+          is_write_w: memory_state.mem_write_m
+      };
+    end
+  end
 endmodule
 
 module MemorySingleCycle #(
