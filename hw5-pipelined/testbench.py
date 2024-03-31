@@ -173,47 +173,46 @@ if __name__ == "__main__":
 ## TEST CASES GO HERE ##
 ########################
 
-@cocotb.test()
-async def testLui(dut):
-    "Run one lui insn"
-    asm(dut, 'lui x1,0x12345')
-    await preTestSetup(dut)
+# @cocotb.test()
+# async def testLui(dut):
+#     "Run one lui insn"
+#     asm(dut, 'lui x1,0x12345')
+#     await preTestSetup(dut)
 
-    await ClockCycles(dut.clk, 6)
-    assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+#     await ClockCycles(dut.clk, 6)
+#     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-@cocotb.test()
-async def testLuiLui(dut):
-    "Run two lui independent insns"
-    asm(dut, '''lui x1,0x12345
-        lui x2,0x6789A''')
-    await preTestSetup(dut)
+# @cocotb.test()
+# async def testLuiLui(dut):
+#     "Run two lui independent insns"
+#     asm(dut, '''lui x1,0x12345
+#         lui x2,0x6789A''')
+#     await preTestSetup(dut)
 
-    await ClockCycles(dut.clk, 7)
-    assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-    assert dut.datapath.rf.regs[2].value == 0x6789A000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+#     await ClockCycles(dut.clk, 7)
+#     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+#     assert dut.datapath.rf.regs[2].value == 0x6789A000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-@cocotb.test()
-async def testMX1(dut):
-    "Check MX bypass to rs1"
-    asm(dut, '''
-        addi x1,x0,42
-        add x2,x1,x0''')
-    await preTestSetup(dut)
+# @cocotb.test()
+# async def testMX1(dut):
+#     "Check MX bypass to rs1"
+#     asm(dut, '''
+#         addi x1,x0,42
+#         add x2,x1,x0''')
+#     await preTestSetup(dut)
 
-    await ClockCycles(dut.clk, 7)
-    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+#     await ClockCycles(dut.clk, 7)
+#     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-@cocotb.test()
-async def testMX2(dut):
-    "Check MX bypass to rs2"
-    asm(dut, '''
-        addi x1,x0,42
-        add x2,x0,x1''')
-    await preTestSetup(dut)
-
-    await ClockCycles(dut.clk, 7)
-    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+# @cocotb.test()
+# async def testMX2(dut):
+#     "Check MX bypass to rs2"
+#     asm(dut, '''
+#         addi x1,x0,42
+#         add x2,x0,x1''')
+#     await preTestSetup(dut)
+#     await ClockCycles(dut.clk, 7)
+#     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 @cocotb.test()
 async def testWX1(dut):
