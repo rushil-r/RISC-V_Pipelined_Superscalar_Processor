@@ -284,7 +284,7 @@ module DatapathPipelined (
   // I - short immediates and loads
   wire [11:0] imm_i;
   assign imm_i = decode_state.insn_d[31:20];
-  wire [4:0] imm_shamt = decode_state.insn_d[24:20];
+  wire [ 4:0] imm_shamt = decode_state.insn_d[24:20];
 
   // S - stores
   wire [11:0] imm_s;
@@ -516,15 +516,15 @@ module DatapathPipelined (
     if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu))) begin
       f_pc_next = f_pc_current + 4;
     end
-    if(insn_lw || insn_lb || insn_lbu || insn_lh || insn_lhu) begin
-        is_write_insn = 1;
+    if (insn_lw || insn_lb || insn_lbu || insn_lh || insn_lhu) begin
+      is_write_insn = 1;
     end else begin
-        is_write_insn = 0;
+      is_write_insn = 0;
     end
-    if(insn_sw || insn_sb || insn_sh) begin
-        is_read_insn = 1;
+    if (insn_sw || insn_sb || insn_sh) begin
+      is_read_insn = 1;
     end else begin
-        is_read_insn = 0;
+      is_read_insn = 0;
     end
     regfile_we = 1'b0;
     //f_pc_next = f_pc_current + 4;
@@ -986,13 +986,23 @@ module DatapathPipelined (
 
   end
   stage_memory_t memory_state;
-  always_ff @(posedge clk)begin
-    if(rst)begin
-      memory_state <= '{alu_result_m: 0, insn_m: 0, mem_read_m: 0,mem_write_m: 0,
-      cycle_status_m: CYCLE_RESET};
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      memory_state <= '{
+          alu_result_m: 0,
+          insn_m: 0,
+          mem_read_m: 0,
+          mem_write_m: 0,
+          cycle_status_m: CYCLE_RESET
+      };
     end else begin
-      memory_state <= '{alu_result_m: data_rd,insn_m:execute_state.insn_e, mem_read_m: is_read_insn,
-      mem_write_m:is_write_insn,cycle_status_m: execute_state.cycle_status_ee};
+      memory_state <= '{
+          alu_result_m: data_rd,
+          insn_m: execute_state.insn_e,
+          mem_read_m: is_read_insn,
+          mem_write_m: is_write_insn,
+          cycle_status_m: execute_state.cycle_status_ee
+      };
     end
   end
   wire [255:0] m_disasm;
