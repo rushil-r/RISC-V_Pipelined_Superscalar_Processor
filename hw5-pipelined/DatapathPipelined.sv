@@ -438,11 +438,11 @@ module DatapathPipelined (
   // end
   RegFile rf (
       .rd(insn_rd),  //note: derived from decode_state.insn
-      .rd_data(execute_state.data_rd),
+      .rd_data(data_rd),
       .rs1(insn_rs1),  //note: derived from decode_state.insn
-      .rs1_data(execute_state.data_rs1),
+      .rs1_data(data_rs1),
       .rs2(insn_rs2),  //note: derived from decode_state.insn
-      .rs2_data(execute_state.data_rs2),
+      .rs2_data(data_rs2),
       .clk(clk),
       .we(regfile_we),  //note: derived from decode_state.insn
       .rst(rst)
@@ -493,11 +493,12 @@ module DatapathPipelined (
   always_ff @(posedge clk) begin
     if (rst) begin
       execute_state <= '{pc: 0, cycle_status: CYCLE_RESET, insn: 0, insn_opcode: 0,
-      insn_rd: 0, insn_rs1: 0, insn_rs2: 0};
+      insn_rd: 0, insn_rs1: 0, insn_rs2: 0, data_rd: 0, data_rs1: 0, data_rs2: 0};
     end else begin
       execute_state <= '{pc: decode_state.pc, cycle_status: decode_state.cycle_status,
       insn: decode_state.insn,
-      insn_opcode: insn_opcode,insn_rd: insn_rd, insn_rs1: insn_rs1, insn_rs2: insn_rs2};
+      insn_opcode: insn_opcode,insn_rd: insn_rd, insn_rs1: insn_rs1,
+      insn_rs2: insn_rs2, data_rd: data_rd, data_rs1: data_rs1, data_rs2: data_rs2};
     end
   end
 
