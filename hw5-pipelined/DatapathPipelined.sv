@@ -130,8 +130,8 @@ typedef struct packed {
 
 
   logic [6:0] opcode_e;  // WILL BE USED FOR first-layer case() statement
-  logic [2:0] fun3_e;  // WILL BE USED FOR second-layer case() statement
-  logic [6:0] fun7_e; // WILL BE USED FOR third-layer case() statement IF needed, otherwise 6b'0000000s
+  logic [2:0] fun3_e;    // WILL BE USED FOR second-layer case() statement
+  logic [6:0] fun7_e;    // WILL BE USED FOR third-layer case() statement IF needed, otherwise 6b'0
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -219,7 +219,7 @@ module DatapathPipelined (
       f_cycle_status <= CYCLE_NO_STALL;
     end else begin
       f_cycle_status <= CYCLE_NO_STALL;
-      f_pc_current   <= f_pc_current + 4;
+      f_pc_current   <= f_pc_next;
     end
   end
   // send PC to imem
