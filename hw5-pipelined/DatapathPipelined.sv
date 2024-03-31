@@ -114,8 +114,6 @@ typedef struct packed {
   logic [`REG_SIZE] pc;
   logic [`INSN_SIZE] insn;
   cycle_status_e cycle_status;
-  logic [`INSN_SIZE] insn;
-
 } stage_decode_t;
 
 typedef struct packed {
