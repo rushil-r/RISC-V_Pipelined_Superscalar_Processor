@@ -216,146 +216,143 @@ if __name__ == "__main__":
 
 @cocotb.test()
 async def testWX1(dut):
-    for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     "Check WX bypass to rs1"
     asm(dut, '''
         addi x1,x0,42
         lui x5,0x12345
         add x2,x1,x0''')
     await preTestSetup(dut)
+
     await ClockCycles(dut.clk, 8)
-    for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-# @cocotb.test()
-# async def testWX2(dut):
-#     "Check WX bypass to rs2"
-#     asm(dut, '''
-#         addi x1,x0,42
-#         lui x5,0x12345
-#         add x2,x0,x1''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testWX2(dut):
+    "Check WX bypass to rs2"
+    asm(dut, '''
+        addi x1,x0,42
+        lui x5,0x12345
+        add x2,x0,x1''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 8)
-#     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    await ClockCycles(dut.clk, 8)
+    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-# @cocotb.test()
-# async def testWD1(dut):
-#     "Check WD bypass to rs1"
-#     asm(dut, '''
-#         addi x1,x0,42
-#         lui x5,0x12345
-#         lui x6,0x12345
-#         add x2,x1,x0''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testWD1(dut):
+    "Check WD bypass to rs1"
+    asm(dut, '''
+        addi x1,x0,42
+        lui x5,0x12345
+        lui x6,0x12345
+        add x2,x1,x0''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 9)
-#     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    await ClockCycles(dut.clk, 9)
+    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-# @cocotb.test()
-# async def testWD2(dut):
-#     "Check WD bypass to rs2"
-#     asm(dut, '''
-#         addi x1,x0,42
-#         lui x5,0x12345
-#         lui x6,0x12345
-#         add x2,x0,x1''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testWD2(dut):
+    "Check WD bypass to rs2"
+    asm(dut, '''
+        addi x1,x0,42
+        lui x5,0x12345
+        lui x6,0x12345
+        add x2,x0,x1''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 9)
-#     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    await ClockCycles(dut.clk, 9)
+    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-# @cocotb.test()
-# async def testX0Bypassing(dut):
-#     "Check that reads/writes to x0 are not bypassed"
-#     asm(dut, '''
-#         lui x0,0x12345
-#         add x1,x0,x0 # should not use MX bypass
-#         add x2,x0,x0 # should not use WX bypass
-#         add x3,x0,x0 # should not use WD bypass
-#         addi x4,x2,1
-#         ''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testX0Bypassing(dut):
+    "Check that reads/writes to x0 are not bypassed"
+    asm(dut, '''
+        lui x0,0x12345
+        add x1,x0,x0 # should not use MX bypass
+        add x2,x0,x0 # should not use WX bypass
+        add x3,x0,x0 # should not use WD bypass
+        addi x4,x2,1
+        ''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 10)
-#     assert dut.datapath.rf.regs[1].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     assert dut.datapath.rf.regs[2].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     assert dut.datapath.rf.regs[3].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     assert dut.datapath.rf.regs[4].value == 1, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    await ClockCycles(dut.clk, 10)
+    assert dut.datapath.rf.regs[1].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    assert dut.datapath.rf.regs[2].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    assert dut.datapath.rf.regs[3].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    assert dut.datapath.rf.regs[4].value == 1, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-# @cocotb.test()
-# async def testBneNotTaken(dut):
-#     "bne which is not taken"
-#     asm(dut, '''
-#         lui x1,0x12345
-#         bne x0,x0,target
-#         lui x1,0x54321
-#         target: addi x0,x0,0''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testBneNotTaken(dut):
+    "bne which is not taken"
+    asm(dut, '''
+        lui x1,0x12345
+        bne x0,x0,target
+        lui x1,0x54321
+        target: addi x0,x0,0''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 8)
-#     assert dut.datapath.rf.regs[1].value == 0x54321000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     pass
+    await ClockCycles(dut.clk, 8)
+    assert dut.datapath.rf.regs[1].value == 0x54321000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    pass
 
-# @cocotb.test()
-# async def testBeqNotTaken(dut):
-#     "beq which is not taken"
-#     asm(dut, '''
-#         lui x1,0x12345
-#         beq x1,x0,target
-#         lui x1,0x54321
-#         target: addi x0,x0,0''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testBeqNotTaken(dut):
+    "beq which is not taken"
+    asm(dut, '''
+        lui x1,0x12345
+        beq x1,x0,target
+        lui x1,0x54321
+        target: addi x0,x0,0''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 8)
-#     assert dut.datapath.rf.regs[1].value == 0x54321000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     pass
+    await ClockCycles(dut.clk, 8)
+    assert dut.datapath.rf.regs[1].value == 0x54321000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    pass
 
-# @cocotb.test()
-# async def testBneTaken(dut):
-#     "bne which is taken"
-#     asm(dut, '''
-#         lui x1,0x12345
-#         bne x1,x0,target
-#         lui x1,0x54321 # in Decode when branch is taken, should get cleared
-#         lui x1,0xABCDE # in Fetch when branch is taken, should get cleared
-#         target: addi x0,x0,0
-#         addi x0,x0,0
-#         ''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testBneTaken(dut):
+    "bne which is taken"
+    asm(dut, '''
+        lui x1,0x12345
+        bne x1,x0,target
+        lui x1,0x54321 # in Decode when branch is taken, should get cleared
+        lui x1,0xABCDE # in Fetch when branch is taken, should get cleared
+        target: addi x0,x0,0
+        addi x0,x0,0
+        ''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 9)
-#     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     pass
+    await ClockCycles(dut.clk, 9)
+    assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    pass
 
-# @cocotb.test()
-# async def testBeqTaken(dut):
-#     "beq which is taken"
-#     asm(dut, '''
-#         lui x1,0x12345
-#         beq x1,x1,target
-#         lui x1,0x54321 # in Decode when branch is taken, should get cleared
-#         lui x1,0xABCDE # in Fetch when branch is taken, should get cleared
-#         target: addi x0,x0,0
-#         addi x0,x0,0
-#         ''')
-#     await preTestSetup(dut)
+@cocotb.test()
+async def testBeqTaken(dut):
+    "beq which is taken"
+    asm(dut, '''
+        lui x1,0x12345
+        beq x1,x1,target
+        lui x1,0x54321 # in Decode when branch is taken, should get cleared
+        lui x1,0xABCDE # in Fetch when branch is taken, should get cleared
+        target: addi x0,x0,0
+        addi x0,x0,0
+        ''')
+    await preTestSetup(dut)
 
-#     await ClockCycles(dut.clk, 9)
-#     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
-#     pass
+    await ClockCycles(dut.clk, 9)
+    assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+    pass
 
-# @cocotb.test()
-# async def testTraceRvLui(dut):
-#     "Use the LUI riscv-test with trace comparison"
-#     await riscvTest(dut, RISCV_TESTS_PATH / 'rv32ui-p-lui', TRACING_MODE)
+@cocotb.test()
+async def testTraceRvLui(dut):
+    "Use the LUI riscv-test with trace comparison"
+    await riscvTest(dut, RISCV_TESTS_PATH / 'rv32ui-p-lui', TRACING_MODE)
 
-# @cocotb.test()
-# async def testTraceRvBeq(dut):
-#     "Use the BEQ riscv-test with trace comparison"
-#     await riscvTest(dut, RISCV_TESTS_PATH / 'rv32ui-p-beq', TRACING_MODE)
+@cocotb.test()
+async def testTraceRvBeq(dut):
+    "Use the BEQ riscv-test with trace comparison"
+    await riscvTest(dut, RISCV_TESTS_PATH / 'rv32ui-p-beq', TRACING_MODE)
 
 
 #########################
