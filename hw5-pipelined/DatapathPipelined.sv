@@ -575,7 +575,7 @@ module DatapathPipelined (
       end
       OpcodeLui: begin
         regfile_we = 1'b1;
-        data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
+        data_rd_e  = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
       end
       OpcodeAuipc: begin
         regfile_we = 1'b1;
