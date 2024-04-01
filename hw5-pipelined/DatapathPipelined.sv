@@ -124,7 +124,6 @@ typedef struct packed {
   logic [4:0] insn_rd_e;
   logic [4:0] insn_rs1_e;
   logic [4:0] insn_rs2_e;
-  logic [`REG_SIZE] data_rd_e;
   logic [`REG_SIZE] data_rs1_e;
   logic [`REG_SIZE] data_rs2_e;
   logic [`REG_SIZE] imm_i_sext_e;
@@ -137,6 +136,7 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
+  logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
 } stage_memory_t;
 
@@ -422,15 +422,16 @@ module DatapathPipelined (
   always_ff @(posedge clk) begin
     if (rst) begin
       execute_state <= '{pc_e: 0, cycle_status_ee: CYCLE_RESET, insn_e: 0, insn_opcode_e: 0,
-      insn_rd_e: 0, insn_rs1_e: 0, insn_rs2_e: 0, data_rd_e: 0, data_rs1_e: 0, data_rs2_e: 0, 
+      insn_rd_e: 0, insn_rs1_e: 0, insn_rs2_e: 0, data_rs1_e: 0, data_rs2_e: 0, 
       imm_i_sext_e: 0};
     end else begin
     execute_state <= '{pc_e: decode_state.pc_d, cycle_status_ee: decode_state.cycle_status_d,
     insn_e: decode_state.insn_d,imm_i_sext_e: imm_i_sext,
     insn_opcode_e: insn_opcode, insn_rd_e: insn_rd, insn_rs1_e: insn_rs1,
-    insn_rs2_e: insn_rs2, data_rd_e: data_rd_e, data_rs1_e: data_rs1_e, data_rs2_e: data_rs2_e};
+    insn_rs2_e: insn_rs2, data_rs1_e: data_rs1_e, data_rs2_e: data_rs2_e};
     end
   end
+
   logic [31:0] temp_addr;
   logic [31:0] temp_load_casing;
   logic illegal_insn;
@@ -988,14 +989,15 @@ module DatapathPipelined (
     // f_pc_next = f_pc_current+4
     //^^^^^ relocated to inside case statements to allow for branching logic
   end
+
   stage_memory_t memory_state;
   always_ff @(posedge clk)begin
     if(rst)begin
       memory_state <= '{alu_result_m: 0, insn_m: 0, mem_read_m: 0,mem_write_m: 0,
-      cycle_status_m: CYCLE_RESET};
+      cycle_status_m: CYCLE_RESET, rd_m: 0};
     end else begin
-      memory_state <= '{alu_result_m: data_rd_e,insn_m:execute_state.insn_e,
-      mem_read_m: is_read_insn,mem_write_m:is_write_insn,
+      memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
+      mem_read_m: is_read_insn,mem_write_m:is_write_insn,rd_m: execute_state.insn_rd_e,
       cycle_status_m: execute_state.cycle_status_ee};
     end
   end
