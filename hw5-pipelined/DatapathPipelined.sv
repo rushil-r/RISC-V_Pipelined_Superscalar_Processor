@@ -587,7 +587,7 @@ module DatapathPipelined (
           end
           3'b001: begin
             //slli
-            data_rd_e = data_rs1_e << imm_shamt;  //imm_shamt for shift_amount
+            data_rd_e = data_rs1_e << execute_state.imm_shamt_e;
           end
           3'b010: begin
             //slti
@@ -604,19 +604,19 @@ module DatapathPipelined (
           3'b101: begin
             if (insn_from_imem[31:25] == 7'd0) begin
               //srli
-              data_rd_e = data_rs1_e >> imm_shamt;
+              data_rd_e = data_rs1_e >> execute_state.imm_shamt_e;
             end else begin
               //srai
-              data_rd_e = $signed(data_rs1_e) >>> imm_shamt;
+              data_rd_e = $signed(data_rs1_e) >>> execute_state.imm_shamt_e;
             end
           end
           3'b110: begin
             //ori
-            data_rd_e = data_rs1_e | imm_i_sext;
+            data_rd_e = data_rs1_e | execute_state.imm_i_sext_e;
           end
           3'b111: begin
             //andi
-            data_rd_e = data_rs1_e & imm_i_sext;
+            data_rd_e = data_rs1_e & execute_state.imm_i_sext_e;
           end
           default: begin
             regfile_we   = 1'b0;
