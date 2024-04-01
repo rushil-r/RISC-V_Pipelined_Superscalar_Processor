@@ -249,7 +249,7 @@ module DatapathPipelined (
   stage_decode_t decode_state;
   always_ff @(posedge clk) begin
     if (rst) begin
-      decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET};
+      // decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET};
     end else begin
       begin
         decode_state <= '{pc_d: f_pc_current, insn_d: f_insn, cycle_status_d: f_cycle_status};
@@ -429,23 +429,23 @@ module DatapathPipelined (
 
   always_ff @(posedge clk) begin
     if (rst) begin
-      execute_state <= '{
-          pc_e: 0,
-          cycle_status_ee: CYCLE_RESET,
-          insn_e: 0,
-          insn_opcode_e: 0,
-          insn_rd_e: 0,
-          insn_rs1_e: 0,
-          insn_rs2_e: 0,
-          data_rs1_e: 0,
-          data_rs2_e: 0,
-          imm_i_sext_e: 0,
-          imm_s_sext_e: 0,
-          imm_b_sext_e: 0,
-          imm_j_sext_e: 0,
-          imm_u_sext_e: 0,
-          imm_shamt_e: 0
-      };
+      // execute_state <= '{
+      //     pc_e: 0,
+      //     cycle_status_ee: CYCLE_RESET,
+      //     insn_e: 0,
+      //     insn_opcode_e: 0,
+      //     insn_rd_e: 0,
+      //     insn_rs1_e: 0,
+      //     insn_rs2_e: 0,
+      //     data_rs1_e: 0,
+      //     data_rs2_e: 0,
+      //     imm_i_sext_e: 0,
+      //     imm_s_sext_e: 0,
+      //     imm_b_sext_e: 0,
+      //     imm_j_sext_e: 0,
+      //     imm_u_sext_e: 0,
+      //     imm_shamt_e: 0
+      // };
     end else begin
       execute_state <= '{
           pc_e: decode_state.pc_d,
@@ -547,8 +547,8 @@ module DatapathPipelined (
   stage_memory_t memory_state;
   always_ff @(posedge clk)begin
     if(rst)begin
-      memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
-      cycle_status_m: CYCLE_RESET, rd_m: 0};
+      // memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
+      // cycle_status_m: CYCLE_RESET, rd_m: 0};
     end else begin
       memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
       regfile_we_m: regfile_we,
@@ -570,8 +570,8 @@ module DatapathPipelined (
   stage_writeback_t writeback_state;
   always_ff @(posedge clk) begin
     if(rst)begin
-      writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
-      cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
+      // writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
+      // cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
     end else begin
       writeback_state <= '{alu_result_w: memory_state.alu_result_m, insn_w: memory_state.insn_m,
       mem_read_w: memory_state.mem_read_m,mem_write_w: memory_state.mem_write_m,
