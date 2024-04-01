@@ -127,6 +127,7 @@ typedef struct packed {
   logic [`REG_SIZE] data_rd_e;
   logic [`REG_SIZE] data_rs1_e;
   logic [`REG_SIZE] data_rs2_e;
+  logic [`REG_SIZE] imm_i_sext_e;
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -411,13 +412,21 @@ module DatapathPipelined (
   logic is_write_insn;
   stage_execute_t execute_state;
 
+  logic[31:0] data_rs1_e;
+  logic[31:0] data_rs2_e;
+  logic[31:0] data_rd_e;
+  logic[4:0] rs1_e;
+  logic[4:0] rs2_e;
+  logic[4:0] rd_e;
+
   always_ff @(posedge clk) begin
     if (rst) begin
       execute_state <= '{pc_e: 0, cycle_status_ee: CYCLE_RESET, insn_e: 0, insn_opcode_e: 0,
-      insn_rd_e: 0, insn_rs1_e: 0, insn_rs2_e: 0, data_rd_e: 0, data_rs1_e: 0, data_rs2_e: 0};
+      insn_rd_e: 0, insn_rs1_e: 0, insn_rs2_e: 0, data_rd_e: 0, data_rs1_e: 0, data_rs2_e: 0, 
+      imm_i_sext_e: 0};
     end else begin
     execute_state <= '{pc_e: decode_state.pc_d, cycle_status_ee: decode_state.cycle_status_d,
-    insn_e: decode_state.insn_d,
+    insn_e: decode_state.insn_d,imm_i_sext_e: imm_i_sext,
     insn_opcode_e: insn_opcode, insn_rd_e: insn_rd, insn_rs1_e: insn_rs1,
     insn_rs2_e: insn_rs2, data_rd_e: data_rd_e, data_rs1_e: data_rs1_e, data_rs2_e: data_rs2_e};
     end
@@ -438,13 +447,6 @@ module DatapathPipelined (
   logic [3:0] store_we_to_dmem_temp;
   logic [31:0] store_data_to_dmem_temp;
 
-  wire[31:0] data_rs1_e;
-  wire[31:0] data_rs2_e;
-  wire[31:0] data_rsd_e;
-  wire[4:0] rs1_e;
-  wire[4:0] rs2_e;
-  wire[4:0] rd_e;
-
   RegFile rf (
       .rd(insn_rd),  //note: derived from decode_state.insn_d
       .rd_data(data_rd),
@@ -459,7 +461,7 @@ module DatapathPipelined (
 
   cla cla_ops (
       .a  (data_rs1_e),
-      .b  (imm_i_sext),
+      .b  (execute_state.imm_i_sext_e),
       .cin(1'b0),
       .sum(cla_sum)
   );
@@ -534,7 +536,7 @@ module DatapathPipelined (
       // ecall
       halt = 1'b1;
     end
-    case (insn_opcode)
+    case (execute_state.insn_opcode_e)
       OpcodeMiscMem: begin
         f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
         addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
@@ -549,10 +551,10 @@ module DatapathPipelined (
       end
       OpcodeRegImm: begin
         regfile_we = 1'b1;  //re-enable regfile when changing data_rd
-        case (insn_from_imem[14:12])
+        case (execute_state.insn_e[14:12])
           3'b000: begin
             //addi
-            data_rd_e= cla_ops.sum;
+            data_rd_e = cla_ops.sum;
           end
           3'b001: begin
             //slli
