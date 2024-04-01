@@ -132,6 +132,7 @@ typedef struct packed {
   logic [`REG_SIZE] imm_b_sext_e;
   logic [`REG_SIZE] imm_j_sext_e;
   logic [`REG_SIZE] imm_u_sext_e;
+  logic [4:0] imm_shamt_e;
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -241,7 +242,7 @@ module DatapathPipelined (
   /****************/
 
   // this shows how to package up state in a `struct packed`, and how to pass it between stages
-  // Sequental capture of the instruction & state 
+  // Sequental capture of the instruction & state
   stage_decode_t decode_state;
   always_ff @(posedge clk) begin
     if (rst) begin
@@ -441,7 +442,8 @@ module DatapathPipelined (
           imm_s_sext_e: 0,
           imm_b_sext_e: 0,
           imm_j_sext_e: 0,
-          imm_u_sext_e: 0
+          imm_u_sext_e: 0,
+          imm_shamt_e: 0
       };
     end else begin
       execute_state <= '{
@@ -459,7 +461,8 @@ module DatapathPipelined (
           imm_s_sext_e: imm_s_sext,
           imm_b_sext_e: imm_b_sext,
           imm_j_sext_e: imm_j_sext,
-          imm_u_sext_e: imm_u_sext
+          imm_u_sext_e: imm_u_sext,
+          imm_shamt_e: imm_shamt
       };
     end
   end
@@ -573,11 +576,11 @@ module DatapathPipelined (
       end
       OpcodeLui: begin
         regfile_we = 1'b1;
-        data_rd_e  = {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
+        data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
       end
       OpcodeAuipc: begin
         regfile_we = 1'b1;
-        data_rd_e  = f_pc_current + {{imm_u[19:0]}, 12'b0};  // 20-bit bitshifted left by 12
+        data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
       end
       OpcodeRegImm: begin
         regfile_we = 1'b1;  //re-enable regfile when changing data_rd
@@ -592,15 +595,15 @@ module DatapathPipelined (
           end
           3'b010: begin
             //slti
-            data_rd_e = ($signed(data_rs1_e) < $signed(imm_i_sext)) ? 1 : 0;
+            data_rd_e = ($signed(data_rs1_e) < $signed(execute_state.imm_i_sext_e)) ? 1 : 0;
           end
           3'b011: begin
             //stliu
-            data_rd_e = data_rs1_e < imm_i_sext ? 1 : 0;
+            data_rd_e = data_rs1_e < execute_state.imm_i_sext_e ? 1 : 0;
           end
           3'b100: begin
             //xori
-            data_rd_e = data_rs1_e ^ imm_i_sext;
+            data_rd_e = data_rs1_e ^ execute_state.imm_i_sext_e;
           end
           3'b101: begin
             if (insn_from_imem[31:25] == 7'd0) begin
@@ -810,7 +813,8 @@ module DatapathPipelined (
       OpcodeJalr: begin
         regfile_we = 1'b1;
         data_rd_e = f_pc_current + 4;
-        f_pc_next  = ((data_rs1_e + execute_state.imm_i_sext_e) & (32'b11111111111111111111111111111110));
+        f_pc_next = ((data_rs1_e + execute_state.imm_i_sext_e) &
+               (32'b11111111111111111111111111111110));
       end
       OpcodeLoad: begin
         regfile_we = 1'b1;
