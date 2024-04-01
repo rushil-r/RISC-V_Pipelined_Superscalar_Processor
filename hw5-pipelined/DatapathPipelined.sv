@@ -141,6 +141,7 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
+  logic regfile_we_m; //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
 } stage_memory_t;
@@ -151,8 +152,10 @@ typedef struct packed {
   logic [`REG_SIZE] alu_result_w;
   logic [`INSN_SIZE] insn_w;
   logic [4:0] rd_w;
+  logic regfile_we_w; //this is the write enable signal for the RF
+  logic mem_read_w; //tells us if we read from datamemory
+  logic mem_write_w; //tells us if we wrote to datamemory
   cycle_status_e cycle_status_w;
-  logic is_write_w;
 } stage_writeback_t;
 
 module DatapathPipelined (
@@ -424,7 +427,6 @@ module DatapathPipelined (
   logic [4:0] rs2_e;
   logic [4:0] rd_e;
 
-
   always_ff @(posedge clk) begin
     if (rst) begin
       execute_state <= '{
@@ -482,14 +484,14 @@ module DatapathPipelined (
   logic [31:0] store_data_to_dmem_temp;
 
   RegFile rf (
-      .rd(insn_rd),  //note: derived from decode_state.insn_d
-      .rd_data(data_rd),
+      .rd(writeback_state.rd_w),  //note: derived from decode_state.insn_d
+      .rd_data(writeback_state.alu_result_w),
       .rs1(insn_rs1),  //note: derived from decode_state.insn_d
       .rs1_data(data_rs1),
       .rs2(insn_rs2),  //note: derived from decode_state.insn_d
       .rs2_data(data_rs2),
       .clk(clk),
-      .we(regfile_we),  //note: derived from decode_state.insn_d
+      .we(writeback_state.regfile_we_w),  //note: derived from decode_state.insn_d
       .rst(rst)
   );
 
@@ -542,6 +544,41 @@ module DatapathPipelined (
   /*    MEMORY     */
   /*******************/
 
+  stage_memory_t memory_state;
+  always_ff @(posedge clk)begin
+    if(rst)begin
+      memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
+      cycle_status_m: CYCLE_RESET, rd_m: 0};
+    end else begin
+      memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
+      regfile_we_m: regfile_we,
+      mem_read_m: is_read_insn,mem_write_m:is_write_insn,rd_m: execute_state.insn_rd_e,
+      cycle_status_m: execute_state.cycle_status_ee};
+    end
+  end
+  wire [255:0] m_disasm;
+  Disasm #(
+      .PREFIX("M")
+  ) disasm_3memory (
+      .insn  (memory_state.insn_m),
+      .disasm(m_disasm)
+  );
+
+  /*******************/
+  /*    WRITEBACK     */
+  /*******************/
+  stage_writeback_t writeback_state;
+  always_ff @(posedge clk) begin
+    if(rst)begin
+      writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
+      cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
+    end else begin
+      writeback_state <= '{alu_result_w: memory_state.alu_result_m, insn_w: memory_state.insn_m,
+      mem_read_w: memory_state.mem_read_m,mem_write_w: memory_state.mem_write_m,
+      cycle_status_w: memory_state.cycle_status_m, rd_w: memory_state.rd_m,
+      regfile_we_w: memory_state.regfile_we_m};
+    end
+  end
   always_comb begin
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
@@ -992,25 +1029,6 @@ module DatapathPipelined (
     // f_pc_next = f_pc_current+4
     //^^^^^ relocated to inside case statements to allow for branching logic
   end
-
-  stage_memory_t memory_state;
-  always_ff @(posedge clk)begin
-    if(rst)begin
-      memory_state <= '{alu_result_m: 0, insn_m: 0, mem_read_m: 0,mem_write_m: 0,
-      cycle_status_m: CYCLE_RESET, rd_m: 0};
-    end else begin
-      memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
-      mem_read_m: is_read_insn,mem_write_m:is_write_insn,rd_m: execute_state.insn_rd_e,
-      cycle_status_m: execute_state.cycle_status_ee};
-    end
-  end
-  wire [255:0] m_disasm;
-  Disasm #(
-      .PREFIX("M")
-  ) disasm_3memory (
-      .insn  (memory_state.insn_m),
-      .disasm(m_disasm)
-  );
 endmodule
 
 module MemorySingleCycle #(

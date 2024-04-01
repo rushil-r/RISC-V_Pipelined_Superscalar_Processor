@@ -173,14 +173,14 @@ if __name__ == "__main__":
 ## TEST CASES GO HERE ##
 ########################
 
-@cocotb.test()
-async def testLui(dut):
-    "Run one lui insn"
-    asm(dut, 'lui x1,0x12345')
-    await preTestSetup(dut)
+# @cocotb.test()
+# async def testLui(dut):
+#     "Run one lui insn"
+#     asm(dut, 'lui x1,0x12345')
+#     await preTestSetup(dut)
 
-    await ClockCycles(dut.clk, 6)
-    assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+#     await ClockCycles(dut.clk, 6)
+#     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 # @cocotb.test()
 # async def testLuiLui(dut):
@@ -214,20 +214,20 @@ async def testLui(dut):
 #     await ClockCycles(dut.clk, 7)
 #     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
-# @cocotb.test()
-# async def testWX1(dut):
-#     for idx, reg in enumerate(dut.datapath.rf.regs): 
-#         print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
-#     "Check WX bypass to rs1"
-#     asm(dut, '''
-#         addi x1,x0,42
-#         lui x5,0x12345
-#         add x2,x1,x0''')
-#     await preTestSetup(dut)
-#     await ClockCycles(dut.clk, 8)
-#     for idx, reg in enumerate(dut.datapath.rf.regs): 
-#         print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
-#     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
+@cocotb.test()
+async def testWX1(dut):
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
+    "Check WX bypass to rs1"
+    asm(dut, '''
+        addi x1,x0,42
+        lui x5,0x12345
+        add x2,x1,x0''')
+    await preTestSetup(dut)
+    await ClockCycles(dut.clk, 8)
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
+    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 # @cocotb.test()
 # async def testWX2(dut):
