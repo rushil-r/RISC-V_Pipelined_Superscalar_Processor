@@ -114,6 +114,7 @@ typedef struct packed {
   logic [`REG_SIZE] pc_d;
   logic [`INSN_SIZE] insn_d;
   cycle_status_e cycle_status_d;
+  logic regfile_we_d;
 } stage_decode_t;
 
 typedef struct packed {
@@ -132,6 +133,7 @@ typedef struct packed {
   logic [`REG_SIZE] imm_j_sext_e;
   logic [`REG_SIZE] imm_u_sext_e;
   logic [4:0] imm_shamt_e;
+  logic regfile_we_e;
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -249,10 +251,11 @@ module DatapathPipelined (
   stage_decode_t decode_state;
   always_ff @(posedge clk) begin
     if (rst) begin
-      decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET};
+      decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET, regfile_we_d: 0};
     end else begin
       begin
-        decode_state <= '{pc_d: f_pc_current, insn_d: f_insn, cycle_status_d: f_cycle_status};
+        decode_state <= '{pc_d: f_pc_current, insn_d: f_insn, cycle_status_d: f_cycle_status,
+         regfile_we_d: regfile_we};
       end
     end
   end
@@ -444,7 +447,8 @@ module DatapathPipelined (
           imm_b_sext_e: 0,
           imm_j_sext_e: 0,
           imm_u_sext_e: 0,
-          imm_shamt_e: 0
+          imm_shamt_e: 0,
+          regfile_we_e: 0
       };
     end else begin
       execute_state <= '{
@@ -462,7 +466,8 @@ module DatapathPipelined (
           imm_b_sext_e: imm_b_sext,
           imm_j_sext_e: imm_j_sext,
           imm_u_sext_e: imm_u_sext,
-          imm_shamt_e: imm_shamt
+          imm_shamt_e: imm_shamt,
+          regfile_we_e: regfile_we
       };
     end
   end
@@ -484,14 +489,16 @@ module DatapathPipelined (
   wire [31:0] div_qot_reg_bn;
   logic [3:0] store_we_to_dmem_temp;
   logic [31:0] store_data_to_dmem_temp;
+  logic [`REG_SIZE] data_rs1_temp;
+  logic [`REG_SIZE] data_rs2_temp;
 
   RegFile rf (
       .rd(writeback_state.rd_w),  //note: derived from decode_state.insn_d
       .rd_data(writeback_state.alu_result_w),
       .rs1(insn_rs1),  //note: derived from decode_state.insn_d
-      .rs1_data(data_rs1),
+      .rs1_data(data_rs1_temp),
       .rs2(insn_rs2),  //note: derived from decode_state.insn_d
-      .rs2_data(data_rs2),
+      .rs2_data(data_rs2_temp),
       .clk(clk),
       .we(writeback_state.regfile_we_w),  //note: derived from decode_state.insn_d
       .rst(rst)
@@ -517,8 +524,20 @@ always_comb begin
   end else if(memory_state.rd_m == execute_state.insn_rs2_e) begin
     // mx bypassing rs2 input
     cla_input_2  = memory_state.alu_result_m;
-  end else begin
+  end  else begin
     cla_input_2 = data_rs2_e;
+  end
+
+  if(writeback_state.rd_w == insn_rs1)begin
+      data_rs1 = writeback_state.alu_result_w;
+      data_rs2 = data_rs2_temp;
+
+  end else if (writeback_state.rd_w == insn_rs2) begin
+      data_rs2 = writeback_state.alu_result_w;
+      data_rs1 = data_rs1_temp;
+  end else begin
+    data_rs1 = data_rs1_temp;
+    data_rs2 = data_rs2_temp;
   end
 end
 
@@ -579,7 +598,7 @@ end
       cycle_status_m: CYCLE_RESET, rd_m: 0};
     end else begin
       memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
-      regfile_we_m: regfile_we,
+      regfile_we_m: execute_state.regfile_we_e,
       mem_read_m: is_read_insn,mem_write_m:is_write_insn,rd_m: execute_state.insn_rd_e,
       cycle_status_m: execute_state.cycle_status_ee};
     end
@@ -633,20 +652,37 @@ end
       // ecall
       halt = 1'b1;
     end
+    // TODO: Finsh for all insns!
+    case(insn_opcode) //note derived from decode stage
+        OpcodeLui: begin
+          regfile_we = 1'b1;
+        end
+        OpcodeAuipc: begin
+          regfile_we = 1'b1;
+        end
+        OpcodeRegImm: begin
+          regfile_we = 1'b1;
+        end
+         OpcodeRegReg: begin
+          regfile_we = 1'b1;
+         end
+         default begin
+          regfile_we = 1'b0;
+         end
+    endcase
     if (execute_state.cycle_status_ee == CYCLE_RESET)begin
         data_rd_e = 0;
     end else begin
+      // TODO: Finish case updates for all insns!
       case (execute_state.insn_opcode_e)
         OpcodeMiscMem: begin
           f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
-          regfile_we = 1'b1;
           data_rd_e  = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
         end
         OpcodeAuipc: begin
-          regfile_we = 1'b1;
           data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
         end
         OpcodeRegImm: begin
@@ -742,10 +778,9 @@ end
         OpcodeRegReg: begin
           case (execute_state.insn_e[14:12])
             3'b000: begin
-              regfile_we = 1'b1;
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //add
-                data_rd_e = cla_reg_add.sum;
+                data_rd_e = cla_sum_reg;
               end else if (insn_from_imem[31:25] == 7'b0100000) begin
                 //sub
                 data_rd_e = cla_reg_sub.sum;
@@ -755,7 +790,6 @@ end
               end
             end
             3'b001: begin
-              regfile_we = 1'b1;
               if (insn_from_imem[31:25] == 7'd0) begin
                 //sll
                 data_rd_e = data_rs1_e << (data_rs2_e[4:0]);
@@ -767,8 +801,6 @@ end
               end
             end
             3'b010: begin
-              regfile_we = 1'b1;
-
               if (insn_from_imem[31:25] == 7'd0) begin
                 //slt
                 data_rd_e = $signed(data_rs1_e) < $signed(data_rs2_e) ? 1 : 0;
@@ -780,7 +812,6 @@ end
               end
             end
             3'b011: begin
-              regfile_we = 1'b1;
               if (insn_from_imem[31:25] == 7'd0) begin
                 //sltu
                 data_rd_e = data_rs1_e < data_rs2_e ? 1 : 0;
@@ -792,7 +823,6 @@ end
               end
             end
             3'b100: begin
-              regfile_we = 1'b1;
               if (insn_from_imem[31:25] == 7'd0) begin
                 //xor
                 data_rd_e = data_rs1_e ^ data_rs2_e;
