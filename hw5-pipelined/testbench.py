@@ -211,20 +211,22 @@ async def testMX2(dut):
         addi x1,x0,42
         add x2,x0,x1''')
     await preTestSetup(dut)
-
     await ClockCycles(dut.clk, 7)
     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 @cocotb.test()
 async def testWX1(dut):
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     "Check WX bypass to rs1"
     asm(dut, '''
         addi x1,x0,42
         lui x5,0x12345
         add x2,x1,x0''')
     await preTestSetup(dut)
-
     await ClockCycles(dut.clk, 8)
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 @cocotb.test()
@@ -355,6 +357,16 @@ async def testTraceRvBeq(dut):
     "Use the BEQ riscv-test with trace comparison"
     await riscvTest(dut, RISCV_TESTS_PATH / 'rv32ui-p-beq', TRACING_MODE)
 
+@cocotb.test()
+async def testMX1(dut):
+    "Check MX bypass to rs1"
+    asm(dut, '''
+        addi x1,x0,42
+        add x2,x1,x0''')
+    await preTestSetup(dut)
+
+    await ClockCycles(dut.clk, 7)
+    assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 #########################
 ## FULL ISA TEST CASES ##
