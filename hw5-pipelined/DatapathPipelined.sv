@@ -249,7 +249,7 @@ module DatapathPipelined (
   stage_decode_t decode_state;
   always_ff @(posedge clk) begin
     if (rst) begin
-      // decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET};
+      decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET};
     end else begin
       begin
         decode_state <= '{pc_d: f_pc_current, insn_d: f_insn, cycle_status_d: f_cycle_status};
@@ -429,23 +429,23 @@ module DatapathPipelined (
 
   always_ff @(posedge clk) begin
     if (rst) begin
-      // execute_state <= '{
-      //     pc_e: 0,
-      //     cycle_status_ee: CYCLE_RESET,
-      //     insn_e: 0,
-      //     insn_opcode_e: 0,
-      //     insn_rd_e: 0,
-      //     insn_rs1_e: 0,
-      //     insn_rs2_e: 0,
-      //     data_rs1_e: 0,
-      //     data_rs2_e: 0,
-      //     imm_i_sext_e: 0,
-      //     imm_s_sext_e: 0,
-      //     imm_b_sext_e: 0,
-      //     imm_j_sext_e: 0,
-      //     imm_u_sext_e: 0,
-      //     imm_shamt_e: 0
-      // };
+      execute_state <= '{
+          pc_e: 0,
+          cycle_status_ee: CYCLE_RESET,
+          insn_e: 0,
+          insn_opcode_e: 0,
+          insn_rd_e: 0,
+          insn_rs1_e: 0,
+          insn_rs2_e: 0,
+          data_rs1_e: 0,
+          data_rs2_e: 0,
+          imm_i_sext_e: 0,
+          imm_s_sext_e: 0,
+          imm_b_sext_e: 0,
+          imm_j_sext_e: 0,
+          imm_u_sext_e: 0,
+          imm_shamt_e: 0
+      };
     end else begin
       execute_state <= '{
           pc_e: decode_state.pc_d,
@@ -455,8 +455,8 @@ module DatapathPipelined (
           insn_rd_e: insn_rd,
           insn_rs1_e: insn_rs1,
           insn_rs2_e: insn_rs2,
-          data_rs1_e: data_rs1_e,
-          data_rs2_e: data_rs2_e,
+          data_rs1_e: data_rs1,
+          data_rs2_e: data_rs2,
           imm_i_sext_e: imm_i_sext,
           imm_s_sext_e: imm_s_sext,
           imm_b_sext_e: imm_b_sext,
@@ -466,6 +466,8 @@ module DatapathPipelined (
       };
     end
   end
+  assign data_rs1_e = execute_state.data_rs1_e;
+  assign data_rs2_e = execute_state.data_rs2_e;
 
   logic [31:0] temp_addr;
   logic [31:0] temp_load_casing;
@@ -495,6 +497,32 @@ module DatapathPipelined (
       .rst(rst)
   );
 
+logic[`REG_SIZE] cla_input_2;
+logic [`REG_SIZE] cla_input_1;
+
+always_comb begin
+  if(writeback_state.rd_w == execute_state.insn_rs1_e) begin
+    // wx bypassing rs1 input
+    cla_input_1 = writeback_state.alu_result_w;
+  end else if (memory_state.rd_m == execute_state.insn_rs1_e) begin
+    // mx bypassing rs1 input
+    cla_input_1 = memory_state.alu_result_m;
+  end else begin
+    cla_input_1 = data_rs1_e;
+  end
+
+  if(writeback_state.rd_w == execute_state.insn_rs2_e) begin
+    // wx bypassing rs2 input
+    cla_input_2 = writeback_state.alu_result_w;
+  end else if(memory_state.rd_m == execute_state.insn_rs2_e) begin
+    // mx bypassing rs2 input
+    cla_input_2  = memory_state.alu_result_m;
+  end else begin
+    cla_input_2 = data_rs2_e;
+  end
+end
+
+// TODO: Remove these extra CLA's and dividers
   cla cla_ops (
       .a  (data_rs1_e),
       .b  (execute_state.imm_i_sext_e),
@@ -502,8 +530,8 @@ module DatapathPipelined (
       .sum(cla_sum)
   );
   cla cla_reg_add (
-      .a  (data_rs1_e),
-      .b  (data_rs2_e),
+      .a  (cla_input_1),
+      .b  (cla_input_2),
       .cin(1'b0),
       .sum(cla_sum_reg)
   );
@@ -547,8 +575,8 @@ module DatapathPipelined (
   stage_memory_t memory_state;
   always_ff @(posedge clk)begin
     if(rst)begin
-      // memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
-      // cycle_status_m: CYCLE_RESET, rd_m: 0};
+      memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
+      cycle_status_m: CYCLE_RESET, rd_m: 0};
     end else begin
       memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
       regfile_we_m: regfile_we,
@@ -570,8 +598,8 @@ module DatapathPipelined (
   stage_writeback_t writeback_state;
   always_ff @(posedge clk) begin
     if(rst)begin
-      // writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
-      // cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
+      writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
+      cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
     end else begin
       writeback_state <= '{alu_result_w: memory_state.alu_result_m, insn_w: memory_state.insn_m,
       mem_read_w: memory_state.mem_read_m,mem_write_w: memory_state.mem_write_m,
@@ -619,11 +647,10 @@ module DatapathPipelined (
         data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
       end
       OpcodeRegImm: begin
-        regfile_we = 1'b1;  //re-enable regfile when changing data_rd
         case (execute_state.insn_e[14:12])
           3'b000: begin
             //addi
-            data_rd_e = cla_ops.sum;
+            data_rd_e = cla_sum;
           end
           3'b001: begin
             //slli
@@ -667,7 +694,7 @@ module DatapathPipelined (
       OpcodeBranch: begin
         regfile_we = 1'b0;
         // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
-        case (insn_from_imem[14:12])
+        case (execute_state.insn_e[14:12])
           3'b000: begin
             //beq
             if (data_rs1_e == data_rs2_e) begin
@@ -710,10 +737,10 @@ module DatapathPipelined (
         endcase
       end
       OpcodeRegReg: begin
-        case (insn_from_imem[14:12])
+        case (execute_state.insn_e[14:12])
           3'b000: begin
             regfile_we = 1'b1;
-            if (insn_from_imem[31:25] == 7'd0) begin
+            if (execute_state.insn_e[31:25] == 7'd0) begin
               //add
               data_rd_e = cla_reg_add.sum;
             end else if (insn_from_imem[31:25] == 7'b0100000) begin
