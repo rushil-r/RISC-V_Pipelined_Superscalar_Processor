@@ -672,17 +672,11 @@ module DatapathPipelined (
       };
     end
   end
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      trace_writeback_cycle_status <= CYCLE_NO_STALL;
-      trace_writeback_insn <= 32'b0;
-      trace_writeback_pc <= 32'b0;
-    end else begin
-      trace_writeback_cycle_status <= writeback_state.cycle_status_w;
-      trace_writeback_insn <= writeback_state.insn_w;
-      trace_writeback_pc <= writeback_state.pc_w;
-    end
-  end
+
+  assign trace_writeback_cycle_status = writeback_state.cycle_status_w;
+  assign trace_writeback_insn         = writeback_state.insn_w;
+  assign trace_writeback_pc           = writeback_state.pc_w;
+
   always_comb begin
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
