@@ -539,9 +539,9 @@ module DatapathPipelined (
       cla_input_2 = data_rs2_e;
     end
 
-    if (insn_sub) begin
+    if ((execute_state.insn_e[31:25] == 7'h20) && (execute_state.insn_e[14:12] == 3'b000) && (execute_state.insn_e[6:0] == 7'h33)) begin
       cla_input_2 = ~cla_input_2 + 1'b1;
-    end else if (insn_addi) begin
+    end else if ((execute_state.insn_e[6:0]) == 7'h13) begin
       cla_input_2 = execute_state.imm_i_sext_e;
     end else begin
       cla_input_2 = cla_input_2;
