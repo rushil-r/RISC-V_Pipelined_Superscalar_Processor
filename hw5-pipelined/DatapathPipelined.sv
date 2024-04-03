@@ -538,6 +538,14 @@ module DatapathPipelined (
     end else begin
       cla_input_2 = data_rs2_e;
     end
+
+    if (insn_sub) begin
+      cla_input_2 = ~cla_input_2 + 1'b1;
+    end else if (insn_addi) begin
+      cla_input_2 = execute_state.imm_i_sext_e;
+    end else begin
+      cla_input_2 = cla_input_2;
+    end
     // WD Bypassing
     if (writeback_state.rd_w == insn_rs1) begin
       data_rs1 = writeback_state.alu_result_w;
@@ -553,7 +561,7 @@ module DatapathPipelined (
 
   // TODO: Remove these extra CLA's and dividers
   cla cla_ops (
-      .a  (data_rs1_e),
+      .a  (cla_input_1),
       .b  (execute_state.imm_i_sext_e),
       .cin(1'b0),
       .sum(cla_sum)
@@ -563,12 +571,6 @@ module DatapathPipelined (
       .b  (cla_input_2),
       .cin(1'b0),
       .sum(cla_sum_reg)
-  );
-  cla cla_reg_sub (
-      .a  (data_rs1_e),
-      .b  ((~data_rs2_e) + 1'b1),
-      .cin(1'b0),
-      .sum(cla_diff_reg)
   );
   divider_unsigned_pipelined div_u_alu (
       .clk(clk),
@@ -836,7 +838,7 @@ module DatapathPipelined (
                 data_rd_e = cla_sum_reg;
               end else if (insn_from_imem[31:25] == 7'b0100000) begin
                 //sub
-                data_rd_e = cla_reg_sub.sum;
+                data_rd_e = cla_reg_add.sum;
               end else if (insn_from_imem[31:25] == 7'b0000001) begin
                 //mul
                 data_rd_e = (data_rs1_e * data_rs2_e) & 32'h00000000ffffffff;
