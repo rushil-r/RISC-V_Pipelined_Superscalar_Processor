@@ -263,7 +263,12 @@ module DatapathPipelined (
     if (rst) begin
       decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET, regfile_we_d: 0};
     end else if (did_branch) begin
-      decode_state <= 0;
+      decode_state <= '{
+          pc_d: 0,
+          insn_d: 0,
+          cycle_status_d: CYCLE_TAKEN_BRANCH,
+          regfile_we_d: 0
+      };
     end else begin
       begin
         decode_state <= '{
@@ -467,7 +472,24 @@ module DatapathPipelined (
           regfile_we_e: 0
       };
     end else if (did_branch) begin
-      execute_state <= 0;
+      execute_state <= '{
+          pc_e: 0,
+          cycle_status_ee: CYCLE_TAKEN_BRANCH,
+          insn_e: 0,
+          insn_opcode_e: 0,
+          insn_rd_e: 0,
+          insn_rs1_e: 0,
+          insn_rs2_e: 0,
+          data_rs1_e: 0,
+          data_rs2_e: 0,
+          imm_i_sext_e: 0,
+          imm_s_sext_e: 0,
+          imm_b_sext_e: 0,
+          imm_j_sext_e: 0,
+          imm_u_sext_e: 0,
+          imm_shamt_e: 0,
+          regfile_we_e: 0
+      };
     end else begin
       execute_state <= '{
           pc_e: decode_state.pc_d,
