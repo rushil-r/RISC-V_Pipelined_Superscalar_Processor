@@ -143,7 +143,7 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
-  logic regfile_we_m; //this is the write enable signal for the RF
+  logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
 } stage_memory_t;
@@ -154,9 +154,9 @@ typedef struct packed {
   logic [`REG_SIZE] alu_result_w;
   logic [`INSN_SIZE] insn_w;
   logic [4:0] rd_w;
-  logic regfile_we_w; //this is the write enable signal for the RF
-  logic mem_read_w; //tells us if we read from datamemory
-  logic mem_write_w; //tells us if we wrote to datamemory
+  logic regfile_we_w;  //this is the write enable signal for the RF
+  logic mem_read_w;  //tells us if we read from datamemory
+  logic mem_write_w;  //tells us if we wrote to datamemory
   cycle_status_e cycle_status_w;
 } stage_writeback_t;
 
@@ -254,8 +254,12 @@ module DatapathPipelined (
       decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET, regfile_we_d: 0};
     end else begin
       begin
-        decode_state <= '{pc_d: f_pc_current, insn_d: f_insn, cycle_status_d: f_cycle_status,
-         regfile_we_d: regfile_we};
+        decode_state <= '{
+            pc_d: f_pc_current,
+            insn_d: f_insn,
+            cycle_status_d: f_cycle_status,
+            regfile_we_d: regfile_we
+        };
       end
     end
   end
@@ -504,43 +508,43 @@ module DatapathPipelined (
       .rst(rst)
   );
 
-logic[`REG_SIZE] cla_input_2;
-logic [`REG_SIZE] cla_input_1;
+  logic [`REG_SIZE] cla_input_2;
+  logic [`REG_SIZE] cla_input_1;
 
-always_comb begin
-  if(writeback_state.rd_w == execute_state.insn_rs1_e) begin
-    // wx bypassing rs1 input
-    cla_input_1 = writeback_state.alu_result_w;
-  end else if (memory_state.rd_m == execute_state.insn_rs1_e) begin
-    // mx bypassing rs1 input
-    cla_input_1 = memory_state.alu_result_m;
-  end else begin
-    cla_input_1 = data_rs1_e;
-  end
+  always_comb begin
+    if (writeback_state.rd_w == execute_state.insn_rs1_e) begin
+      // wx bypassing rs1 input
+      cla_input_1 = writeback_state.alu_result_w;
+    end else if (memory_state.rd_m == execute_state.insn_rs1_e) begin
+      // mx bypassing rs1 input
+      cla_input_1 = memory_state.alu_result_m;
+    end else begin
+      cla_input_1 = data_rs1_e;
+    end
 
-  if(writeback_state.rd_w == execute_state.insn_rs2_e) begin
-    // wx bypassing rs2 input
-    cla_input_2 = writeback_state.alu_result_w;
-  end else if(memory_state.rd_m == execute_state.insn_rs2_e) begin
-    // mx bypassing rs2 input
-    cla_input_2  = memory_state.alu_result_m;
-  end  else begin
-    cla_input_2 = data_rs2_e;
-  end
-  // WD Bypassing
-  if(writeback_state.rd_w == insn_rs1)begin
+    if (writeback_state.rd_w == execute_state.insn_rs2_e) begin
+      // wx bypassing rs2 input
+      cla_input_2 = writeback_state.alu_result_w;
+    end else if (memory_state.rd_m == execute_state.insn_rs2_e) begin
+      // mx bypassing rs2 input
+      cla_input_2 = memory_state.alu_result_m;
+    end else begin
+      cla_input_2 = data_rs2_e;
+    end
+    // WD Bypassing
+    if (writeback_state.rd_w == insn_rs1) begin
       data_rs1 = writeback_state.alu_result_w;
       data_rs2 = data_rs2_temp;
-  end else if (writeback_state.rd_w == insn_rs2) begin
+    end else if (writeback_state.rd_w == insn_rs2) begin
       data_rs2 = writeback_state.alu_result_w;
       data_rs1 = data_rs1_temp;
-  end else begin
-    data_rs1 = data_rs1_temp;
-    data_rs2 = data_rs2_temp;
+    end else begin
+      data_rs1 = data_rs1_temp;
+      data_rs2 = data_rs2_temp;
+    end
   end
-end
 
-// TODO: Remove these extra CLA's and dividers
+  // TODO: Remove these extra CLA's and dividers
   cla cla_ops (
       .a  (data_rs1_e),
       .b  (execute_state.imm_i_sext_e),
@@ -591,15 +595,27 @@ end
   /*******************/
 
   stage_memory_t memory_state;
-  always_ff @(posedge clk)begin
-    if(rst)begin
-      memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
-      cycle_status_m: CYCLE_RESET, rd_m: 0};
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      memory_state <= '{
+          alu_result_m: 0,
+          insn_m: 0,
+          regfile_we_m: 0,
+          mem_read_m: 0,
+          mem_write_m: 0,
+          cycle_status_m: CYCLE_RESET,
+          rd_m: 0
+      };
     end else begin
-      memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
-      regfile_we_m: execute_state.regfile_we_e,
-      mem_read_m: is_read_insn,mem_write_m:is_write_insn,rd_m: execute_state.insn_rd_e,
-      cycle_status_m: execute_state.cycle_status_ee};
+      memory_state <= '{
+          alu_result_m: data_rd_e,
+          insn_m: execute_state.insn_e,
+          regfile_we_m: execute_state.regfile_we_e,
+          mem_read_m: is_read_insn,
+          mem_write_m: is_write_insn,
+          rd_m: execute_state.insn_rd_e,
+          cycle_status_m: execute_state.cycle_status_ee
+      };
     end
   end
   wire [255:0] m_disasm;
@@ -615,14 +631,26 @@ end
   /*******************/
   stage_writeback_t writeback_state;
   always_ff @(posedge clk) begin
-    if(rst)begin
-      writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
-      cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
+    if (rst) begin
+      writeback_state <= '{
+          alu_result_w: 0,
+          insn_w: 0,
+          mem_read_w: 0,
+          mem_write_w: 0,
+          cycle_status_w: CYCLE_RESET,
+          rd_w: 0,
+          regfile_we_w: 0
+      };
     end else begin
-      writeback_state <= '{alu_result_w: memory_state.alu_result_m, insn_w: memory_state.insn_m,
-      mem_read_w: memory_state.mem_read_m,mem_write_w: memory_state.mem_write_m,
-      cycle_status_w: memory_state.cycle_status_m, rd_w: memory_state.rd_m,
-      regfile_we_w: memory_state.regfile_we_m};
+      writeback_state <= '{
+          alu_result_w: memory_state.alu_result_m,
+          insn_w: memory_state.insn_m,
+          mem_read_w: memory_state.mem_read_m,
+          mem_write_w: memory_state.mem_write_m,
+          cycle_status_w: memory_state.cycle_status_m,
+          rd_w: memory_state.rd_m,
+          regfile_we_w: memory_state.regfile_we_m
+      };
     end
   end
   always_comb begin
@@ -652,25 +680,34 @@ end
       halt = 1'b1;
     end
     // TODO: Finsh for all insns!
-    case(insn_opcode) //note derived from decode stage
-        OpcodeLui: begin
-          regfile_we = 1'b1;
-        end
-        OpcodeAuipc: begin
-          regfile_we = 1'b1;
-        end
-        OpcodeRegImm: begin
-          regfile_we = 1'b1;
-        end
-         OpcodeRegReg: begin
-          regfile_we = 1'b1;
-         end
-         default begin
-          regfile_we = 1'b0;
-         end
+    case (insn_opcode)  //note derived from decode stage
+      OpcodeLui: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeAuipc: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeRegImm: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeRegReg: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeJal: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeJalr: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeLoad: begin
+        regfile_we = 1'b1;
+      end
+      default begin
+        regfile_we = 1'b0;
+      end
     endcase
-    if (execute_state.cycle_status_ee == CYCLE_RESET)begin
-        data_rd_e = 0;
+    if (execute_state.cycle_status_ee == CYCLE_RESET) begin
+      data_rd_e = 0;
     end else begin
       // TODO: Finish case updates for all insns!
       case (execute_state.insn_opcode_e)
@@ -679,10 +716,10 @@ end
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
-          data_rd_e  = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
+          data_rd_e = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
         end
         OpcodeAuipc: begin
-          data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
+          data_rd_e = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
         end
         OpcodeRegImm: begin
           case (execute_state.insn_e[14:12])
