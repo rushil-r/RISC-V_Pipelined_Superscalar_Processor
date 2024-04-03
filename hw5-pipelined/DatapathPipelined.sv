@@ -139,6 +139,7 @@ typedef struct packed {
 /** state at the start of Memory stage */
 // stores: result of ALU, REMOVED : data to write (store insn), register for detinations, and flags indicating for mem_read and read_write
 typedef struct packed {
+  logic [`REG_SIZE] pc_m;
   logic [31:0] alu_result_m;
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
@@ -152,6 +153,7 @@ typedef struct packed {
 /** state at the start of Writeback stage */
 // stores: result of ALU and destination register
 typedef struct packed {
+  logic [`REG_SIZE] pc_w;
   logic [`REG_SIZE] alu_result_w;
   logic [`INSN_SIZE] insn_w;
   logic [4:0] rd_w;
@@ -226,12 +228,11 @@ module DatapathPipelined (
       // NB: use CYCLE_NO_STALL since this is the value that will persist after the last reset cycle
       f_cycle_status <= CYCLE_NO_STALL;
     end else begin
+      f_cycle_status <= CYCLE_NO_STALL;
       if (writeback_state.branch_w) begin
-        f_cycle_status <= CYCLE_TAKEN_BRANCH;
-        f_pc_current   <= f_pc_next;
+        f_pc_current <= f_pc_next;
       end else begin
-        f_cycle_status <= CYCLE_NO_STALL;
-        f_pc_current   <= f_pc_current + 4;
+        f_pc_current <= f_pc_current + 4;
       end
     end
   end
@@ -608,6 +609,7 @@ module DatapathPipelined (
   always_ff @(posedge clk) begin
     if (rst) begin
       memory_state <= '{
+          pc_m: 0,
           alu_result_m: 0,
           insn_m: 0,
           regfile_we_m: 0,
@@ -619,6 +621,7 @@ module DatapathPipelined (
       };
     end else begin
       memory_state <= '{
+          pc_m: execute_state.pc_e,
           alu_result_m: data_rd_e,
           insn_m: execute_state.insn_e,
           regfile_we_m: execute_state.regfile_we_e,
@@ -645,6 +648,7 @@ module DatapathPipelined (
   always_ff @(posedge clk) begin
     if (rst) begin
       writeback_state <= '{
+          pc_w: 0,
           alu_result_w: 0,
           insn_w: 0,
           mem_read_w: 0,
@@ -656,6 +660,7 @@ module DatapathPipelined (
       };
     end else begin
       writeback_state <= '{
+          pc_w: memory_state.pc_m,
           alu_result_w: memory_state.alu_result_m,
           insn_w: memory_state.insn_m,
           mem_read_w: memory_state.mem_read_m,
@@ -665,6 +670,17 @@ module DatapathPipelined (
           rd_w: memory_state.rd_m,
           regfile_we_w: memory_state.regfile_we_m
       };
+    end
+  end
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      trace_writeback_cycle_status <= CYCLE_NO_STALL;
+      trace_writeback_insn <= 32'b0;
+      trace_writeback_pc <= 32'b0;
+    end else begin
+      trace_writeback_cycle_status <= writeback_state.cycle_status_w;
+      trace_writeback_insn <= writeback_state.insn_w;
+      trace_writeback_pc <= writeback_state.pc_w;
     end
   end
   always_comb begin
