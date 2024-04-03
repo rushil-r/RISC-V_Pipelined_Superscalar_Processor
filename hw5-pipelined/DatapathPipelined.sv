@@ -148,6 +148,7 @@ typedef struct packed {
   logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
+  logic [`REG_SIZE] pc_n_m;
 } stage_memory_t;
 
 /** state at the start of Writeback stage */
@@ -162,6 +163,7 @@ typedef struct packed {
   logic mem_write_w;  //tells us if we wrote to datamemory
   logic branch_w;  //tells us if we branch
   cycle_status_e cycle_status_w;
+  logic [`REG_SIZE] pc_n_w;
 } stage_writeback_t;
 
 module DatapathPipelined (
@@ -521,20 +523,20 @@ module DatapathPipelined (
   logic [`REG_SIZE] cla_input_1;
 
   always_comb begin
-    if (writeback_state.rd_w == execute_state.insn_rs1_e) begin
+    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && writeback_state.rd_w != 0) begin
       // wx bypassing rs1 input
       cla_input_1 = writeback_state.alu_result_w;
-    end else if (memory_state.rd_m == execute_state.insn_rs1_e) begin
+    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && memory_state.rd_m != 0) begin
       // mx bypassing rs1 input
       cla_input_1 = memory_state.alu_result_m;
     end else begin
       cla_input_1 = data_rs1_e;
     end
 
-    if (writeback_state.rd_w == execute_state.insn_rs2_e) begin
+    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && writeback_state.rd_w != 0) begin
       // wx bypassing rs2 input
       cla_input_2 = writeback_state.alu_result_w;
-    end else if (memory_state.rd_m == execute_state.insn_rs2_e) begin
+    end else if ((memory_state.rd_m == execute_state.insn_rs2_e) && memory_state.rd_m != 0) begin
       // mx bypassing rs2 input
       cla_input_2 = memory_state.alu_result_m;
     end else begin
@@ -549,10 +551,10 @@ module DatapathPipelined (
       cla_input_2 = cla_input_2;
     end
     // WD Bypassing
-    if (writeback_state.rd_w == insn_rs1) begin
+    if ((writeback_state.rd_w == insn_rs1) && writeback_state.rd_w != 0) begin
       data_rs1 = writeback_state.alu_result_w;
       data_rs2 = data_rs2_temp;
-    end else if (writeback_state.rd_w == insn_rs2) begin
+    end else if ((writeback_state.rd_w == insn_rs2) && writeback_state.rd_w != 0) begin
       data_rs2 = writeback_state.alu_result_w;
       data_rs1 = data_rs1_temp;
     end else begin
@@ -617,7 +619,8 @@ module DatapathPipelined (
           mem_write_m: 0,
           branch_m: 0,
           cycle_status_m: CYCLE_RESET,
-          rd_m: 0
+          rd_m: 0,
+          pc_n_m: 0
       };
     end else begin
       memory_state <= '{
@@ -628,8 +631,9 @@ module DatapathPipelined (
           mem_read_m: is_read_insn,
           mem_write_m: is_write_insn,
           branch_m: is_branch,
+          cycle_status_m: execute_state.cycle_status_ee,
           rd_m: execute_state.insn_rd_e,
-          cycle_status_m: execute_state.cycle_status_ee
+          pc_n_m: f_pc_next
       };
     end
   end
@@ -656,7 +660,8 @@ module DatapathPipelined (
           mem_write_w: 0,
           cycle_status_w: CYCLE_RESET,
           rd_w: 0,
-          regfile_we_w: 0
+          regfile_we_w: 0,
+          pc_n_w: 0
       };
     end else begin
       writeback_state <= '{
@@ -668,7 +673,8 @@ module DatapathPipelined (
           mem_write_w: memory_state.mem_write_m,
           cycle_status_w: memory_state.cycle_status_m,
           rd_w: memory_state.rd_m,
-          regfile_we_w: memory_state.regfile_we_m
+          regfile_we_w: memory_state.regfile_we_m,
+          pc_n_w: memory_state.pc_n_m
       };
     end
   end
