@@ -143,6 +143,7 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
+  logic branch_m;  //tells us if we branch
   logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
@@ -157,6 +158,7 @@ typedef struct packed {
   logic regfile_we_w;  //this is the write enable signal for the RF
   logic mem_read_w;  //tells us if we read from datamemory
   logic mem_write_w;  //tells us if we wrote to datamemory
+  logic branch_w;  //tells us if we branch
   cycle_status_e cycle_status_w;
 } stage_writeback_t;
 
@@ -225,7 +227,11 @@ module DatapathPipelined (
       f_cycle_status <= CYCLE_NO_STALL;
     end else begin
       f_cycle_status <= CYCLE_NO_STALL;
-      f_pc_current   <= f_pc_current + 4;
+      if (writeback_state.branch_w) begin
+        f_pc_current <= f_pc_next;
+      end else begin
+        f_pc_current <= f_pc_current + 4;
+      end
     end
   end
   // send PC to imem
@@ -481,6 +487,7 @@ module DatapathPipelined (
   logic [31:0] temp_addr;
   logic [31:0] temp_load_casing;
   logic illegal_insn;
+  logic is_branch;
 
   wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
@@ -603,6 +610,7 @@ module DatapathPipelined (
           regfile_we_m: 0,
           mem_read_m: 0,
           mem_write_m: 0,
+          branch_m: 0,
           cycle_status_m: CYCLE_RESET,
           rd_m: 0
       };
@@ -613,6 +621,7 @@ module DatapathPipelined (
           regfile_we_m: execute_state.regfile_we_e,
           mem_read_m: is_read_insn,
           mem_write_m: is_write_insn,
+          branch_m: is_branch,
           rd_m: execute_state.insn_rd_e,
           cycle_status_m: execute_state.cycle_status_ee
       };
@@ -636,6 +645,7 @@ module DatapathPipelined (
           alu_result_w: 0,
           insn_w: 0,
           mem_read_w: 0,
+          branch_w: 0,
           mem_write_w: 0,
           cycle_status_w: CYCLE_RESET,
           rd_w: 0,
@@ -646,6 +656,7 @@ module DatapathPipelined (
           alu_result_w: memory_state.alu_result_m,
           insn_w: memory_state.insn_m,
           mem_read_w: memory_state.mem_read_m,
+          branch_w: memory_state.branch_m,
           mem_write_w: memory_state.mem_write_m,
           cycle_status_w: memory_state.cycle_status_m,
           rd_w: memory_state.rd_m,
@@ -657,7 +668,8 @@ module DatapathPipelined (
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
-    if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu))) begin
+    is_branch = 1'b0;
+    if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) && !(insn_beq || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
       f_pc_next = f_pc_current + 4;
     end
     if (insn_lw || insn_lb || insn_lbu || insn_lh || insn_lhu) begin
@@ -669,6 +681,11 @@ module DatapathPipelined (
       is_read_insn = 1;
     end else begin
       is_read_insn = 0;
+    end
+    if (insn_beq || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr) begin
+      is_branch = 1;
+    end else begin
+      is_branch = 0;
     end
     regfile_we = 1'b0;
     //f_pc_next = f_pc_current + 4;
