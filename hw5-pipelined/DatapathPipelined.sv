@@ -72,7 +72,7 @@ module RegFile (
       if (rst) begin
         regs[i] <= 32'd0;
       end else begin
-        if (we && rd == i) begin
+        if (we && rd == i && (rd != 5'b00000)) begin
           regs[i] <= rd_data;
         end
       end
@@ -144,12 +144,14 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
-  logic branch_m;  //tells us if we branch
+  logic branch_m;
+  logic [31:0] branch_addr_m;  //tells us if we branch
   logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
-  logic [`REG_SIZE] pc_n_m;
 } stage_memory_t;
+
+
 
 /** state at the start of Writeback stage */
 // stores: result of ALU and destination register
@@ -162,8 +164,8 @@ typedef struct packed {
   logic mem_read_w;  //tells us if we read from datamemory
   logic mem_write_w;  //tells us if we wrote to datamemory
   logic branch_w;  //tells us if we branch
+  logic [31:0] branch_addr_w;
   cycle_status_e cycle_status_w;
-  logic [`REG_SIZE] pc_n_w;
 } stage_writeback_t;
 
 module DatapathPipelined (
@@ -230,11 +232,12 @@ module DatapathPipelined (
       // NB: use CYCLE_NO_STALL since this is the value that will persist after the last reset cycle
       f_cycle_status <= CYCLE_NO_STALL;
     end else begin
-      f_cycle_status <= CYCLE_NO_STALL;
       if (did_branch) begin
-        f_pc_current <= f_pc_next;
+        f_cycle_status <= CYCLE_NO_STALL;
+        f_pc_current   <= new_branch;
       end else begin
-        f_pc_current <= f_pc_current + 4;
+        f_cycle_status <= CYCLE_NO_STALL;
+        f_pc_current   <= f_pc_current + 4;
       end
     end
   end
@@ -518,6 +521,7 @@ module DatapathPipelined (
   logic [31:0] temp_load_casing;
   logic illegal_insn;
   logic did_branch;
+  logic [31:0] new_branch;
 
   wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
@@ -645,9 +649,9 @@ module DatapathPipelined (
           mem_read_m: 0,
           mem_write_m: 0,
           branch_m: 0,
+          branch_addr_m: 32'b0,
           cycle_status_m: CYCLE_RESET,
-          rd_m: 0,
-          pc_n_m: 0
+          rd_m: 0
       };
     end else begin
       memory_state <= '{
@@ -658,9 +662,9 @@ module DatapathPipelined (
           mem_read_m: is_read_insn,
           mem_write_m: is_write_insn,
           branch_m: did_branch,
+          branch_addr_m: new_branch,
           cycle_status_m: execute_state.cycle_status_ee,
-          rd_m: execute_state.insn_rd_e,
-          pc_n_m: f_pc_next
+          rd_m: execute_state.insn_rd_e
       };
     end
   end
@@ -686,9 +690,9 @@ module DatapathPipelined (
           branch_w: 0,
           mem_write_w: 0,
           cycle_status_w: CYCLE_RESET,
+          branch_addr_w: 0,
           rd_w: 0,
-          regfile_we_w: 0,
-          pc_n_w: 0
+          regfile_we_w: 0
       };
     end else begin
       writeback_state <= '{
@@ -699,9 +703,9 @@ module DatapathPipelined (
           branch_w: memory_state.branch_m,
           mem_write_w: memory_state.mem_write_m,
           cycle_status_w: memory_state.cycle_status_m,
+          branch_addr_w: memory_state.branch_addr_m,
           rd_w: memory_state.rd_m,
-          regfile_we_w: memory_state.regfile_we_m,
-          pc_n_w: memory_state.pc_n_m
+          regfile_we_w: memory_state.regfile_we_m
       };
     end
   end
@@ -712,6 +716,7 @@ module DatapathPipelined (
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
     did_branch = 1'b0;
+    new_branch = 32'b0;
     if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) &&!(insn_beq
     || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
       f_pc_next = f_pc_current + 4;
@@ -829,7 +834,7 @@ module DatapathPipelined (
               //beq
               if (data_rs1_e == data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+                new_branch = f_pc_current + execute_state.imm_b_sext_e;
               end else begin
                 did_branch = 1'b0;
               end
@@ -838,7 +843,7 @@ module DatapathPipelined (
               //bne
               if (data_rs1_e != data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+                new_branch = f_pc_current + execute_state.imm_b_sext_e;
               end else begin
                 did_branch = 1'b0;
               end
@@ -846,7 +851,7 @@ module DatapathPipelined (
             3'b100: begin
               if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
                 did_branch = 1'b1;
-                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+                new_branch = f_pc_current + execute_state.imm_b_sext_e;
               end else begin
                 did_branch = 1'b0;
               end
@@ -855,7 +860,7 @@ module DatapathPipelined (
               //bge
               if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
                 did_branch = 1'b1;
-                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+                new_branch = f_pc_current + execute_state.imm_b_sext_e;
               end else begin
                 did_branch = 1'b0;
               end
@@ -864,7 +869,7 @@ module DatapathPipelined (
               //bltu
               if (data_rs1_e < data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+                new_branch = f_pc_current + execute_state.imm_b_sext_e;
               end else begin
                 did_branch = 1'b0;
               end
@@ -873,7 +878,7 @@ module DatapathPipelined (
               //bgeu
               if (data_rs1_e >= data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+                new_branch = f_pc_current + execute_state.imm_b_sext_e;
               end else begin
                 did_branch = 1'b0;
               end
@@ -1015,13 +1020,13 @@ module DatapathPipelined (
           regfile_we = 1'b1;
           did_branch = 1'b1;
           data_rd_e  = f_pc_current + 4;
-          f_pc_next  = f_pc_current + execute_state.imm_j_sext_e;
+          new_branch = f_pc_current + execute_state.imm_j_sext_e;
         end
         OpcodeJalr: begin
           regfile_we = 1'b1;
           did_branch = 1'b1;
           data_rd_e = f_pc_current + 4;
-          f_pc_next = ((data_rs1_e + execute_state.imm_i_sext_e) &
+          new_branch = ((data_rs1_e + execute_state.imm_i_sext_e) &
                 (32'b11111111111111111111111111111110));
         end
         OpcodeLoad: begin
