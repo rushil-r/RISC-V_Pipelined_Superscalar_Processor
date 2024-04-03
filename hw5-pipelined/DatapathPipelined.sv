@@ -231,7 +231,7 @@ module DatapathPipelined (
       f_cycle_status <= CYCLE_NO_STALL;
     end else begin
       f_cycle_status <= CYCLE_NO_STALL;
-      if (writeback_state.branch_w) begin
+      if (did_branch) begin
         f_pc_current <= f_pc_next;
       end else begin
         f_pc_current <= f_pc_current + 4;
@@ -262,6 +262,8 @@ module DatapathPipelined (
   always_ff @(posedge clk) begin
     if (rst) begin
       decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET, regfile_we_d: 0};
+    end else if (did_branch) begin
+      decode_state <= 0;
     end else begin
       begin
         decode_state <= '{
@@ -464,6 +466,8 @@ module DatapathPipelined (
           imm_shamt_e: 0,
           regfile_we_e: 0
       };
+    end else if (did_branch) begin
+      execute_state <= 0;
     end else begin
       execute_state <= '{
           pc_e: decode_state.pc_d,
@@ -680,9 +684,6 @@ module DatapathPipelined (
     end
   end
 
-  assign trace_writeback_cycle_status = writeback_state.cycle_status_w;
-  assign trace_writeback_insn         = writeback_state.insn_w;
-  assign trace_writeback_pc           = writeback_state.pc_w;
 
   always_comb begin
     halt = 1'b0;
@@ -807,6 +808,8 @@ module DatapathPipelined (
               if (data_rs1_e == data_rs2_e) begin
                 did_branch = 1'b1;
                 f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
               end
             end
             3'b001: begin
@@ -814,12 +817,16 @@ module DatapathPipelined (
               if (data_rs1_e != data_rs2_e) begin
                 did_branch = 1'b1;
                 f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
               end
             end
             3'b100: begin
               if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
                 did_branch = 1'b1;
                 f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
               end
             end
             3'b101: begin
@@ -827,6 +834,8 @@ module DatapathPipelined (
               if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
                 did_branch = 1'b1;
                 f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
               end
             end
             3'b110: begin
@@ -834,6 +843,8 @@ module DatapathPipelined (
               if (data_rs1_e < data_rs2_e) begin
                 did_branch = 1'b1;
                 f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
               end
             end
             3'b111: begin
@@ -841,6 +852,8 @@ module DatapathPipelined (
               if (data_rs1_e >= data_rs2_e) begin
                 did_branch = 1'b1;
                 f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
               end
             end
             default: begin
@@ -1168,6 +1181,10 @@ module DatapathPipelined (
     // f_pc_next = f_pc_current+4
     //^^^^^ relocated to inside case statements to allow for branching logic
   end
+
+  assign trace_writeback_cycle_status = writeback_state.cycle_status_w;
+  assign trace_writeback_insn         = writeback_state.insn_w;
+  assign trace_writeback_pc           = writeback_state.pc_w;
 endmodule
 
 module MemorySingleCycle #(
