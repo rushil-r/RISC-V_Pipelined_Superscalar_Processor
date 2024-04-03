@@ -523,7 +523,6 @@ module DatapathPipelined (
   logic did_branch;
   logic [31:0] new_branch;
 
-  wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
   wire [31:0] cla_diff_reg;
   wire [31:0] div_u_rem_reg;
@@ -595,12 +594,7 @@ module DatapathPipelined (
   end
 
   // TODO: Remove these extra CLA's and dividers
-  cla cla_ops (
-      .a  (cla_input_1),
-      .b  (execute_state.imm_i_sext_e),
-      .cin(1'b0),
-      .sum(cla_sum)
-  );
+
   cla cla_reg_add (
       .a  (cla_input_1),
       .b  (cla_input_2),
@@ -785,7 +779,7 @@ module DatapathPipelined (
           case (execute_state.insn_e[14:12])
             3'b000: begin
               //addi
-              data_rd_e = cla_sum;
+              data_rd_e = cla_sum_reg;
             end
             3'b001: begin
               //slli
