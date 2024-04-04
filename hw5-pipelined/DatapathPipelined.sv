@@ -134,6 +134,8 @@ typedef struct packed {
   logic [`REG_SIZE] imm_u_sext_e;
   logic [4:0] imm_shamt_e;
   logic regfile_we_e;
+
+  logic [5:0] insn_num_e;
 } stage_execute_t;
 
 /** state at the start of Memory stage */
@@ -144,8 +146,7 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
-  logic branch_m;
-  logic [31:0] branch_addr_m;  //tells us if we branch
+  logic branch_m; //tells us if we branch
   logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
@@ -164,7 +165,6 @@ typedef struct packed {
   logic mem_read_w;  //tells us if we read from datamemory
   logic mem_write_w;  //tells us if we wrote to datamemory
   logic branch_w;  //tells us if we branch
-  logic [31:0] branch_addr_w;
   cycle_status_e cycle_status_w;
 } stage_writeback_t;
 
@@ -234,7 +234,7 @@ module DatapathPipelined (
     end else begin
       if (did_branch) begin
         f_cycle_status <= CYCLE_NO_STALL;
-        f_pc_current   <= new_branch;
+        f_pc_current   <= f_pc_next;
       end else begin
         f_cycle_status <= CYCLE_NO_STALL;
         f_pc_current   <= f_pc_current + 4;
@@ -418,26 +418,68 @@ module DatapathPipelined (
   wire insn_ecall = insn_opcode == OpcodeEnviron && decode_state.insn_d[31:7] == 25'd0;
   wire insn_fence = insn_opcode == OpcodeMiscMem;
 
-  // TODO: your code here, though you will also need to modify some of the code above
 
-  // USE STRUCT VALS TO ESTABLISH CONSTs
-  // logic [0:0] regfile_we;
-  // logic [`REG_SIZE] data_rd;
-  // logic [`REG_SIZE] data_rs1;
-  // logic [`REG_SIZE] data_rs2;
-  // logic [4:0] regfile_rd;
-  // logic [4:0] regfile_rs1;
-  // logic [4:0] regfile_rs2;
+  logic [5:0] insn_num = (1 * insn_lui) + (2 * insn_auipc) + (3 * insn_jal) + (4 * insn_jalr) +
+    (5 * insn_beq) + (6 * insn_bne) + (7 * insn_blt) + (8 * insn_bge) + (9 * insn_bltu) +
+    (10 * insn_bgeu) + (11 * insn_lb) + (12 * insn_lh) + (13 * insn_lw) + (14 * insn_lbu) +
+    (15 * insn_lhu) + (16 * insn_sb) + (17 * insn_sh) + (18 * insn_sw) + (19 * insn_addi) +
+    (20 * insn_slti) + (21 * insn_sltiu) + (22 * insn_xori) + (23 * insn_ori) + (24 * insn_andi) +
+    (25 * insn_slli) + (26 * insn_srli) + (27 * insn_srai) + (28 * insn_add) + (29 * insn_sub) +
+    (30 * insn_sll) + (31 * insn_slt) + (32 * insn_sltu) + (33 * insn_xor) + (34 * insn_srl) +
+    (35 * insn_sra) + (36 * insn_or) + (37 * insn_and) + (38 * insn_mul) + (39 * insn_mulh) +
+    (40 * insn_mulhsu) + (41 * insn_mulhu) + (42 * insn_div) + (43 * insn_divu) + (44 * insn_rem) +
+    (45 * insn_remu) + (46 * insn_ecall) + (47 * insn_fence);
+  // TODO: your code here, though you will also need to modify some of the code above
+    const logic [5:0] LUI = 1;
+    const logic [5:0] AUIPC = 2;
+    const logic [5:0] JAL = 3;
+    const logic [5:0] JALR = 4;
+    const logic [5:0] BEQ = 5;
+    const logic [5:0] BNE = 6;
+    const logic [5:0] BLT = 7;
+    const logic [5:0] BGE = 8;
+    const logic [5:0] BLTU = 9;
+    const logic [5:0] BGEU = 10;
+    const logic [5:0] LB = 11;
+    const logic [5:0] LH = 12;
+    const logic [5:0] LW = 13;
+    const logic [5:0] LBU = 14;
+    const logic [5:0] LHU = 15;
+    const logic [5:0] SB = 16;
+    const logic [5:0] SH = 17;
+    const logic [5:0] SW = 18;
+    const logic [5:0] ADDI = 19;
+    const logic [5:0] SLTI = 20;
+    const logic [5:0] SLTIU = 21;
+    const logic [5:0] XORI = 22;
+    const logic [5:0] ORI = 23;
+    const logic [5:0] ANDI = 24;
+    const logic [5:0] SLLI = 25;
+    const logic [5:0] SRLI = 26;
+    const logic [5:0] SRAI = 27;
+    const logic [5:0] ADD = 28;
+    const logic [5:0] SUB = 29;
+    const logic [5:0] SLL = 30;
+    const logic [5:0] SLT = 31;
+    const logic [5:0] SLTU = 32;
+    const logic [5:0] XOR = 33;
+    const logic [5:0] SRL = 34;
+    const logic [5:0] SRA = 35;
+    const logic [5:0] OR = 36;
+    const logic [5:0] AND = 37;
+    const logic [5:0] MUL = 38;
+    const logic [5:0] MULH = 39;
+    const logic [5:0] MULHSU = 40;
+    const logic [5:0] MULHU = 41;
+    const logic [5:0] DIV = 42;
+    const logic [5:0] DIVU = 43;
+    const logic [5:0] REM = 44;
+    const logic [5:0] REMU = 45;
+    const logic [5:0] ECALL = 46;
+    const logic [5:0] FENCE = 47;
 
   // components of the instruction
 
-  // MIGHT NEED LATER
-  // wire [6:0] insn_funct7;
-  // wire [4:0] insn_rs2;
-  // wire [4:0] insn_rs1;
-  // wire [2:0] insn_funct3;
-  // wire [4:0] insn_rd;
-  // wire [`OPCODE_SIZE] insn_opcode;
 
   // TODO: the testbench requires that your register file instance is named `rf`
   /*******************/
@@ -472,7 +514,8 @@ module DatapathPipelined (
           imm_j_sext_e: 0,
           imm_u_sext_e: 0,
           imm_shamt_e: 0,
-          regfile_we_e: 0
+          regfile_we_e: 0,
+          insn_num_e: 0
       };
     end else if (did_branch) begin
       execute_state <= '{
@@ -491,7 +534,8 @@ module DatapathPipelined (
           imm_j_sext_e: 0,
           imm_u_sext_e: 0,
           imm_shamt_e: 0,
-          regfile_we_e: 0
+          regfile_we_e: 0,
+          insn_num_e: 0
       };
     end else begin
       execute_state <= '{
@@ -510,7 +554,8 @@ module DatapathPipelined (
           imm_j_sext_e: imm_j_sext,
           imm_u_sext_e: imm_u_sext,
           imm_shamt_e: imm_shamt,
-          regfile_we_e: regfile_we
+          regfile_we_e: regfile_we,
+          insn_num_e: insn_num
       };
     end
   end
@@ -521,7 +566,6 @@ module DatapathPipelined (
   logic [31:0] temp_load_casing;
   logic illegal_insn;
   logic did_branch;
-  logic [31:0] new_branch;
 
   wire [31:0] cla_sum_reg;
   wire [31:0] cla_diff_reg;
@@ -643,7 +687,6 @@ module DatapathPipelined (
           mem_read_m: 0,
           mem_write_m: 0,
           branch_m: 0,
-          branch_addr_m: 32'b0,
           cycle_status_m: CYCLE_RESET,
           rd_m: 0
       };
@@ -656,7 +699,6 @@ module DatapathPipelined (
           mem_read_m: is_read_insn,
           mem_write_m: is_write_insn,
           branch_m: did_branch,
-          branch_addr_m: new_branch,
           cycle_status_m: execute_state.cycle_status_ee,
           rd_m: execute_state.insn_rd_e
       };
@@ -684,7 +726,6 @@ module DatapathPipelined (
           branch_w: 0,
           mem_write_w: 0,
           cycle_status_w: CYCLE_RESET,
-          branch_addr_w: 0,
           rd_w: 0,
           regfile_we_w: 0
       };
@@ -697,20 +738,17 @@ module DatapathPipelined (
           branch_w: memory_state.branch_m,
           mem_write_w: memory_state.mem_write_m,
           cycle_status_w: memory_state.cycle_status_m,
-          branch_addr_w: memory_state.branch_addr_m,
           rd_w: memory_state.rd_m,
           regfile_we_w: memory_state.regfile_we_m
       };
     end
   end
 
-
   always_comb begin
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
     did_branch = 1'b0;
-    new_branch = 32'b0;
     if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) &&!(insn_beq
     || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
       f_pc_next = f_pc_current + 4;
@@ -764,380 +802,302 @@ module DatapathPipelined (
       data_rd_e = 0;
     end else begin
       // TODO: Finish case updates for all insns!
-      case (execute_state.insn_opcode_e)
-        OpcodeMiscMem: begin
+      case (execute_state.insn_num_e)
+        FENCE: begin
           f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
-        OpcodeLui: begin
-          data_rd_e = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
-        end
-        OpcodeAuipc: begin
-          data_rd_e = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
-        end
-        OpcodeRegImm: begin
-          case (execute_state.insn_e[14:12])
-            3'b000: begin
-              //addi
-              data_rd_e = cla_sum_reg;
-            end
-            3'b001: begin
-              //slli
-              data_rd_e = data_rs1_e << execute_state.imm_shamt_e;
-            end
-            3'b010: begin
-              //slti
-              data_rd_e = ($signed(data_rs1_e) < $signed(execute_state.imm_i_sext_e)) ? 1 : 0;
-            end
-            3'b011: begin
-              //stliu
-              data_rd_e = data_rs1_e < execute_state.imm_i_sext_e ? 1 : 0;
-            end
-            3'b100: begin
-              //xori
-              data_rd_e = data_rs1_e ^ execute_state.imm_i_sext_e;
-            end
-            3'b101: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //srli
-                data_rd_e = data_rs1_e >> execute_state.imm_shamt_e;
-              end else begin
-                //srai
-                data_rd_e = $signed(data_rs1_e) >>> execute_state.imm_shamt_e;
-              end
-            end
-            3'b110: begin
-              //ori
-              data_rd_e = data_rs1_e | execute_state.imm_i_sext_e;
-            end
-            3'b111: begin
-              //andi
-              data_rd_e = data_rs1_e & execute_state.imm_i_sext_e;
-            end
-            default: begin
-              regfile_we   = 1'b0;
-              illegal_insn = 1'b1;
-            end
-          endcase
-        end
-        OpcodeBranch: begin
+        LUI: data_rd_e = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
+        AUIPC: data_rd_e = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
+        ADDI: data_rd_e = cla_sum_reg;
+        SLLI: data_rd_e = data_rs1_e << execute_state.imm_shamt_e;
+        SLTI: data_rd_e = ($signed(data_rs1_e) < $signed(execute_state.imm_i_sext_e)) ? 1 : 0;
+        SLTIU: data_rd_e = data_rs1_e < execute_state.imm_i_sext_e ? 1 : 0;
+        XORI: data_rd_e = data_rs1_e ^ execute_state.imm_i_sext_e;
+        SRLI: data_rd_e = data_rs1_e >> execute_state.imm_shamt_e;
+        SRAI: data_rd_e = $signed(data_rs1_e) >>> execute_state.imm_shamt_e;
+        ORI: data_rd_e = data_rs1_e | execute_state.imm_i_sext_e;
+        ANDI: data_rd_e = data_rs1_e & execute_state.imm_i_sext_e;
+        BEQ: begin // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
+          //beq
           regfile_we = 1'b0;
-          // formula for SEXT(targ12<<1) = {{19{imm_b[11]}}, (imm_b<<1)}
-          case (execute_state.insn_e[14:12])
-            3'b000: begin
-              //beq
-              if (data_rs1_e == data_rs2_e) begin
-                did_branch = 1'b1;
-                new_branch = f_pc_current + execute_state.imm_b_sext_e;
-              end else begin
-                did_branch = 1'b0;
-              end
-            end
-            3'b001: begin
-              //bne
-              if (data_rs1_e != data_rs2_e) begin
-                did_branch = 1'b1;
-                new_branch = f_pc_current + execute_state.imm_b_sext_e;
-              end else begin
-                did_branch = 1'b0;
-              end
-            end
-            3'b100: begin
-              if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
-                did_branch = 1'b1;
-                new_branch = f_pc_current + execute_state.imm_b_sext_e;
-              end else begin
-                did_branch = 1'b0;
-              end
-            end
-            3'b101: begin
-              //bge
-              if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
-                did_branch = 1'b1;
-                new_branch = f_pc_current + execute_state.imm_b_sext_e;
-              end else begin
-                did_branch = 1'b0;
-              end
-            end
-            3'b110: begin
-              //bltu
-              if (data_rs1_e < data_rs2_e) begin
-                did_branch = 1'b1;
-                new_branch = f_pc_current + execute_state.imm_b_sext_e;
-              end else begin
-                did_branch = 1'b0;
-              end
-            end
-            3'b111: begin
-              //bgeu
-              if (data_rs1_e >= data_rs2_e) begin
-                did_branch = 1'b1;
-                new_branch = f_pc_current + execute_state.imm_b_sext_e;
-              end else begin
-                did_branch = 1'b0;
-              end
-            end
-            default: begin
-              did_branch   = 1'b0;
-              illegal_insn = 1'b1;
-              regfile_we   = 1'b0;
-            end
-          endcase
+          if (data_rs1_e == data_rs2_e) begin
+            did_branch = 1'b1;
+            f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+          end
+          else begin
+            did_branch = 1'b0;
+          end
         end
-        OpcodeRegReg: begin
-          case (execute_state.insn_e[14:12])
-            3'b000: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //add
-                data_rd_e = cla_sum_reg;
-              end else if (execute_state.insn_e[31:25] == 7'b0100000) begin
-                //sub
-                data_rd_e = cla_reg_add.sum;
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //mul
-                data_rd_e = (data_rs1_e * data_rs2_e) & 32'h00000000ffffffff;
-              end
-            end
-            3'b001: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //sll
-                data_rd_e = data_rs1_e << (data_rs2_e[4:0]);
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //mulh
-                logic [63:0] inter_mulh;
-                inter_mulh = ($signed(data_rs1_e) * $signed(data_rs2_e));
-                data_rd_e  = inter_mulh[63:32];
-              end
-            end
-            3'b010: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //slt
-                data_rd_e = $signed(data_rs1_e) < $signed(data_rs2_e) ? 1 : 0;
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //mulhsu
-                logic [63:0] inter_mulhsu;
-                inter_mulhsu = $signed(data_rs1_e) * $signed({1'b0, data_rs2_e});
-                data_rd_e = (inter_mulhsu[63:32]);
-              end
-            end
-            3'b011: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //sltu
-                data_rd_e = data_rs1_e < data_rs2_e ? 1 : 0;
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //mulhu
-                logic [63:0] inter_mulhu;
-                inter_mulhu = ($unsigned(data_rs1_e) * $unsigned(data_rs2_e));
-                data_rd_e   = inter_mulhu[63:32];
-              end
-            end
-            3'b100: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //xor
-                data_rd_e = data_rs1_e ^ data_rs2_e;
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                if (data_rs2_e == 0) begin
-                  data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
-                end else if (data_rs1_e[31] != data_rs2_e[31]) begin
-                  data_rd_e = ~div_qot_reg + 1'b1;
-                  // data_rd_e= ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
-                  //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
-                end else begin
-                  data_rd_e = div_qot_reg;  // case falls here (should be 3)
-                end
-              end
-            end
-            3'b101: begin
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //srl
-                regfile_we = 1'b1;
-                data_rd_e  = data_rs1_e >> (data_rs2_e[4:0]);
-              end else if (execute_state.insn_e[31:25] == 7'b0100000) begin
-                //sra
-                regfile_we = 1'b1;
-                data_rd_e  = $signed(data_rs1_e) >>> $signed((data_rs2_e[4:0]));
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //divu
-                if (flag_div == 1) begin
-                  regfile_we = 1'b1;  //enable writing back to RF
-                  if (data_rs2_e == 0) begin
-                    data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
-                  end else begin
-                    data_rd_e = div_u_qot_reg;  //we can write the quotient
-                  end
-                end else begin
-                  regfile_we = 1'b0;  //disable writing back to RF
-                end
-              end
-            end
-            3'b110: begin
-              regfile_we = 1'b1;
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //or
-                data_rd_e = data_rs1_e | data_rs2_e;
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //rem
-                if (data_rs1_e[31]) begin
-                  data_rd_e = ((~div_rem_reg) + 1'b1);
-                end else begin
-                  data_rd_e = div_rem_reg;
-                end
-                // if (flag_div) begin
-                //   flag_div = 1'b0;
-                // end else begin
-                //   flag_div = 1'b1;
-                // end
-              end
-            end
-            3'b111: begin
-              regfile_we = 1'b1;
-              if (execute_state.insn_e[31:25] == 7'd0) begin
-                //and
-                data_rd_e = data_rs1_e & data_rs2_e;
-              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
-                //remu
-                data_rd_e = div_u_rem_reg;
-                // if (flag_div) begin
-                //   flag_div = 1'b0;
-                // end else begin
-                //   flag_div = 1'b1;
-                // end
-              end
-            end
-            default: begin
-              illegal_insn = 1'b1;
-              regfile_we   = 1'b0;
-            end
-          endcase
+        BNE: begin
+          //bne
+          regfile_we = 1'b0;
+          if (data_rs1_e != data_rs2_e) begin
+            did_branch = 1'b1;
+            f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+          end
+          else begin
+            did_branch = 1'b0;
+          end
         end
-        OpcodeJal: begin
+        BLT: begin
+          //blt
+          regfile_we = 1'b0;
+          if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
+            did_branch = 1'b1;
+            f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+          end
+          else begin
+            did_branch = 1'b0;
+          end
+        end
+        BGE: begin
+          //bge
+          regfile_we = 1'b0;
+          if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
+            did_branch = 1'b1;
+            f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+          end
+          else begin
+            did_branch = 1'b0;
+          end
+        end
+        BLTU: begin
+          //bltu
+          regfile_we = 1'b0;
+          if (data_rs1_e < data_rs2_e) begin
+            did_branch = 1'b1;
+            f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+          end
+          else begin
+            did_branch = 1'b0;
+          end
+        end
+        BGEU: begin //bgeu
+          regfile_we = 1'b0;
+          if (data_rs1_e >= data_rs2_e) begin
+            did_branch = 1'b1;
+            f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+          end
+          else begin
+            did_branch = 1'b0;
+          end
+        end
+        ADD: begin
+          //add
+          data_rd_e = cla_sum_reg;
+        end
+        SUB: begin
+          //sub
+          data_rd_e = cla_reg_add.sum;
+        end
+        MUL: begin
+          //mul
+          data_rd_e = (data_rs1_e * data_rs2_e) & 32'h00000000ffffffff;
+        end
+        SLL: begin
+          //sll
+          data_rd_e = data_rs1_e << (data_rs2_e[4:0]);
+        end
+        MULH: begin
+          //mulh
+          logic [63:0] inter_mulh;
+          inter_mulh = ($signed(data_rs1_e) * $signed(data_rs2_e));
+          data_rd_e  = inter_mulh[63:32];
+        end
+        SLT: begin
+          //slt
+          data_rd_e = $signed(data_rs1_e) < $signed(data_rs2_e) ? 1 : 0;
+        end
+        MULHSU: begin
+          //mulhsu
+          logic [63:0] inter_mulhsu;
+          inter_mulhsu = $signed(data_rs1_e) * $signed({1'b0, data_rs2_e});
+          data_rd_e = (inter_mulhsu[63:32]);
+        end
+        SLTU: begin
+          //sltu
+          data_rd_e = data_rs1_e < data_rs2_e ? 1 : 0;
+        end
+        MULHU: begin
+          //mulhu
+          logic [63:0] inter_mulhu;
+          inter_mulhu = ($unsigned(data_rs1_e) * $unsigned(data_rs2_e));
+          data_rd_e   = inter_mulhu[63:32];
+        end
+        XOR: begin
+          //xor
+          data_rd_e = data_rs1_e ^ data_rs2_e;
+        end
+        DIV: begin
+          if (data_rs2_e == 0) begin
+            data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
+          end
+          else if (data_rs1_e[31] != data_rs2_e[31]) begin
+            data_rd_e = ~div_qot_reg + 1'b1;
+            // data_rd_e= ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
+            //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
+          end
+          else begin
+            data_rd_e = div_qot_reg;  // case falls here (should be 3)
+          end
+        end
+        SRL: begin
+          //srl
+          regfile_we = 1'b1;
+          data_rd_e  = data_rs1_e >> (data_rs2_e[4:0]);
+        end
+        SRA: begin
+          //sra
+          regfile_we = 1'b1;
+          data_rd_e  = $signed(data_rs1_e) >>> $signed((data_rs2_e[4:0]));
+        end
+        DIVU: begin
+          //divu
+          if (flag_div == 1) begin
+            regfile_we = 1'b1;  //enable writing back to RF
+            if (data_rs2_e == 0) begin
+              data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
+            end
+            else begin
+              data_rd_e = div_u_qot_reg;  //we can write the quotient
+            end
+          end
+          else begin
+            regfile_we = 1'b0;  //disable writing back to RF
+          end
+        end
+        OR: begin
+          //or
+          regfile_we = 1'b1;
+          data_rd_e = data_rs1_e | data_rs2_e;
+        end
+        REM: begin
+          //rem
+          regfile_we = 1'b1;
+          if (data_rs1_e[31]) begin
+            data_rd_e = ((~div_rem_reg) + 1'b1);
+          end
+          else begin
+            regfile_we = 1'b1;
+            data_rd_e = div_rem_reg;
+          end
+        end
+        AND: begin
+          //and
+          regfile_we = 1'b1;
+          data_rd_e = data_rs1_e & data_rs2_e;
+        end
+        REMU: begin
+          //remu
+          regfile_we = 1'b1;
+          data_rd_e = div_u_rem_reg;
+        end
+        JAL: begin
           regfile_we = 1'b1;
           did_branch = 1'b1;
           data_rd_e  = f_pc_current + 4;
-          new_branch = f_pc_current + execute_state.imm_j_sext_e;
+          f_pc_next = f_pc_current + execute_state.imm_j_sext_e;
         end
-        OpcodeJalr: begin
+        JALR: begin
           regfile_we = 1'b1;
           did_branch = 1'b1;
           data_rd_e = f_pc_current + 4;
-          new_branch = ((data_rs1_e + execute_state.imm_i_sext_e) &
-                (32'b11111111111111111111111111111110));
+          f_pc_next=((data_rs1_e+execute_state.imm_i_sext_e)&
+          (32'b11111111111111111111111111111110));
         end
-        OpcodeLoad: begin
+        LB: begin
+          // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
+          // Ensure addres is aligned
           regfile_we = 1'b1;
-          // addr_to_dmem = {{temp_load_casing[31:2]}, 2'b00};
-          case (execute_state.insn_e[14:12])
-            3'b000: begin
-              // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
-              // Ensure addres is aligned
-              temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
-              case (temp_addr[1:0])
-                2'b00:
-                // aligned so we grab the first byte
-                data_rd_e = {
-                  {24{load_data_from_dmem[7]}}, load_data_from_dmem[7:0]
-                };
-                2'b01:
-                // mod 1 -> grab the second byte
-                data_rd_e = {
-                  {24{load_data_from_dmem[15]}}, load_data_from_dmem[15:8]
-                };
-                2'b10:
-                // mod 2 -> grab the third byte
-                data_rd_e = {
-                  {24{load_data_from_dmem[23]}}, load_data_from_dmem[23:16]
-                };
-                2'b11:
-                // mod 3 -> grab the 4th byte
-                data_rd_e = {
-                  {24{load_data_from_dmem[31]}}, load_data_from_dmem[31:24]
-                };
-                default: begin
-                  illegal_insn = 1'b1;
-                  regfile_we   = 1'b0;
-                end
-              endcase
-            end
-            3'b001: begin
-              // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
-              // Align to the nearest lower half-word boundary
-              // Assuming memory access returns a 32-bit word
-              temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
-              case (temp_addr[1])
-                1'b0: begin
-                  // Aligned access so we grab the first 16 bits
-                  data_rd_e = {{16{load_data_from_dmem[15]}}, load_data_from_dmem[15:0]};
-                end
-                1'b1: begin
-                  // Unaligned access, half-word crosses 32-bit word boundary
-                  // Grab the second 16 bits
-                  data_rd_e = {{16{load_data_from_dmem[31]}}, load_data_from_dmem[31:16]};
-                end
-                default: begin
-                  illegal_insn = 1'b1;
-                  regfile_we   = 1'b0;
-                end
-              endcase
-            end
-            3'b010: begin
-              // lw loads a 32-bit value from memory into rd
-              // Calculate memory address to load from
-              temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
-              data_rd_e = load_data_from_dmem;  // Data loaded from memory
-            end
-            3'b100: begin
-              // lbu loads an 8-bit value from mem, zext to 32 bits, then stores in rd
-              // Sign-extend based on the lowest 2 bits of the address
-              temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
-              case (temp_addr[1:0])
-                2'b00: data_rd_e = {24'b0, load_data_from_dmem[7:0]};  //mul of 4 (mod 0)
-                2'b01: data_rd_e = {24'b0, load_data_from_dmem[15:8]};  //mod 1
-                2'b10: data_rd_e = {24'b0, load_data_from_dmem[23:16]};  // mod 2
-                2'b11: data_rd_e = {24'b0, load_data_from_dmem[31:24]};  // mod 3
-                default: begin
-                  regfile_we   = 1'b0;
-                  illegal_insn = 1'b1;
-                end
-              endcase
-            end
-            3'b101: begin
-              // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
-              // Assuming memory access returns a 32-bit word
-              temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
-              case (temp_addr[1])
-                1'b0: begin
-                  // Aligned access
-                  data_rd_e = {16'b0, load_data_from_dmem[15:0]};
-                end
-                1'b1: begin
-                  // Unaligned access, half-word crosses 32-bit word boundary
-                  // Grab the second 16 bits
-                  data_rd_e = {16'b0, load_data_from_dmem[31:16]};
-                end
-                default: begin
-                  illegal_insn = 1'b1;
-                  regfile_we   = 1'b0;
-                end
-              endcase
-            end
+          temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
+          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          case (temp_addr[1:0])
+            2'b00:data_rd_e = {{24{load_data_from_dmem[7]}}, load_data_from_dmem[7:0]};
+            // aligned so we grab the first byte
+            2'b01: data_rd_e = {{24{load_data_from_dmem[15]}}, load_data_from_dmem[15:8]};
+            // mod 1 -> grab the second byte
+            2'b10:data_rd_e = {{24{load_data_from_dmem[23]}}, load_data_from_dmem[23:16]};
+            // mod 2 -> grab the third byte
+            2'b11: data_rd_e = {{24{load_data_from_dmem[31]}}, load_data_from_dmem[31:24]};
+            // mod 3 -> grab the 4th byte
             default: begin
-              temp_addr = 'd0;
               illegal_insn = 1'b1;
-              regfile_we = 1'b0;
+              regfile_we   = 1'b0;
             end
           endcase
-          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
         end
-        OpcodeStore: begin
-          // temp_addr = data_rs1_e + imm_s_sext;
-          temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
-          if (insn_sb) begin
+        LH: begin
+          // lh loads a 16-bit value from mem, SEXT to 32-bits, then stores in rd
+          // Align to the nearest lower half-word boundary
+          // Assuming memory access returns a 32-bit word
+          regfile_we = 1'b1;
+          temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
+          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          case (temp_addr[1])
+            1'b0:  data_rd_e = {{16{load_data_from_dmem[15]}}, load_data_from_dmem[15:0]};
+              // Aligned access so we grab the first 16 bits
+            1'b1: data_rd_e = {{16{load_data_from_dmem[31]}}, load_data_from_dmem[31:16]};
+              // Unaligned access, half-word crosses 32-bit word boundary
+              // Grab the second 16 bits
+            default: begin
+              illegal_insn = 1'b1;
+              regfile_we   = 1'b0;
+            end
+          endcase
+        end
+        LW: begin
+          // lw loads a 32-bit value from memory into rd
+          // Calculate memory address to load from
+          regfile_we = 1'b1;
+          temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
+          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          data_rd_e = load_data_from_dmem;  // Data loaded from memory
+        end
+        LBU: begin
+          // lbu loads an 8-bit value from mem, zext to 32 bits, then stores in rd
+          // Sign-extend based on the lowest 2 bits of the address
+          regfile_we = 1'b1;
+          temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
+          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          case (temp_addr[1:0])
+            2'b00: data_rd_e = {24'b0, load_data_from_dmem[7:0]};  //mul of 4 (mod 0)
+            2'b01: data_rd_e = {24'b0, load_data_from_dmem[15:8]};  //mod 1
+            2'b10: data_rd_e = {24'b0, load_data_from_dmem[23:16]};  // mod 2
+            2'b11: data_rd_e = {24'b0, load_data_from_dmem[31:24]};  // mod 3
+            default: begin
+              regfile_we   = 1'b0;
+              illegal_insn = 1'b1;
+            end
+          endcase
+        end
+        LHU: begin
+          // lhu loads a 16-bit value from mem, 0-fills to 32-bits, then stores in rd
+          // Assuming memory access returns a 32-bit word
+          regfile_we = 1'b1;
+          temp_addr = data_rs1_e + execute_state.imm_i_sext_e;
+          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          case (temp_addr[1])
+            1'b0: data_rd_e = {16'b0, load_data_from_dmem[15:0]};// Aligned access
+            1'b1: data_rd_e = {16'b0, load_data_from_dmem[31:16]};
+              // Unaligned access, half-word crosses 32-bit word boundary
+              // Grab the second 16 bits
+            default: begin
+              illegal_insn = 1'b1;
+              regfile_we   = 1'b0;
+            end
+          endcase
+        end
+        SB: begin
             //store byte
             // addr_to_dmem = {temp_addr[31:2], 2'b00};
+            temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
+            addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
             case (temp_addr[1:0])
               //aligned
               2'b00: begin
                 store_data_to_dmem[7:0] = data_rs2_e[7:0];
+                //mod 0
                 store_we_to_dmem = 4'b0001;
               end
               2'b01: begin
@@ -1150,52 +1110,51 @@ module DatapathPipelined (
                 //mod 2
                 store_we_to_dmem = 4'b0100;
               end
-              //mod3
               2'b11: begin
                 store_data_to_dmem[31 : 24] = data_rs2_e[7:0];
+                //mod3
                 store_we_to_dmem = 4'b1000;
               end
               default: begin
-                regfile_we   = 1'b0;
                 illegal_insn = 1'b1;
+                regfile_we = 1'b0;
               end
             endcase
-          end else if (insn_sh) begin
-            //store half
-            temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
-            // addr_to_dmem = {temp_add[31:2], 2'b00};
-            //allignment
-            case (temp_addr[1])
-              1'b0: begin
-                //aligned
-                store_data_to_dmem[15:0] = data_rs2_e[15:0];
-                store_we_to_dmem = 4'b0011;
-              end
-              1'b1: begin
-                // mod 1
-                store_data_to_dmem[31:16] = data_rs2_e[15:0];
-                store_we_to_dmem = 4'b1100;
-              end
-              default: begin
-                regfile_we   = 1'b0;
-                illegal_insn = 1'b1;
-              end
-            endcase
-          end else if (insn_sw) begin
-            //store word -> assuming fullt aligned
-            store_we_to_dmem = 4'b1111;
-            temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
-            // addr_to_dmem = {temp_add[31:2], 2'b00};
-            store_data_to_dmem[31:0] = data_rs2_e;
-          end else begin
-            temp_addr = 'd0;
-            regfile_we = 1'b0;
-            illegal_insn = 1'b1;
-          end
+        end
+        SH: begin
+          //store half
+          // addr_to_dmem = {temp_add[31:2], 2'b00};
+          //allignment
+          temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
           addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          case (temp_addr[1])
+            1'b0: begin
+              //aligned
+              store_data_to_dmem[15:0] = data_rs2_e[15:0];
+              store_we_to_dmem = 4'b0011;
+            end
+            1'b1: begin
+              // mod 1
+              store_data_to_dmem[31:16] = data_rs2_e[15:0];
+              store_we_to_dmem = 4'b1100;
+            end
+            default: begin
+              illegal_insn = 1'b1;
+              regfile_we = 1'b0;
+            end
+          endcase
+        end
+        SW: begin
+          //store word -> assuming fullt aligned
+          temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
+          addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
+          // addr_to_dmem = {temp_add[31:2], 2'b00};
+          store_we_to_dmem = 4'b1111;
+          store_data_to_dmem[31:0] = data_rs2_e;
         end
         default: begin
           did_branch = 1'b0;
+          f_pc_next = f_pc_current + 4;
         end
       endcase
     end
