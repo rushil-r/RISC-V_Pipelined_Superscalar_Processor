@@ -551,20 +551,24 @@ module DatapathPipelined (
   logic [`REG_SIZE] cla_input_1;
 
   always_comb begin
-    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && writeback_state.rd_w != 0) begin
+    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && writeback_state.rd_w != 0 &&
+    writeback_state.regfile_we_w != 0)begin
       // wx bypassing rs1 input
       cla_input_1 = writeback_state.alu_result_w;
-    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && memory_state.rd_m != 0) begin
+    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && memory_state.rd_m != 0 &&
+      memory_state.regfile_we_m != 0) begin
       // mx bypassing rs1 input
       cla_input_1 = memory_state.alu_result_m;
     end else begin
       cla_input_1 = data_rs1_e;
     end
 
-    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && writeback_state.rd_w != 0) begin
+    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && writeback_state.rd_w != 0 &&
+    writeback_state.regfile_we_w != 0) begin
       // wx bypassing rs2 input
       cla_input_2 = writeback_state.alu_result_w;
-    end else if ((memory_state.rd_m == execute_state.insn_rs2_e) && memory_state.rd_m != 0) begin
+    end else if ((memory_state.rd_m == execute_state.insn_rs2_e) && memory_state.rd_m != 0 &&
+      memory_state.regfile_we_m != 0) begin
       // mx bypassing rs2 input
       cla_input_2 = memory_state.alu_result_m;
     end else begin
@@ -603,8 +607,8 @@ module DatapathPipelined (
   divider_unsigned_pipelined div_u_alu (
       .clk(clk),
       .rst(rst),
-      .i_dividend(data_rs1_e),
-      .i_divisor(data_rs2_e),
+      .i_dividend(cla_input_1),
+      .i_divisor(cla_input_2),
       .o_remainder(div_u_rem_reg),
       .o_quotient(div_u_qot_reg)
   );
@@ -814,7 +818,7 @@ module DatapathPipelined (
             end
             3'b111: begin
               //andi
-              data_rd_e = data_rs1_e & execute_state.imm_i_sext_e;
+              data_rd_e = data_rs1 & execute_state.imm_i_sext_e;
             end
             default: begin
               regfile_we   = 1'b0;
@@ -839,7 +843,7 @@ module DatapathPipelined (
             end
             3'b001: begin
               //bne
-              if (data_rs1_e != data_rs2_e) begin
+              if (data_rs1 != data_rs2) begin
                 did_branch = 1'b1;
                 f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
               end
@@ -849,7 +853,8 @@ module DatapathPipelined (
               end
             end
             3'b100: begin
-              if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
+              //blt
+              if ($signed(data_rs1) < $signed(data_rs2)) begin
                 did_branch = 1'b1;
                 f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
               end
@@ -943,7 +948,7 @@ module DatapathPipelined (
             3'b011: begin
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //sltu
-                data_rd_e = data_rs1_e < data_rs2_e ? 1 : 0;
+                data_rd_e = data_rs1 < data_rs2 ? 1 : 0;
               end
               else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulhu
