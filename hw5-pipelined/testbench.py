@@ -184,12 +184,16 @@ async def testLui(dut):
 
 @cocotb.test()
 async def testLuiLui(dut):
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     "Run two lui independent insns"
     asm(dut, '''lui x1,0x12345
         lui x2,0x6789A''')
     await preTestSetup(dut)
 
     await ClockCycles(dut.clk, 7)
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     assert dut.datapath.rf.regs[2].value == 0x6789A000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
