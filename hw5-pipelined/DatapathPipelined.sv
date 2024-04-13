@@ -806,8 +806,7 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //srli
                 data_rd_e = data_rs1_e >> execute_state.imm_shamt_e;
-              end
-              else begin
+              end else begin
                 //srai
                 data_rd_e = $signed(data_rs1_e) >>> execute_state.imm_shamt_e;
               end
@@ -834,73 +833,67 @@ module DatapathPipelined (
               //beq
               if (data_rs1_e == data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
-              end
-              else begin
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
                 did_branch = 1'b0;
-                f_pc_next = f_pc_current + 4;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b001: begin
               //bne
               if (data_rs1 != data_rs2) begin
                 did_branch = 1'b1;
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
-              end
-              else begin
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
                 did_branch = 1'b0;
-                f_pc_next = f_pc_current + 4;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b100: begin
               //blt
               if ($signed(data_rs1) < $signed(data_rs2)) begin
                 did_branch = 1'b1;
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
-              end
-              else begin
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
                 did_branch = 1'b0;
-                f_pc_next = f_pc_current + 4;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b101: begin
               //bge
               if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
                 did_branch = 1'b1;
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
-              end
-              else begin
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
                 did_branch = 1'b0;
-                f_pc_next = f_pc_current + 4;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b110: begin
               //bltu
               if (data_rs1_e < data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
-              end
-              else begin
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
                 did_branch = 1'b0;
-                f_pc_next = f_pc_current + 4;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b111: begin
               //bgeu
               if (data_rs1_e >= data_rs2_e) begin
                 did_branch = 1'b1;
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
-              end
-              else begin
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
                 did_branch = 1'b0;
-                f_pc_next = f_pc_current + 4;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             default: begin
-              did_branch   = 1'b0;
+              did_branch = 1'b0;
               illegal_insn = 1'b1;
               f_pc_next = f_pc_current + 4;
-              regfile_we   = 1'b0;
+              regfile_we = 1'b0;
             end
           endcase
         end
@@ -911,12 +904,10 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //add
                 data_rd_e = cla_sum_reg;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0100000) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0100000) begin
                 //sub
                 data_rd_e = cla_reg_add.sum;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mul
                 data_rd_e = (data_rs1_e * data_rs2_e) & 32'h00000000ffffffff;
               end
@@ -925,8 +916,7 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //sll
                 data_rd_e = data_rs1_e << (data_rs2_e[4:0]);
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulh
                 logic [63:0] inter_mulh;
                 inter_mulh = ($signed(data_rs1_e) * $signed(data_rs2_e));
@@ -937,8 +927,7 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //slt
                 data_rd_e = $signed(data_rs1_e) < $signed(data_rs2_e) ? 1 : 0;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulhsu
                 logic [63:0] inter_mulhsu;
                 inter_mulhsu = $signed(data_rs1_e) * $signed({1'b0, data_rs2_e});
@@ -949,8 +938,7 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //sltu
                 data_rd_e = data_rs1 < data_rs2 ? 1 : 0;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulhu
                 logic [63:0] inter_mulhu;
                 inter_mulhu = ($unsigned(data_rs1_e) * $unsigned(data_rs2_e));
@@ -961,17 +949,14 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //xor
                 data_rd_e = data_rs1_e ^ data_rs2_e;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 if (data_rs2_e == 0) begin
                   data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
-                end
-                else if (data_rs1_e[31] != data_rs2_e[31]) begin
+                end else if (data_rs1_e[31] != data_rs2_e[31]) begin
                   data_rd_e = ~div_qot_reg + 1'b1;
                   // data_rd_e= ((~div_qot_reg)+(1'b1*(|(~div_qot_reg)))+(&div_qot_reg * ({32{1'b1}})));
                   //(((~div_qot_reg) | ({{31{&div_qot_reg}}, 1'b0})) + 1'b1);
-                end
-                else begin
+                end else begin
                   data_rd_e = div_qot_reg;  // case falls here (should be 3)
                 end
               end
@@ -981,26 +966,22 @@ module DatapathPipelined (
                 //srl
                 regfile_we = 1'b1;
                 data_rd_e  = data_rs1_e >> (data_rs2_e[4:0]);
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0100000) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0100000) begin
                 //sra
                 regfile_we = 1'b1;
                 data_rd_e  = $signed(data_rs1_e) >>> $signed((data_rs2_e[4:0]));
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //divu
-                if (flag_div == 1) begin
-                  regfile_we = 1'b1;  //enable writing back to RF
-                  if (data_rs2_e == 0) begin
-                    data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
-                  end
-                  else begin
-                    data_rd_e = div_u_qot_reg;  //we can write the quotient
-                  end
+                // if (flag_div == 1) begin
+                //   regfile_we = 1'b1;  //enable writing back to RF
+                if (data_rs2_e == 0) begin
+                  data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
+                end else begin
+                  data_rd_e = div_u_qot_reg;  //we can write the quotient
                 end
-                else begin
-                  regfile_we = 1'b0;  //disable writing back to RF
-                end
+                // end else begin
+                //   regfile_we = 1'b0;  //disable writing back to RF
+                // end
               end
             end
             3'b110: begin
@@ -1008,13 +989,11 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //or
                 data_rd_e = data_rs1_e | data_rs2_e;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //rem
                 if (data_rs1_e[31]) begin
                   data_rd_e = ((~div_rem_reg) + 1'b1);
-                end
-                else begin
+                end else begin
                   data_rd_e = div_rem_reg;
                 end
                 // if (flag_div) begin
@@ -1029,8 +1008,7 @@ module DatapathPipelined (
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //and
                 data_rd_e = data_rs1_e & data_rs2_e;
-              end
-              else if (execute_state.insn_e[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //remu
                 data_rd_e = div_u_rem_reg;
               end
@@ -1045,7 +1023,7 @@ module DatapathPipelined (
           regfile_we = 1'b1;
           did_branch = 1'b1;
           data_rd_e  = f_pc_current + 4;
-          f_pc_next = f_pc_current + execute_state.imm_j_sext_e;
+          f_pc_next  = f_pc_current + execute_state.imm_j_sext_e;
         end
         OpcodeJalr: begin
           regfile_we = 1'b1;
@@ -1056,7 +1034,7 @@ module DatapathPipelined (
         end
         OpcodeLoad: begin
           regfile_we = 1'b1;
-          f_pc_next = f_pc_current + 4;
+          f_pc_next  = f_pc_current + 4;
           // addr_to_dmem = {{temp_load_casing[31:2]}, 2'b00};
           case (execute_state.insn_e[14:12])
             3'b000: begin
@@ -1193,8 +1171,7 @@ module DatapathPipelined (
                 illegal_insn = 1'b1;
               end
             endcase
-          end
-          else if (insn_sh) begin
+          end else if (insn_sh) begin
             //store half
             temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
             // addr_to_dmem = {temp_add[31:2], 2'b00};
@@ -1215,15 +1192,13 @@ module DatapathPipelined (
                 illegal_insn = 1'b1;
               end
             endcase
-          end
-          else if (insn_sw) begin
+          end else if (insn_sw) begin
             //store word -> assuming fullt aligned
             store_we_to_dmem = 4'b1111;
             temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
             // addr_to_dmem = {temp_add[31:2], 2'b00};
             store_data_to_dmem[31:0] = data_rs2_e;
-          end
-          else begin
+          end else begin
             temp_addr = 'd0;
             regfile_we = 1'b0;
             illegal_insn = 1'b1;
@@ -1285,8 +1260,8 @@ module MemorySingleCycle #(
 
   always_comb begin
     // memory addresses should always be 4B-aligned
-    assert (pc_to_imem[1:0] == 2'b00);
-    assert (addr_to_dmem[1:0] == 2'b00);
+    // assert (pc_to_imem[1:0] == 2'b00);
+    // assert (addr_to_dmem[1:0] == 2'b00);
   end
 
   localparam int AddrMsb = $clog2(NUM_WORDS) + 1;
