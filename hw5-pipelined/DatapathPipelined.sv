@@ -551,24 +551,24 @@ module DatapathPipelined (
   logic [`REG_SIZE] cla_input_1;
 
   always_comb begin
-    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && writeback_state.rd_w != 0 &&
-    writeback_state.regfile_we_w != 0)begin
+    if (((writeback_state.rd_w == execute_state.insn_rs1_e) &&
+    writeback_state.regfile_we_w != 0) && (writeback_state.rd_w != 0)) begin
       // wx bypassing rs1 input
       cla_input_1 = writeback_state.alu_result_w;
-    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && memory_state.rd_m != 0 &&
-      memory_state.regfile_we_m != 0) begin
+    end else if (((memory_state.rd_m == execute_state.insn_rs1_e) &&
+      memory_state.regfile_we_m != 0) && (memory_state.rd_m != 0)) begin
       // mx bypassing rs1 input
       cla_input_1 = memory_state.alu_result_m;
     end else begin
       cla_input_1 = data_rs1_e;
     end
 
-    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && writeback_state.rd_w != 0 &&
-    writeback_state.regfile_we_w != 0) begin
+    if (((writeback_state.rd_w == execute_state.insn_rs2_e) &&
+    writeback_state.regfile_we_w != 0) && (writeback_state.rd_w != 0)) begin
       // wx bypassing rs2 input
       cla_input_2 = writeback_state.alu_result_w;
-    end else if ((memory_state.rd_m == execute_state.insn_rs2_e) && memory_state.rd_m != 0 &&
-      memory_state.regfile_we_m != 0) begin
+    end else if (((memory_state.rd_m == execute_state.insn_rs2_e) &&
+      memory_state.regfile_we_m != 0) && (memory_state.rd_m != 0)) begin
       // mx bypassing rs2 input
       cla_input_2 = memory_state.alu_result_m;
     end else begin
@@ -776,7 +776,7 @@ module DatapathPipelined (
           f_pc_next = f_pc_current + 4;
         end
         OpcodeAuipc: begin
-          data_rd_e = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
+          data_rd_e = f_pc_current + (execute_state.imm_u_sext_e << 12);  // 20-bit bitshift left 12
           f_pc_next = f_pc_current + 4;
         end
         OpcodeRegImm: begin

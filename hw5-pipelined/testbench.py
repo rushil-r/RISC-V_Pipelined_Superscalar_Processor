@@ -274,6 +274,8 @@ async def testWD2(dut):
 @cocotb.test()
 async def testX0Bypassing(dut):
     "Check that reads/writes to x0 are not bypassed"
+    # for idx, reg in enumerate(dut.datapath.rf.regs): 
+    #     print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     asm(dut, '''
         lui x0,0x12345
         add x1,x0,x0 # should not use MX bypass
@@ -282,8 +284,9 @@ async def testX0Bypassing(dut):
         addi x4,x2,1
         ''')
     await preTestSetup(dut)
-
     await ClockCycles(dut.clk, 10)
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[1].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     assert dut.datapath.rf.regs[2].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     assert dut.datapath.rf.regs[3].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
@@ -527,7 +530,10 @@ async def riscvTest(dut, binaryPath=None, tracingMode=None):
     dut._log.info(f'Running RISC-V test at {binaryPath} with tracingMode == {tracingMode}')
     for cycles in range(TIMEOUT_CYCLES):
         await RisingEdge(dut.clk)
-
+        # if (cycles > 0) and (0 == cycles % 10):
+        #     print("CYCLE: " + str(cycles) + "\n")
+        #     for idx, reg in enumerate(dut.datapath.rf.regs):
+        #         print(f'POST Register: {idx} contains value: {str(reg.value)}')
         handleTrace(dut, trace, cycles, tracingMode)
         if dut.halt.value == 1:
             # see RVTEST_PASS and RVTEST_FAIL macros in riscv-tests/env/p/riscv_test.h
