@@ -139,25 +139,31 @@ typedef struct packed {
 /** state at the start of Memory stage */
 // stores: result of ALU, REMOVED : data to write (store insn), register for detinations, and flags indicating for mem_read and read_write
 typedef struct packed {
+  logic [`REG_SIZE] pc_m;
   logic [31:0] alu_result_m;
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
-  logic regfile_we_m; //this is the write enable signal for the RF
+  logic branch_m;  //tells us if we branch
+  logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
+  logic [`REG_SIZE] pc_n_m;
 } stage_memory_t;
 
 /** state at the start of Writeback stage */
 // stores: result of ALU and destination register
 typedef struct packed {
+  logic [`REG_SIZE] pc_w;
   logic [`REG_SIZE] alu_result_w;
   logic [`INSN_SIZE] insn_w;
   logic [4:0] rd_w;
-  logic regfile_we_w; //this is the write enable signal for the RF
-  logic mem_read_w; //tells us if we read from datamemory
-  logic mem_write_w; //tells us if we wrote to datamemory
+  logic regfile_we_w;  //this is the write enable signal for the RF
+  logic mem_read_w;  //tells us if we read from datamemory
+  logic mem_write_w;  //tells us if we wrote to datamemory
+  logic branch_w;  //tells us if we branch
   cycle_status_e cycle_status_w;
+  logic [`REG_SIZE] pc_n_w;
 } stage_writeback_t;
 
 module DatapathPipelined (
@@ -214,8 +220,9 @@ module DatapathPipelined (
 
   logic [`REG_SIZE] f_pc_current, f_pc_next;
   wire [`REG_SIZE] f_insn;
+  logic [`REG_SIZE] f_insn_temp;
   cycle_status_e f_cycle_status;
-
+  cycle_status_e f_cycle_status_temp;
   // program counter
   logic flag_div;
   always_ff @(posedge clk) begin
@@ -225,7 +232,12 @@ module DatapathPipelined (
       f_cycle_status <= CYCLE_NO_STALL;
     end else begin
       f_cycle_status <= CYCLE_NO_STALL;
-      f_pc_current   <= f_pc_current + 4;
+      // set pc depending on if we took the branch
+      if (branch_e) begin
+        f_pc_current <= pc_b_e;
+      end else begin
+        f_pc_current <= f_pc_current + 4;
+      end
     end
   end
   // send PC to imem
@@ -242,6 +254,22 @@ module DatapathPipelined (
       .disasm(f_disasm)
   );
 
+  //lets handle signals upon a branch
+  always_comb begin
+    if (branch_e) begin
+      // flush out our instruction
+      f_pc_next = 32'b0;
+      f_insn_temp = 32'b0;
+      f_cycle_status_temp = CYCLE_TAKEN_BRANCH;
+    end else begin
+      // no branch, no problem
+      f_pc_next = f_pc_current;
+      f_insn_temp = f_insn;
+      f_cycle_status_temp = f_cycle_status;
+    end
+  end
+
+
   /****************/
   /* DECODE STAGE */
   /****************/
@@ -249,16 +277,36 @@ module DatapathPipelined (
   // this shows how to package up state in a `struct packed`, and how to pass it between stages
   // Sequental capture of the instruction & state
   stage_decode_t decode_state;
+  cycle_status_e cycle_status_d_temp;
+  logic [`REG_SIZE] insn_d_temp;
+  logic [`REG_SIZE] pc_d_temp;
   always_ff @(posedge clk) begin
     if (rst) begin
       decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET, regfile_we_d: 0};
     end else begin
       begin
-        decode_state <= '{pc_d: f_pc_current, insn_d: f_insn, cycle_status_d: f_cycle_status,
-         regfile_we_d: regfile_we};
+        decode_state <= '{
+            pc_d: f_pc_current,
+            insn_d: f_insn_temp,
+            cycle_status_d: f_cycle_status,
+            regfile_we_d: regfile_we
+        };
       end
     end
   end
+
+  // handle reset signals in decode MUX feeding into execute stage
+ always_comb begin
+    if(branch_e) begin
+      cycle_status_d_temp = CYCLE_TAKEN_BRANCH;
+      insn_d_temp = 32'b0;
+      pc_d_temp = 32'b0;
+    end else begin
+      cycle_status_d_temp = decode_state.cycle_status_d;
+      insn_d_temp = decode_state.insn_d;
+      pc_d_temp = decode_state.pc_d;
+    end
+ end
   wire [255:0] d_disasm;
   Disasm #(
       .PREFIX("D")
@@ -426,6 +474,8 @@ module DatapathPipelined (
   logic [31:0] data_rs1_e;
   logic [31:0] data_rs2_e;
   logic [31:0] data_rd_e;
+  logic branch_e;
+  logic [`REG_SIZE] pc_b_e;
   logic [4:0] rs1_e;
   logic [4:0] rs2_e;
   logic [4:0] rd_e;
@@ -452,9 +502,9 @@ module DatapathPipelined (
       };
     end else begin
       execute_state <= '{
-          pc_e: decode_state.pc_d,
-          cycle_status_ee: decode_state.cycle_status_d,
-          insn_e: decode_state.insn_d,
+          pc_e: pc_d_temp,
+          cycle_status_ee: cycle_status_d_temp,
+          insn_e: insn_d_temp,
           insn_opcode_e: insn_opcode,
           insn_rd_e: insn_rd,
           insn_rs1_e: insn_rs1,
@@ -477,6 +527,7 @@ module DatapathPipelined (
   logic [31:0] temp_addr;
   logic [31:0] temp_load_casing;
   logic illegal_insn;
+  logic is_branch;
 
   wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
@@ -504,45 +555,53 @@ module DatapathPipelined (
       .rst(rst)
   );
 
-logic[`REG_SIZE] cla_input_2;
-logic [`REG_SIZE] cla_input_1;
+  logic [`REG_SIZE] cla_input_2;
+  logic [`REG_SIZE] cla_input_1;
 
-always_comb begin
-  if(writeback_state.rd_w == execute_state.insn_rs1_e) begin
-    // wx bypassing rs1 input
-    cla_input_1 = writeback_state.alu_result_w;
-  end else if (memory_state.rd_m == execute_state.insn_rs1_e) begin
-    // mx bypassing rs1 input
-    cla_input_1 = memory_state.alu_result_m;
-  end else begin
-    cla_input_1 = data_rs1_e;
-  end
+  always_comb begin
+    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && writeback_state.rd_w != 0) begin
+      // wx bypassing rs1 input
+      cla_input_1 = writeback_state.alu_result_w;
+    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && memory_state.rd_m != 0) begin
+      // mx bypassing rs1 input
+      cla_input_1 = memory_state.alu_result_m;
+    end else begin
+      cla_input_1 = data_rs1_e;
+    end
 
-  if(writeback_state.rd_w == execute_state.insn_rs2_e) begin
-    // wx bypassing rs2 input
-    cla_input_2 = writeback_state.alu_result_w;
-  end else if(memory_state.rd_m == execute_state.insn_rs2_e) begin
-    // mx bypassing rs2 input
-    cla_input_2  = memory_state.alu_result_m;
-  end  else begin
-    cla_input_2 = data_rs2_e;
-  end
-  // WD Bypassing
-  if(writeback_state.rd_w == insn_rs1)begin
+    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && writeback_state.rd_w != 0) begin
+      // wx bypassing rs2 input
+      cla_input_2 = writeback_state.alu_result_w;
+    end else if ((memory_state.rd_m == execute_state.insn_rs2_e) && memory_state.rd_m != 0) begin
+      // mx bypassing rs2 input
+      cla_input_2 = memory_state.alu_result_m;
+    end else begin
+      cla_input_2 = data_rs2_e;
+    end
+
+    if ((execute_state.insn_e[31:25] == 7'h20) && (execute_state.insn_e[14:12] == 3'b000) && (execute_state.insn_e[6:0] == 7'h33)) begin
+      cla_input_2 = ~cla_input_2 + 1'b1;
+    end else if ((execute_state.insn_e[6:0]) == 7'h13) begin
+      cla_input_2 = execute_state.imm_i_sext_e;
+    end else begin
+      cla_input_2 = cla_input_2;
+    end
+    // WD Bypassing
+    if ((writeback_state.rd_w == insn_rs1) && writeback_state.rd_w != 0) begin
       data_rs1 = writeback_state.alu_result_w;
       data_rs2 = data_rs2_temp;
-  end else if (writeback_state.rd_w == insn_rs2) begin
+    end else if ((writeback_state.rd_w == insn_rs2) && writeback_state.rd_w != 0) begin
       data_rs2 = writeback_state.alu_result_w;
       data_rs1 = data_rs1_temp;
-  end else begin
-    data_rs1 = data_rs1_temp;
-    data_rs2 = data_rs2_temp;
+    end else begin
+      data_rs1 = data_rs1_temp;
+      data_rs2 = data_rs2_temp;
+    end
   end
-end
 
-// TODO: Remove these extra CLA's and dividers
+  // TODO: Remove these extra CLA's and dividers
   cla cla_ops (
-      .a  (data_rs1_e),
+      .a  (cla_input_1),
       .b  (execute_state.imm_i_sext_e),
       .cin(1'b0),
       .sum(cla_sum)
@@ -552,12 +611,6 @@ end
       .b  (cla_input_2),
       .cin(1'b0),
       .sum(cla_sum_reg)
-  );
-  cla cla_reg_sub (
-      .a  (data_rs1_e),
-      .b  ((~data_rs2_e) + 1'b1),
-      .cin(1'b0),
-      .sum(cla_diff_reg)
   );
   divider_unsigned_pipelined div_u_alu (
       .clk(clk),
@@ -591,15 +644,33 @@ end
   /*******************/
 
   stage_memory_t memory_state;
-  always_ff @(posedge clk)begin
-    if(rst)begin
-      memory_state <= '{alu_result_m: 0, insn_m: 0, regfile_we_m: 0, mem_read_m: 0,mem_write_m: 0,
-      cycle_status_m: CYCLE_RESET, rd_m: 0};
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      memory_state <= '{
+          pc_m: 0,
+          alu_result_m: 0,
+          insn_m: 0,
+          regfile_we_m: 0,
+          mem_read_m: 0,
+          mem_write_m: 0,
+          branch_m: 0,
+          cycle_status_m: CYCLE_RESET,
+          rd_m: 0,
+          pc_n_m: 0
+      };
     end else begin
-      memory_state <= '{alu_result_m: data_rd_e , insn_m:execute_state.insn_e,
-      regfile_we_m: execute_state.regfile_we_e,
-      mem_read_m: is_read_insn,mem_write_m:is_write_insn,rd_m: execute_state.insn_rd_e,
-      cycle_status_m: execute_state.cycle_status_ee};
+      memory_state <= '{
+          pc_m: execute_state.pc_e,
+          alu_result_m: data_rd_e,
+          insn_m: execute_state.insn_e,
+          regfile_we_m: execute_state.regfile_we_e,
+          mem_read_m: is_read_insn,
+          mem_write_m: is_write_insn,
+          branch_m: is_branch,
+          cycle_status_m: execute_state.cycle_status_ee,
+          rd_m: execute_state.insn_rd_e,
+          pc_n_m: f_pc_next
+      };
     end
   end
   wire [255:0] m_disasm;
@@ -615,23 +686,46 @@ end
   /*******************/
   stage_writeback_t writeback_state;
   always_ff @(posedge clk) begin
-    if(rst)begin
-      writeback_state <= '{alu_result_w: 0, insn_w: 0, mem_read_w: 0,mem_write_w: 0,
-      cycle_status_w: CYCLE_RESET, rd_w: 0, regfile_we_w: 0};
+    if (rst) begin
+      writeback_state <= '{
+          pc_w: 0,
+          alu_result_w: 0,
+          insn_w: 0,
+          mem_read_w: 0,
+          branch_w: 0,
+          mem_write_w: 0,
+          cycle_status_w: CYCLE_RESET,
+          rd_w: 0,
+          regfile_we_w: 0,
+          pc_n_w: 0
+      };
     end else begin
-      writeback_state <= '{alu_result_w: memory_state.alu_result_m, insn_w: memory_state.insn_m,
-      mem_read_w: memory_state.mem_read_m,mem_write_w: memory_state.mem_write_m,
-      cycle_status_w: memory_state.cycle_status_m, rd_w: memory_state.rd_m,
-      regfile_we_w: memory_state.regfile_we_m};
+      writeback_state <= '{
+          pc_w: memory_state.pc_m,
+          alu_result_w: memory_state.alu_result_m,
+          insn_w: memory_state.insn_m,
+          mem_read_w: memory_state.mem_read_m,
+          branch_w: memory_state.branch_m,
+          mem_write_w: memory_state.mem_write_m,
+          cycle_status_w: memory_state.cycle_status_m,
+          rd_w: memory_state.rd_m,
+          regfile_we_w: memory_state.regfile_we_m,
+          pc_n_w: memory_state.pc_n_m
+      };
     end
   end
+
+  assign trace_writeback_cycle_status = writeback_state.cycle_status_w;
+  assign trace_writeback_insn         = writeback_state.insn_w;
+  assign trace_writeback_pc           = writeback_state.pc_w;
+  logic [`REG_SIZE] pc_temp;
   always_comb begin
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
-    if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu))) begin
-      f_pc_next = f_pc_current + 4;
-    end
+    // if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) && !(insn_beq || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
+    //   f_pc_next = f_pc_current + 4;
+    // end
     if (insn_lw || insn_lb || insn_lbu || insn_lh || insn_lhu) begin
       is_write_insn = 1;
     end else begin
@@ -642,8 +736,13 @@ end
     end else begin
       is_read_insn = 0;
     end
-    regfile_we = 1'b0;
-    //f_pc_next = f_pc_current + 4;
+    if (insn_beq || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal ||
+    insn_jalr)
+    begin
+      is_branch = 1;
+    end else begin
+      is_branch = 0;
+    end
     temp_addr = 'd0;
     addr_to_dmem = 'd0;
     store_we_to_dmem = 4'b0000;
@@ -652,37 +751,49 @@ end
       halt = 1'b1;
     end
     // TODO: Finsh for all insns!
-    case(insn_opcode) //note derived from decode stage
-        OpcodeLui: begin
-          regfile_we = 1'b1;
-        end
-        OpcodeAuipc: begin
-          regfile_we = 1'b1;
-        end
-        OpcodeRegImm: begin
-          regfile_we = 1'b1;
-        end
-         OpcodeRegReg: begin
-          regfile_we = 1'b1;
-         end
-         default begin
-          regfile_we = 1'b0;
-         end
+    case (insn_opcode)  //note derived from decode stage
+      OpcodeLui: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeAuipc: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeRegImm: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeRegReg: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeJal: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeJalr: begin
+        regfile_we = 1'b1;
+      end
+      OpcodeLoad: begin
+        regfile_we = 1'b1;
+      end
+      default begin
+        regfile_we = 1'b0;
+      end
     endcase
-    if (execute_state.cycle_status_ee == CYCLE_RESET)begin
-        data_rd_e = 0;
+    if (execute_state.cycle_status_ee == CYCLE_RESET) begin
+      data_rd_e = 0;
+      branch_e = 1'b0;
     end else begin
+      branch_e = 1'b0;
+      pc_temp = 32'b0;
       // TODO: Finish case updates for all insns!
       case (execute_state.insn_opcode_e)
         OpcodeMiscMem: begin
-          f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
+          // f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
-          data_rd_e  = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
+          data_rd_e = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
         end
         OpcodeAuipc: begin
-          data_rd_e  = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
+          data_rd_e = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
         end
         OpcodeRegImm: begin
           case (execute_state.insn_e[14:12])
@@ -707,7 +818,7 @@ end
               data_rd_e = data_rs1_e ^ execute_state.imm_i_sext_e;
             end
             3'b101: begin
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //srli
                 data_rd_e = data_rs1_e >> execute_state.imm_shamt_e;
               end else begin
@@ -736,41 +847,49 @@ end
             3'b000: begin
               //beq
               if (data_rs1_e == data_rs2_e) begin
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+                branch_e = 1'b1;
+                pc_temp = f_pc_current + execute_state.imm_b_sext_e;
               end
             end
             3'b001: begin
               //bne
               if (data_rs1_e != data_rs2_e) begin
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+                branch_e = 1'b1;
+                pc_temp = f_pc_current + execute_state.imm_b_sext_e;
               end
             end
             3'b100: begin
               if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+                branch_e = 1'b1;
+                pc_temp = f_pc_current + execute_state.imm_b_sext_e;
               end
             end
             3'b101: begin
               //bge
               if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+                branch_e = 1'b1;
+
+                pc_temp = f_pc_current + execute_state.imm_b_sext_e;
               end
             end
             3'b110: begin
               //bltu
               if (data_rs1_e < data_rs2_e) begin
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+                branch_e = 1'b1;
+                pc_temp = f_pc_current + execute_state.imm_b_sext_e;
               end
             end
             3'b111: begin
               //bgeu
               if (data_rs1_e >= data_rs2_e) begin
-                f_pc_next = f_pc_current + execute_state.imm_b_sext_e;
+                branch_e = 1'b1;
+                pc_temp = f_pc_current + execute_state.imm_b_sext_e;
               end
             end
             default: begin
               illegal_insn = 1'b1;
               regfile_we   = 1'b0;
+              branch_e = 1'b0;
             end
           endcase
         end
@@ -780,19 +899,19 @@ end
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //add
                 data_rd_e = cla_sum_reg;
-              end else if (insn_from_imem[31:25] == 7'b0100000) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0100000) begin
                 //sub
-                data_rd_e = cla_reg_sub.sum;
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+                data_rd_e = cla_reg_add.sum;
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mul
                 data_rd_e = (data_rs1_e * data_rs2_e) & 32'h00000000ffffffff;
               end
             end
             3'b001: begin
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //sll
                 data_rd_e = data_rs1_e << (data_rs2_e[4:0]);
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulh
                 logic [63:0] inter_mulh;
                 inter_mulh = ($signed(data_rs1_e) * $signed(data_rs2_e));
@@ -800,10 +919,10 @@ end
               end
             end
             3'b010: begin
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //slt
                 data_rd_e = $signed(data_rs1_e) < $signed(data_rs2_e) ? 1 : 0;
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulhsu
                 logic [63:0] inter_mulhsu;
                 inter_mulhsu = $signed(data_rs1_e) * $signed({1'b0, data_rs2_e});
@@ -811,10 +930,10 @@ end
               end
             end
             3'b011: begin
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //sltu
                 data_rd_e = data_rs1_e < data_rs2_e ? 1 : 0;
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulhu
                 logic [63:0] inter_mulhu;
                 inter_mulhu = ($unsigned(data_rs1_e) * $unsigned(data_rs2_e));
@@ -822,10 +941,10 @@ end
               end
             end
             3'b100: begin
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //xor
                 data_rd_e = data_rs1_e ^ data_rs2_e;
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 if (data_rs2_e == 0) begin
                   data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
                 end else if (data_rs1_e[31] != data_rs2_e[31]) begin
@@ -838,15 +957,15 @@ end
               end
             end
             3'b101: begin
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //srl
                 regfile_we = 1'b1;
                 data_rd_e  = data_rs1_e >> (data_rs2_e[4:0]);
-              end else if (insn_from_imem[31:25] == 7'b0100000) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0100000) begin
                 //sra
                 regfile_we = 1'b1;
                 data_rd_e  = $signed(data_rs1_e) >>> $signed((data_rs2_e[4:0]));
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //divu
                 if (flag_div == 1) begin
                   regfile_we = 1'b1;  //enable writing back to RF
@@ -862,10 +981,10 @@ end
             end
             3'b110: begin
               regfile_we = 1'b1;
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //or
                 data_rd_e = data_rs1_e | data_rs2_e;
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //rem
                 if (data_rs1_e[31]) begin
                   data_rd_e = ((~div_rem_reg) + 1'b1);
@@ -881,10 +1000,10 @@ end
             end
             3'b111: begin
               regfile_we = 1'b1;
-              if (insn_from_imem[31:25] == 7'd0) begin
+              if (execute_state.insn_e[31:25] == 7'd0) begin
                 //and
                 data_rd_e = data_rs1_e & data_rs2_e;
-              end else if (insn_from_imem[31:25] == 7'b0000001) begin
+              end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //remu
                 data_rd_e = div_u_rem_reg;
                 // if (flag_div) begin
@@ -903,18 +1022,20 @@ end
         OpcodeJal: begin
           regfile_we = 1'b1;
           data_rd_e  = f_pc_current + 4;
-          f_pc_next  = f_pc_current + execute_state.imm_j_sext_e;
+          branch_e = 1'b1;
+          pc_temp  = f_pc_current + execute_state.imm_j_sext_e;
         end
         OpcodeJalr: begin
           regfile_we = 1'b1;
           data_rd_e = f_pc_current + 4;
-          f_pc_next = ((data_rs1_e + execute_state.imm_i_sext_e) &
+          pc_temp = ((data_rs1_e + execute_state.imm_i_sext_e) &
                 (32'b11111111111111111111111111111110));
+          branch_e = 1'b1;
         end
         OpcodeLoad: begin
           regfile_we = 1'b1;
           // addr_to_dmem = {{temp_load_casing[31:2]}, 2'b00};
-          case (insn_from_imem[14:12])
+          case (execute_state.insn_e[14:12])
             3'b000: begin
               // lb loads an 8-bit value from mem, SEXT to 32 bits, then stores in rd
               // Ensure addres is aligned
@@ -1088,6 +1209,14 @@ end
     end
     // f_pc_next = f_pc_current+4
     //^^^^^ relocated to inside case statements to allow for branching logic
+  end
+
+  always_comb begin
+    if(execute_state.insn_opcode_e == OpcodeJalr)begin
+      pc_b_e = pc_temp;
+    end else begin
+      pc_b_e = execute_state.pc_e + pc_temp;
+    end
   end
 endmodule
 
