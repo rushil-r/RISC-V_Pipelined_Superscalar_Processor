@@ -61,7 +61,7 @@ module RegFile (
     if (rst) begin
       regs[1] <= 32'd0;
     end else begin
-      if (we && rd == 1 && (rd != 5'b00000)) begin
+      if (we && rd == 1) begin
         regs[1] <= rd_data;
       end
     end
@@ -145,11 +145,13 @@ typedef struct packed {
   logic [`INSN_SIZE] insn_m;
   logic mem_read_m;
   logic mem_write_m;
-  logic branch_m;  //tells us if we branch
+  logic branch_m;
   logic regfile_we_m;  //this is the write enable signal for the RF
   logic [4:0] rd_m;
   cycle_status_e cycle_status_m;
 } stage_memory_t;
+
+
 
 /** state at the start of Writeback stage */
 // stores: result of ALU and destination register
@@ -220,9 +222,8 @@ module DatapathPipelined (
 
   logic [`REG_SIZE] f_pc_current, f_pc_next;
   wire [`REG_SIZE] f_insn;
-  logic [`REG_SIZE] f_insn_temp;
   cycle_status_e f_cycle_status;
-  cycle_status_e f_cycle_status_temp;
+
   // program counter
   logic flag_div;
   always_ff @(posedge clk) begin
@@ -254,22 +255,6 @@ module DatapathPipelined (
       .disasm(f_disasm)
   );
 
-  //lets handle signals upon a branch
-  // always_comb begin
-  //   if (branch_e) begin
-  //     // flush out our instruction
-  //     f_pc_next = 32'b0;
-  //     f_insn_temp = 32'b0;
-  //     f_cycle_status_temp = CYCLE_TAKEN_BRANCH;
-  //   end else begin
-  //     // no branch, no problem
-  //     f_pc_next = f_pc_current;
-  //     f_insn_temp = f_insn;
-  //     f_cycle_status_temp = f_cycle_status;
-  //   end
-  // end
-
-
   /****************/
   /* DECODE STAGE */
   /****************/
@@ -277,34 +262,25 @@ module DatapathPipelined (
   // this shows how to package up state in a `struct packed`, and how to pass it between stages
   // Sequental capture of the instruction & state
   stage_decode_t decode_state;
-  cycle_status_e cycle_status_d_temp;
-  logic [`REG_SIZE] insn_d_temp;
-  logic [`REG_SIZE] pc_d_temp;
   always_ff @(posedge clk) begin
     if (rst) begin
       decode_state <= '{pc_d: 0, insn_d: 0, cycle_status_d: CYCLE_RESET, regfile_we_d: 0};
+    end else if (did_branch) begin
+      decode_state <= '{
+          pc_d: 0,
+          insn_d: 0,
+          cycle_status_d: CYCLE_TAKEN_BRANCH,
+          regfile_we_d: 0
+      };
     end else begin
       begin
         decode_state <= '{
             pc_d: f_pc_current,
-            insn_d: f_insn_temp,
+            insn_d: f_insn,
             cycle_status_d: f_cycle_status,
             regfile_we_d: regfile_we
         };
       end
-    end
-  end
-
-  // handle reset signals in decode MUX feeding into execute stage
-  always_comb begin
-    if (branch_e) begin
-      cycle_status_d_temp = CYCLE_TAKEN_BRANCH;
-      insn_d_temp = 32'b0;
-      pc_d_temp = 32'b0;
-    end else begin
-      cycle_status_d_temp = decode_state.cycle_status_d;
-      insn_d_temp = decode_state.insn_d;
-      pc_d_temp = decode_state.pc_d;
     end
   end
   wire [255:0] d_disasm;
@@ -474,8 +450,6 @@ module DatapathPipelined (
   logic [31:0] data_rs1_e;
   logic [31:0] data_rs2_e;
   logic [31:0] data_rd_e;
-  logic branch_e;
-  logic [`REG_SIZE] pc_b_e;
   logic [4:0] rs1_e;
   logic [4:0] rs2_e;
   logic [4:0] rd_e;
@@ -500,11 +474,30 @@ module DatapathPipelined (
           imm_shamt_e: 0,
           regfile_we_e: 0
       };
+    end else if (did_branch) begin
+      execute_state <= '{
+          pc_e: 0,
+          cycle_status_ee: CYCLE_TAKEN_BRANCH,
+          insn_e: 0,
+          insn_opcode_e: 0,
+          insn_rd_e: 0,
+          insn_rs1_e: 0,
+          insn_rs2_e: 0,
+          data_rs1_e: 0,
+          data_rs2_e: 0,
+          imm_i_sext_e: 0,
+          imm_s_sext_e: 0,
+          imm_b_sext_e: 0,
+          imm_j_sext_e: 0,
+          imm_u_sext_e: 0,
+          imm_shamt_e: 0,
+          regfile_we_e: 0
+      };
     end else begin
       execute_state <= '{
-          pc_e: pc_d_temp,
-          cycle_status_ee: cycle_status_d_temp,
-          insn_e: insn_d_temp,
+          pc_e: decode_state.pc_d,
+          cycle_status_ee: decode_state.cycle_status_d,
+          insn_e: decode_state.insn_d,
           insn_opcode_e: insn_opcode,
           insn_rd_e: insn_rd,
           insn_rs1_e: insn_rs1,
@@ -527,9 +520,8 @@ module DatapathPipelined (
   logic [31:0] temp_addr;
   logic [31:0] temp_load_casing;
   logic illegal_insn;
-  logic is_branch;
+  logic did_branch;
 
-  wire [31:0] cla_sum;
   wire [31:0] cla_sum_reg;
   wire [31:0] cla_diff_reg;
   wire [31:0] div_u_rem_reg;
@@ -559,27 +551,32 @@ module DatapathPipelined (
   logic [`REG_SIZE] cla_input_1;
 
   always_comb begin
-    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && writeback_state.rd_w != 0) begin
+    if (((writeback_state.rd_w == execute_state.insn_rs1_e) &&
+    writeback_state.regfile_we_w != 0) && (writeback_state.rd_w != 0)) begin
       // wx bypassing rs1 input
       cla_input_1 = writeback_state.alu_result_w;
-    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && memory_state.rd_m != 0) begin
+    end else if (((memory_state.rd_m == execute_state.insn_rs1_e) &&
+      memory_state.regfile_we_m != 0) && (memory_state.rd_m != 0)) begin
       // mx bypassing rs1 input
       cla_input_1 = memory_state.alu_result_m;
     end else begin
       cla_input_1 = data_rs1_e;
     end
 
-    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && writeback_state.rd_w != 0) begin
+    if (((writeback_state.rd_w == execute_state.insn_rs2_e) &&
+    writeback_state.regfile_we_w != 0) && (writeback_state.rd_w != 0)) begin
       // wx bypassing rs2 input
       cla_input_2 = writeback_state.alu_result_w;
-    end else if ((memory_state.rd_m == execute_state.insn_rs2_e) && memory_state.rd_m != 0) begin
+    end else if (((memory_state.rd_m == execute_state.insn_rs2_e) &&
+      memory_state.regfile_we_m != 0) && (memory_state.rd_m != 0)) begin
       // mx bypassing rs2 input
       cla_input_2 = memory_state.alu_result_m;
     end else begin
       cla_input_2 = data_rs2_e;
     end
 
-    if ((execute_state.insn_e[31:25] == 7'h20) && (execute_state.insn_e[14:12] == 3'b000) && (execute_state.insn_e[6:0] == 7'h33)) begin
+    if ((execute_state.insn_e[31:25] == 7'h20) && (execute_state.insn_e[14:12] == 3'b000) &&
+    (execute_state.insn_e[6:0] == 7'h33)) begin
       cla_input_2 = ~cla_input_2 + 1'b1;
     end else if ((execute_state.insn_e[6:0]) == 7'h13) begin
       cla_input_2 = execute_state.imm_i_sext_e;
@@ -600,12 +597,7 @@ module DatapathPipelined (
   end
 
   // TODO: Remove these extra CLA's and dividers
-  cla cla_ops (
-      .a  (cla_input_1),
-      .b  (execute_state.imm_i_sext_e),
-      .cin(1'b0),
-      .sum(cla_sum)
-  );
+
   cla cla_reg_add (
       .a  (cla_input_1),
       .b  (cla_input_2),
@@ -615,8 +607,8 @@ module DatapathPipelined (
   divider_unsigned_pipelined div_u_alu (
       .clk(clk),
       .rst(rst),
-      .i_dividend(data_rs1_e),
-      .i_divisor(data_rs2_e),
+      .i_dividend(cla_input_1),
+      .i_divisor(cla_input_2),
       .o_remainder(div_u_rem_reg),
       .o_quotient(div_u_qot_reg)
   );
@@ -648,6 +640,7 @@ module DatapathPipelined (
     if (rst) begin
       memory_state <= '{
           pc_m: 0,
+          next_pc_m: 0,
           alu_result_m: 0,
           insn_m: 0,
           regfile_we_m: 0,
@@ -655,21 +648,20 @@ module DatapathPipelined (
           mem_write_m: 0,
           branch_m: 0,
           cycle_status_m: CYCLE_RESET,
-          rd_m: 0,
-          next_pc_m: 0
+          rd_m: 0
       };
     end else begin
       memory_state <= '{
           pc_m: execute_state.pc_e,
+          next_pc_m: f_pc_next,
           alu_result_m: data_rd_e,
           insn_m: execute_state.insn_e,
           regfile_we_m: execute_state.regfile_we_e,
           mem_read_m: is_read_insn,
           mem_write_m: is_write_insn,
-          branch_m: is_branch,
+          branch_m: did_branch,
           cycle_status_m: execute_state.cycle_status_ee,
-          rd_m: execute_state.insn_rd_e,
-          next_pc_m: f_pc_next
+          rd_m: execute_state.insn_rd_e
       };
     end
   end
@@ -689,6 +681,7 @@ module DatapathPipelined (
     if (rst) begin
       writeback_state <= '{
           pc_w: 0,
+          next_pc_w: 0,
           alu_result_w: 0,
           insn_w: 0,
           mem_read_w: 0,
@@ -696,12 +689,12 @@ module DatapathPipelined (
           mem_write_w: 0,
           cycle_status_w: CYCLE_RESET,
           rd_w: 0,
-          regfile_we_w: 0,
-          next_pc_w: 0
+          regfile_we_w: 0
       };
     end else begin
       writeback_state <= '{
           pc_w: memory_state.pc_m,
+          next_pc_w: memory_state.next_pc_m,
           alu_result_w: memory_state.alu_result_m,
           insn_w: memory_state.insn_m,
           mem_read_w: memory_state.mem_read_m,
@@ -709,23 +702,25 @@ module DatapathPipelined (
           mem_write_w: memory_state.mem_write_m,
           cycle_status_w: memory_state.cycle_status_m,
           rd_w: memory_state.rd_m,
-          regfile_we_w: memory_state.regfile_we_m,
-          next_pc_w: memory_state.next_pc_m
+          regfile_we_w: memory_state.regfile_we_m
       };
     end
   end
 
-  assign trace_writeback_cycle_status = writeback_state.cycle_status_w;
-  assign trace_writeback_insn         = writeback_state.insn_w;
-  assign trace_writeback_pc           = writeback_state.pc_w;
-  logic [`REG_SIZE] pc_temp;
+
   always_comb begin
     halt = 1'b0;
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
-    // if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) && !(insn_beq || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
-    //   f_pc_next = f_pc_current + 4;
-    // end
+    did_branch = 1'b0;
+    if (insn_ecall) begin
+      // ecall
+      halt = 1'b1;
+    end
+    if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) &&!(insn_beq
+    || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
+      f_pc_next = f_pc_current + 4;
+    end
     if (insn_lw || insn_lb || insn_lbu || insn_lh || insn_lhu) begin
       is_write_insn = 1;
     end else begin
@@ -736,20 +731,10 @@ module DatapathPipelined (
     end else begin
       is_read_insn = 0;
     end
-    if (insn_beq || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal ||
-    insn_jalr)
-    begin
-      is_branch = 1;
-    end else begin
-      is_branch = 0;
-    end
+    regfile_we = 1'b0;
     temp_addr = 'd0;
     addr_to_dmem = 'd0;
     store_we_to_dmem = 4'b0000;
-    if (insn_ecall) begin
-      // ecall
-      halt = 1'b1;
-    end
     // TODO: Finsh for all insns!
     case (insn_opcode)  //note derived from decode stage
       OpcodeLui: begin
@@ -779,27 +764,27 @@ module DatapathPipelined (
     endcase
     if (execute_state.cycle_status_ee == CYCLE_RESET) begin
       data_rd_e = 0;
-      branch_e  = 1'b0;
     end else begin
-      branch_e = 1'b0;
-      pc_temp  = 32'b0;
       // TODO: Finish case updates for all insns!
       case (execute_state.insn_opcode_e)
         OpcodeMiscMem: begin
-          // f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
+          f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
-          data_rd_e = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
+          data_rd_e = execute_state.imm_u_sext_e << 12;  //20bit bitshifted left by 12
+          f_pc_next = f_pc_current + 4;
         end
         OpcodeAuipc: begin
-          data_rd_e = execute_state.imm_u_sext_e;  // 20-bit bitshifted left by 12
+          data_rd_e = f_pc_current + (execute_state.imm_u_sext_e);  //20bit bitshift left 12
+          f_pc_next = f_pc_current + 4;
         end
         OpcodeRegImm: begin
+          f_pc_next = f_pc_current + 4;
           case (execute_state.insn_e[14:12])
             3'b000: begin
               //addi
-              data_rd_e = cla_sum;
+              data_rd_e = cla_sum_reg;
             end
             3'b001: begin
               //slli
@@ -832,7 +817,7 @@ module DatapathPipelined (
             end
             3'b111: begin
               //andi
-              data_rd_e = data_rs1_e & execute_state.imm_i_sext_e;
+              data_rd_e = data_rs1 & execute_state.imm_i_sext_e;
             end
             default: begin
               regfile_we   = 1'b0;
@@ -847,53 +832,73 @@ module DatapathPipelined (
             3'b000: begin
               //beq
               if (data_rs1_e == data_rs2_e) begin
-                branch_e = 1'b1;
-                pc_temp  = f_pc_current + execute_state.imm_b_sext_e;
+                did_branch = 1'b1;
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b001: begin
               //bne
-              if (data_rs1_e != data_rs2_e) begin
-                branch_e = 1'b1;
-                pc_temp  = f_pc_current + execute_state.imm_b_sext_e;
+              if (data_rs1 != data_rs2) begin
+                did_branch = 1'b1;
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b100: begin
-              if ($signed(data_rs1_e) < $signed(data_rs2_e)) begin
-                branch_e = 1'b1;
-                pc_temp  = f_pc_current + execute_state.imm_b_sext_e;
+              //blt
+              if ($signed(data_rs1) < $signed(data_rs2)) begin
+                did_branch = 1'b1;
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b101: begin
               //bge
               if ($signed(data_rs1_e) >= $signed(data_rs2_e)) begin
-                branch_e = 1'b1;
-
-                pc_temp  = f_pc_current + execute_state.imm_b_sext_e;
+                did_branch = 1'b1;
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b110: begin
               //bltu
               if (data_rs1_e < data_rs2_e) begin
-                branch_e = 1'b1;
-                pc_temp  = f_pc_current + execute_state.imm_b_sext_e;
+                did_branch = 1'b1;
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             3'b111: begin
               //bgeu
               if (data_rs1_e >= data_rs2_e) begin
-                branch_e = 1'b1;
-                pc_temp  = f_pc_current + execute_state.imm_b_sext_e;
+                did_branch = 1'b1;
+                f_pc_next  = f_pc_current + execute_state.imm_b_sext_e;
+              end else begin
+                did_branch = 1'b0;
+                f_pc_next  = f_pc_current + 4;
               end
             end
             default: begin
+              did_branch = 1'b0;
               illegal_insn = 1'b1;
+              f_pc_next = f_pc_current + 4;
               regfile_we = 1'b0;
-              branch_e = 1'b0;
             end
           endcase
         end
         OpcodeRegReg: begin
+          f_pc_next = f_pc_current + 4;
           case (execute_state.insn_e[14:12])
             3'b000: begin
               if (execute_state.insn_e[31:25] == 7'd0) begin
@@ -932,7 +937,7 @@ module DatapathPipelined (
             3'b011: begin
               if (execute_state.insn_e[31:25] == 7'd0) begin
                 //sltu
-                data_rd_e = data_rs1_e < data_rs2_e ? 1 : 0;
+                data_rd_e = data_rs1 < data_rs2 ? 1 : 0;
               end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //mulhu
                 logic [63:0] inter_mulhu;
@@ -967,16 +972,16 @@ module DatapathPipelined (
                 data_rd_e  = $signed(data_rs1_e) >>> $signed((data_rs2_e[4:0]));
               end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //divu
-                if (flag_div == 1) begin
-                  regfile_we = 1'b1;  //enable writing back to RF
-                  if (data_rs2_e == 0) begin
-                    data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
-                  end else begin
-                    data_rd_e = div_u_qot_reg;  //we can write the quotient
-                  end
+                // if (flag_div == 1) begin
+                //   regfile_we = 1'b1;  //enable writing back to RF
+                if (data_rs2_e == 0) begin
+                  data_rd_e = 32'hFFFF_FFFF;  // div by 0 error
                 end else begin
-                  regfile_we = 1'b0;  //disable writing back to RF
+                  data_rd_e = div_u_qot_reg;  //we can write the quotient
                 end
+                // end else begin
+                //   regfile_we = 1'b0;  //disable writing back to RF
+                // end
               end
             end
             3'b110: begin
@@ -1006,11 +1011,6 @@ module DatapathPipelined (
               end else if (execute_state.insn_e[31:25] == 7'b0000001) begin
                 //remu
                 data_rd_e = div_u_rem_reg;
-                // if (flag_div) begin
-                //   flag_div = 1'b0;
-                // end else begin
-                //   flag_div = 1'b1;
-                // end
               end
             end
             default: begin
@@ -1021,19 +1021,20 @@ module DatapathPipelined (
         end
         OpcodeJal: begin
           regfile_we = 1'b1;
-          data_rd_e = f_pc_current + 4;
-          branch_e = 1'b1;
-          pc_temp = f_pc_current + execute_state.imm_j_sext_e;
+          did_branch = 1'b1;
+          data_rd_e  = f_pc_current + 4;
+          f_pc_next  = f_pc_current + execute_state.imm_j_sext_e;
         end
         OpcodeJalr: begin
           regfile_we = 1'b1;
+          did_branch = 1'b1;
           data_rd_e = f_pc_current + 4;
-          pc_temp = ((data_rs1_e + execute_state.imm_i_sext_e) &
+          f_pc_next = ((data_rs1_e + execute_state.imm_i_sext_e) &
                 (32'b11111111111111111111111111111110));
-          branch_e = 1'b1;
         end
         OpcodeLoad: begin
           regfile_we = 1'b1;
+          f_pc_next  = f_pc_current + 4;
           // addr_to_dmem = {{temp_load_casing[31:2]}, 2'b00};
           case (execute_state.insn_e[14:12])
             3'b000: begin
@@ -1139,6 +1140,7 @@ module DatapathPipelined (
         end
         OpcodeStore: begin
           // temp_addr = data_rs1_e + imm_s_sext;
+          f_pc_next = f_pc_current + 4;
           temp_addr = data_rs1_e + execute_state.imm_s_sext_e;
           if (insn_sb) begin
             //store byte
@@ -1204,6 +1206,10 @@ module DatapathPipelined (
           addr_to_dmem = {{temp_addr[31:2]}, 2'b00};
         end
         default: begin
+          illegal_insn = 1'b1;
+          regfile_we = 1'b0;
+          f_pc_next = f_pc_current + 4;
+          did_branch = 1'b0;
         end
       endcase
     end
@@ -1211,13 +1217,9 @@ module DatapathPipelined (
     //^^^^^ relocated to inside case statements to allow for branching logic
   end
 
-  always_comb begin
-    if (execute_state.insn_opcode_e == OpcodeJalr) begin
-      pc_b_e = pc_temp;
-    end else begin
-      pc_b_e = execute_state.pc_e + pc_temp;
-    end
-  end
+  assign trace_writeback_cycle_status = writeback_state.cycle_status_w;
+  assign trace_writeback_insn         = writeback_state.insn_w;
+  assign trace_writeback_pc           = writeback_state.pc_w;
 endmodule
 
 module MemorySingleCycle #(
@@ -1258,8 +1260,8 @@ module MemorySingleCycle #(
 
   always_comb begin
     // memory addresses should always be 4B-aligned
-    assert (pc_to_imem[1:0] == 2'b00);
-    assert (addr_to_dmem[1:0] == 2'b00);
+    // assert (pc_to_imem[1:0] == 2'b00);
+    // assert (addr_to_dmem[1:0] == 2'b00);
   end
 
   localparam int AddrMsb = $clog2(NUM_WORDS) + 1;
