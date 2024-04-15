@@ -237,7 +237,7 @@ module DatapathPipelined (
         f_pc_current   <= writeback_state.next_pc_w;
       end else begin
         f_cycle_status <= CYCLE_NO_STALL;
-        f_pc_current   <= writeback_state.next_pc_w;
+        f_pc_current   <= f_pc_next;
       end
     end
   end
@@ -551,20 +551,17 @@ module DatapathPipelined (
   logic [`REG_SIZE] cla_input_1;
 
   always_comb begin
-    if (((writeback_state.rd_w == execute_state.insn_rs1_e) &&
-    writeback_state.regfile_we_w != 0) && (writeback_state.rd_w != 0)) begin
+    if ((writeback_state.rd_w == execute_state.insn_rs1_e) && (writeback_state.rd_w != 0)) begin
       // wx bypassing rs1 input
       cla_input_1 = writeback_state.alu_result_w;
-    end else if (((memory_state.rd_m == execute_state.insn_rs1_e) &&
-      memory_state.regfile_we_m != 0) && (memory_state.rd_m != 0)) begin
+    end else if ((memory_state.rd_m == execute_state.insn_rs1_e) && (memory_state.rd_m != 0)) begin
       // mx bypassing rs1 input
       cla_input_1 = memory_state.alu_result_m;
     end else begin
       cla_input_1 = data_rs1_e;
     end
 
-    if (((writeback_state.rd_w == execute_state.insn_rs2_e) &&
-    writeback_state.regfile_we_w != 0) && (writeback_state.rd_w != 0)) begin
+    if ((writeback_state.rd_w == execute_state.insn_rs2_e) && (writeback_state.rd_w != 0)) begin
       // wx bypassing rs2 input
       cla_input_2 = writeback_state.alu_result_w;
     end else if (((memory_state.rd_m == execute_state.insn_rs2_e) &&
@@ -764,6 +761,7 @@ module DatapathPipelined (
     endcase
     if (execute_state.cycle_status_ee == CYCLE_RESET) begin
       data_rd_e = 0;
+      // branch_e  = 1'b0;
     end else begin
       // TODO: Finish case updates for all insns!
       case (execute_state.insn_opcode_e)
@@ -817,7 +815,7 @@ module DatapathPipelined (
             end
             3'b111: begin
               //andi
-              data_rd_e = data_rs1 & execute_state.imm_i_sext_e;
+              data_rd_e = data_rs1_e & execute_state.imm_i_sext_e;
             end
             default: begin
               regfile_we   = 1'b0;
