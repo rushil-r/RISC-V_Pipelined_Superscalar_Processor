@@ -713,6 +713,10 @@ module DatapathPipelined (
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
     did_branch = 1'b0;
+    if (insn_ecall) begin
+      // ecall
+      halt = 1'b1;
+    end
     if (!((flag_div == 0) && (insn_div || insn_divu || insn_rem || insn_remu)) &&!(insn_beq
     || insn_bge || insn_bgeu || insn_blt || insn_bltu || insn_bne || insn_jal || insn_jalr)) begin
       f_pc_next = f_pc_current + 4;
@@ -731,10 +735,6 @@ module DatapathPipelined (
     temp_addr = 'd0;
     addr_to_dmem = 'd0;
     store_we_to_dmem = 4'b0000;
-    if (insn_ecall) begin
-      // ecall
-      halt = 1'b1;
-    end
     // TODO: Finsh for all insns!
     case (insn_opcode)  //note derived from decode stage
       OpcodeLui: begin
@@ -772,11 +772,11 @@ module DatapathPipelined (
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
-          data_rd_e = execute_state.imm_u_sext_e << 12;  // 20-bit bitshifted left by 12
+          data_rd_e = execute_state.imm_u_sext_e << 12;  //20bit bitshifted left by 12
           f_pc_next = f_pc_current + 4;
         end
         OpcodeAuipc: begin
-          data_rd_e = f_pc_current + (execute_state.imm_u_sext_e << 12);  // 20-bit bitshift left 12
+          data_rd_e = f_pc_current + (execute_state.imm_u_sext_e);  //20bit bitshift left 12
           f_pc_next = f_pc_current + 4;
         end
         OpcodeRegImm: begin

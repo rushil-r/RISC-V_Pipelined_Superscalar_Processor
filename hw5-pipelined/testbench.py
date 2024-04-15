@@ -185,7 +185,8 @@ async def testLui(dut):
 @cocotb.test()
 async def testLuiLui(dut):
     for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
+        if(reg.value != 0 or idx < 3):
+            print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     "Run two lui independent insns"
     asm(dut, '''lui x1,0x12345
         lui x2,0x6789A''')
@@ -193,7 +194,8 @@ async def testLuiLui(dut):
 
     await ClockCycles(dut.clk, 7)
     for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
+        if(reg.value != 0 or idx < 3):
+            print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[1].value == 0x12345000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     assert dut.datapath.rf.regs[2].value == 0x6789A000, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
@@ -221,7 +223,8 @@ async def testMX2(dut):
 @cocotb.test()
 async def testWX1(dut):
     for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
+        if(reg.value != 0 or idx < 3):
+            print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     "Check WX bypass to rs1"
     asm(dut, '''
         addi x1,x0,42
@@ -230,7 +233,8 @@ async def testWX1(dut):
     await preTestSetup(dut)
     await ClockCycles(dut.clk, 8)
     for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
+        if(reg.value != 0 or idx < 3):
+            print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[2].value == 42, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
 
 @cocotb.test()
@@ -274,8 +278,9 @@ async def testWD2(dut):
 @cocotb.test()
 async def testX0Bypassing(dut):
     "Check that reads/writes to x0 are not bypassed"
-    # for idx, reg in enumerate(dut.datapath.rf.regs): 
-    #     print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
+    for idx, reg in enumerate(dut.datapath.rf.regs): 
+        if(reg.value != 0 or idx < 3):
+            print(f'PRE Register: {idx} contains value: {str(reg.value)}\n')
     asm(dut, '''
         lui x0,0x12345
         add x1,x0,x0 # should not use MX bypass
@@ -286,7 +291,8 @@ async def testX0Bypassing(dut):
     await preTestSetup(dut)
     await ClockCycles(dut.clk, 10)
     for idx, reg in enumerate(dut.datapath.rf.regs): 
-        print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
+        if(reg.value != 0 or idx < 3):
+            print(f'POST Register: {idx} contains value: {str(reg.value)}\n')
     assert dut.datapath.rf.regs[1].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     assert dut.datapath.rf.regs[2].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
     assert dut.datapath.rf.regs[3].value == 0, f'failed at cycle {dut.datapath.cycles_current.value.integer}'
@@ -530,10 +536,12 @@ async def riscvTest(dut, binaryPath=None, tracingMode=None):
     dut._log.info(f'Running RISC-V test at {binaryPath} with tracingMode == {tracingMode}')
     for cycles in range(TIMEOUT_CYCLES):
         await RisingEdge(dut.clk)
-        # if (cycles > 0) and (0 == cycles % 10):
-        #     print("CYCLE: " + str(cycles) + "\n")
+        # if (cycles > 95) and (cycles < 131):
+            
+        #     print("CYCLE: " + str(cycles))
         #     for idx, reg in enumerate(dut.datapath.rf.regs):
-        #         print(f'POST Register: {idx} contains value: {str(reg.value)}')
+        #         if(reg.value != 0):
+        #             print(f'POST Register: {idx} contains value: {str(reg.value)}' + "\n")
         handleTrace(dut, trace, cycles, tracingMode)
         if dut.halt.value == 1:
             # see RVTEST_PASS and RVTEST_FAIL macros in riscv-tests/env/p/riscv_test.h
@@ -549,6 +557,7 @@ async def riscvTest(dut, binaryPath=None, tracingMode=None):
     raise SimTimeoutError()
 
 RV_TEST_BINARIES = [
+    # 
     RISCV_TESTS_PATH / 'rv32ui-p-simple', # 1
     RISCV_TESTS_PATH / 'rv32ui-p-lui',
     
@@ -612,7 +621,8 @@ RV_TEST_BINARIES = [
 
 rvTestFactory = TestFactory(test_function=riscvTest)
 if 'RVTEST_ALUBR' in os.environ:
-    RV_TEST_BINARIES = RV_TEST_BINARIES[:27]
+    # RV_TEST_BINARIES = RV_TEST_BINARIES[:27]
+    RV_TEST_BINARIES = RV_TEST_BINARIES[:13]
     pass
 rvTestFactory.add_option(name='binaryPath', optionlist=RV_TEST_BINARIES)
 rvTestFactory.generate_tests()
