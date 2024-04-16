@@ -234,15 +234,15 @@ module DatapathPipelined (
     end else begin
       if (writeback_state.branch_w) begin
         f_cycle_status <= CYCLE_TAKEN_BRANCH;
-        f_pc_current   <= writeback_state.next_pc_w;
+        f_pc_current   <= writeback_state.next_pc_w & 32'b11111111111111111111111111111100;
       end else begin
         f_cycle_status <= CYCLE_NO_STALL;
-        f_pc_current   <= f_pc_next;
+        f_pc_current   <= f_pc_next & 32'b11111111111111111111111111111100;
       end
     end
   end
   // send PC to imem
-  assign pc_to_imem = f_pc_current;
+  assign pc_to_imem = f_pc_current & 32'b11111111111111111111111111111100;
   assign f_insn = insn_from_imem;
 
   // Here's how to disassemble an insn into a string you can view in GtkWave.
@@ -710,7 +710,7 @@ module DatapathPipelined (
     // set as default, but make sure to change if illegal/default-case/failure
     illegal_insn = 1'b0;
     did_branch = 1'b0;
-    if (insn_ecall) begin
+    if (execute_state.insn_opcode_e == OpcodeEnviron) begin
       // ecall
       halt = 1'b1;
     end
@@ -768,7 +768,7 @@ module DatapathPipelined (
         OpcodeMiscMem: begin
           regfile_we = 1'b0;
           did_branch = 1'b0;
-          f_pc_next = ((execute_state.pc_e + 4) & 32'b11111111111111111111111111111100);
+          f_pc_next = ((f_pc_current & 32'b11111111111111111111111111111100) + 4);
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
@@ -776,8 +776,8 @@ module DatapathPipelined (
           f_pc_next = f_pc_current + 4;
         end
         OpcodeAuipc: begin
-          data_rd_e = execute_state.pc_e + (execute_state.imm_u_sext_e);  //20bit bitshift left 12
-          f_pc_next = execute_state.pc_e + 4;
+          data_rd_e = execute_state.pc_e + (execute_state.imm_u_sext_e);  //bitshift left 12
+          f_pc_next = f_pc_current + 4;
         end
         OpcodeRegImm: begin
           f_pc_next = f_pc_current + 4;
@@ -1028,9 +1028,8 @@ module DatapathPipelined (
         OpcodeJalr: begin
           regfile_we = 1'b1;
           did_branch = 1'b1;
-          data_rd_e = execute_state.pc_e + 4;
-          f_pc_next = ((data_rs1_e + execute_state.imm_i_sext_e) &
-                (32'b11111111111111111111111111111110));
+          data_rd_e  = execute_state.pc_e + 4;
+          f_pc_next  = ((data_rs1_e + imm_i_sext) & (~(32'd1)));
         end
         OpcodeLoad: begin
           regfile_we = 1'b1;
@@ -1260,8 +1259,8 @@ module MemorySingleCycle #(
 
   always_comb begin
     // memory addresses should always be 4B-aligned
-    // assert (pc_to_imem[1:0] == 2'b00); // ERRRORR
-    // assert (addr_to_dmem[1:0] == 2'b00); // ERRRORR
+    assert (pc_to_imem[1:0] == 2'b00);
+    assert (addr_to_dmem[1:0] == 2'b00);
   end
 
   localparam int AddrMsb = $clog2(NUM_WORDS) + 1;
