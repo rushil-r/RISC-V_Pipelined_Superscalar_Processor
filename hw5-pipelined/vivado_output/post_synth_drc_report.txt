@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Wed Apr  3 22:01:33 2024
-| Host         : big25.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date         : Mon Apr 15 20:44:23 2024
+| Host         : big05.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command      : report_drc -file ./vivado_output/post_synth_drc_report.txt
 | Design       : RiscvSystem
 | Device       : xc7z020clg484-1
@@ -189,11 +189,11 @@ Related violations: <none>
 PLHOLDVIO-2#1 Warning
 Non-Optimal connections which could lead to hold violations  
 A LUT mem_reg_0_0_i_1 is driving clock pin of 33 cells. This could lead to large hold time violations. Involved cells are:
-data_rd_e_reg[0]_i_19, data_rd_e_reg[10]_i_27, data_rd_e_reg[11]_i_27,
-data_rd_e_reg[12]_i_29, data_rd_e_reg[13]_i_28, data_rd_e_reg[14]_i_28,
-data_rd_e_reg[16]_i_18, data_rd_e_reg[17]_i_13, data_rd_e_reg[18]_i_18,
-data_rd_e_reg[19]_i_13, data_rd_e_reg[1]_i_13, data_rd_e_reg[20]_i_13,
-data_rd_e_reg[21]_i_13, data_rd_e_reg[22]_i_33, data_rd_e_reg[24]_i_17
+data_rd_e_reg[0]_i_12, data_rd_e_reg[10]_i_17, data_rd_e_reg[10]_i_18,
+data_rd_e_reg[11]_i_88, data_rd_e_reg[12]_i_18, data_rd_e_reg[13]_i_37,
+data_rd_e_reg[14]_i_43, data_rd_e_reg[14]_i_44, data_rd_e_reg[15]_i_19,
+data_rd_e_reg[16]_i_21, data_rd_e_reg[17]_i_18, data_rd_e_reg[18]_i_19,
+data_rd_e_reg[19]_i_21, data_rd_e_reg[1]_i_35, data_rd_e_reg[20]_i_21
  (the first 15 of 33 listed)
 Related violations: <none>
 
