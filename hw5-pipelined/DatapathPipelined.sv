@@ -766,7 +766,9 @@ module DatapathPipelined (
       // TODO: Finish case updates for all insns!
       case (execute_state.insn_opcode_e)
         OpcodeMiscMem: begin
-          f_pc_next = ((f_pc_current + 4) & 32'b11111111111111111111111111111100);
+          regfile_we = 1'b0;
+          did_branch = 1'b0;
+          f_pc_next = ((execute_state.pc_e + 4) & 32'b11111111111111111111111111111100);
           addr_to_dmem = (addr_to_dmem & 32'b11111111111111111111111111111100);
         end
         OpcodeLui: begin
@@ -774,8 +776,8 @@ module DatapathPipelined (
           f_pc_next = f_pc_current + 4;
         end
         OpcodeAuipc: begin
-          data_rd_e = f_pc_current + (execute_state.imm_u_sext_e);  //20bit bitshift left 12
-          f_pc_next = f_pc_current + 4;
+          data_rd_e = execute_state.pc_e + (execute_state.imm_u_sext_e);  //20bit bitshift left 12
+          f_pc_next = execute_state.pc_e + 4;
         end
         OpcodeRegImm: begin
           f_pc_next = f_pc_current + 4;
@@ -1020,13 +1022,13 @@ module DatapathPipelined (
         OpcodeJal: begin
           regfile_we = 1'b1;
           did_branch = 1'b1;
-          data_rd_e  = f_pc_current + 4;
-          f_pc_next  = f_pc_current + execute_state.imm_j_sext_e;
+          data_rd_e  = execute_state.pc_e + 4;
+          f_pc_next  = execute_state.pc_e + execute_state.imm_j_sext_e;
         end
         OpcodeJalr: begin
           regfile_we = 1'b1;
           did_branch = 1'b1;
-          data_rd_e = f_pc_current + 4;
+          data_rd_e = execute_state.pc_e + 4;
           f_pc_next = ((data_rs1_e + execute_state.imm_i_sext_e) &
                 (32'b11111111111111111111111111111110));
         end
@@ -1258,8 +1260,8 @@ module MemorySingleCycle #(
 
   always_comb begin
     // memory addresses should always be 4B-aligned
-    // assert (pc_to_imem[1:0] == 2'b00);
-    // assert (addr_to_dmem[1:0] == 2'b00);
+    assert (pc_to_imem[1:0] == 2'b00);
+    assert (addr_to_dmem[1:0] == 2'b00);
   end
 
   localparam int AddrMsb = $clog2(NUM_WORDS) + 1;
