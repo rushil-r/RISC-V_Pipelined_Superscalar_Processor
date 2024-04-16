@@ -776,8 +776,11 @@ module DatapathPipelined (
           f_pc_next = f_pc_current + 4;
         end
         OpcodeAuipc: begin
-          data_rd_e = execute_state.pc_e + (execute_state.imm_u_sext_e);  //bitshift left 12
-          f_pc_next = f_pc_current + 4;
+          regfile_we = 1'b1;
+          did_branch = 1'b0;
+          data_rd_e  = f_pc_current + ({{12'b0}, {execute_state.insn_e[31:12]}} << 12);
+          //bitshift left 12 (above)
+          f_pc_next  = f_pc_current + 4;
         end
         OpcodeRegImm: begin
           f_pc_next = f_pc_current + 4;
