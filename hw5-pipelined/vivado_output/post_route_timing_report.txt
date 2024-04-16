@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Mon Apr 15 20:46:51 2024
-| Host         : big05.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date         : Mon Apr 15 23:55:21 2024
+| Host         : big17.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command      : report_timing -file ./vivado_output/post_route_timing_report.txt
 | Design       : RiscvSystem
 | Device       : 7z020-clg484
@@ -11,19 +11,19 @@ Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 
 Timing Report
 
-Slack (VIOLATED) :        -19.498ns  (required time - arrival time)
-  Source:                 datapath/writeback_state_reg[rd_w][0]/C
+Slack (VIOLATED) :        -17.774ns  (required time - arrival time)
+  Source:                 datapath/execute_state_reg[data_rs1_e][31]/C
                             (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@20.000ns period=40.000ns})
-  Destination:            datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[12]/D
+  Destination:            datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[4]/D
                             (rising edge-triggered cell FDRE clocked by clk_proc_clk_wiz_0  {rise@0.000ns fall@20.000ns period=40.000ns})
   Path Group:             clk_proc_clk_wiz_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            40.000ns  (clk_proc_clk_wiz_0 rise@40.000ns - clk_proc_clk_wiz_0 rise@0.000ns)
-  Data Path Delay:        59.419ns  (logic 18.329ns (30.847%)  route 41.090ns (69.153%))
-  Logic Levels:           98  (CARRY4=63 LUT2=1 LUT3=1 LUT4=2 LUT5=16 LUT6=15)
-  Clock Path Skew:        -0.069ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    -1.592ns = ( 38.408 - 40.000 ) 
-    Source Clock Delay      (SCD):    -0.947ns
+  Data Path Delay:        57.653ns  (logic 17.910ns (31.065%)  route 39.743ns (68.935%))
+  Logic Levels:           89  (CARRY4=57 LUT2=2 LUT3=4 LUT4=4 LUT5=10 LUT6=12)
+  Clock Path Skew:        -0.062ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.525ns = ( 38.475 - 40.000 ) 
+    Source Clock Delay      (SCD):    -0.887ns
     Clock Pessimism Removal (CPR):    0.577ns
   Clock Uncertainty:      0.091ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -43,271 +43,247 @@ Slack (VIOLATED) :        -19.498ns  (required time - arrival time)
                          net (fo=2, routed)           1.855    -2.713    mmcm/clk_proc_clk_wiz_0
     BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
                                                       0.101    -2.612 r  mmcm/clkout1_buf/O
-                         net (fo=1981, routed)        1.665    -0.947    datapath/clock_processor
-    SLICE_X46Y6          FDRE                                         r  datapath/writeback_state_reg[rd_w][0]/C
+                         net (fo=1981, routed)        1.725    -0.887    datapath/clock_processor
+    SLICE_X54Y4          FDRE                                         r  datapath/execute_state_reg[data_rs1_e][31]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X46Y6          FDRE (Prop_fdre_C_Q)         0.518    -0.429 r  datapath/writeback_state_reg[rd_w][0]/Q
-                         net (fo=36, routed)          0.999     0.570    datapath/cla_reg_add/sum_inferred_i_65_0[0]
-    SLICE_X45Y6          LUT5 (Prop_lut5_I1_O)        0.124     0.694 f  datapath/cla_reg_add/sum_inferred_i_90/O
-                         net (fo=4, routed)           0.321     1.015    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[4]_i_4
-    SLICE_X46Y6          LUT6 (Prop_lut6_I5_O)        0.124     1.139 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[31]_i_7/O
-                         net (fo=64, routed)          0.673     1.812    datapath/div_u_alu_n_67
-    SLICE_X46Y6          LUT5 (Prop_lut5_I1_O)        0.124     1.936 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[4]_i_4/O
-                         net (fo=1, routed)           0.344     2.280    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[4]_i_4_n_2
-    SLICE_X48Y6          CARRY4 (Prop_carry4_CYINIT_CO[3])
-                                                      0.580     2.860 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[4]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     2.860    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[4]_i_3_n_2
-    SLICE_X48Y7          CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     2.974 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[8]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     2.974    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[8]_i_3_n_2
-    SLICE_X48Y8          CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     3.088 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[12]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     3.088    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[12]_i_3_n_2
-    SLICE_X48Y9          CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     3.202 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[16]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     3.202    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[16]_i_3_n_2
-    SLICE_X48Y10         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     3.316 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[20]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     3.316    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[20]_i_3_n_2
-    SLICE_X48Y11         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     3.430 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[24]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     3.430    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[24]_i_3_n_2
-    SLICE_X48Y12         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     3.544 r  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[28]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     3.544    datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[28]_i_3_n_2
-    SLICE_X48Y13         CARRY4 (Prop_carry4_CI_O[1])
-                                                      0.334     3.878 f  datapath/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe_reg[31]_i_3/O[1]
-                         net (fo=1, routed)           0.936     4.814    datapath/div_u_alu/cla_input_20[29]
-    SLICE_X52Y12         LUT5 (Prop_lut5_I1_O)        0.303     5.117 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.i_divisor_post_pipe[30]_i_1/O
-                         net (fo=51, routed)          0.626     5.742    datapath/div_u_alu/execute_state_reg[imm_i_sext_e][11]_0
-    SLICE_X49Y12         LUT2 (Prop_lut2_I0_O)        0.124     5.866 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[15]_i_8/O
-                         net (fo=1, routed)           0.000     5.866    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[15]_i_8_n_2
-    SLICE_X49Y12         CARRY4 (Prop_carry4_S[3]_CO[3])
-                                                      0.401     6.267 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[15]_i_2/CO[3]
-                         net (fo=233, routed)         1.178     7.445    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[15]_i_11_0[0]
-    SLICE_X47Y9          LUT5 (Prop_lut5_I3_O)        0.124     7.569 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_52/O
-                         net (fo=1, routed)           0.000     7.569    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_52_n_2
-    SLICE_X47Y9          CARRY4 (Prop_carry4_S[1]_CO[3])
-                                                      0.550     8.119 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_24/CO[3]
-                         net (fo=1, routed)           0.000     8.119    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_24_n_2
-    SLICE_X47Y10         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     8.233 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12/CO[3]
-                         net (fo=1, routed)           0.000     8.233    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12_n_2
-    SLICE_X47Y11         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     8.347 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3/CO[3]
-                         net (fo=1, routed)           0.000     8.347    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3_n_2
-    SLICE_X47Y12         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114     8.461 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_2/CO[3]
-                         net (fo=148, routed)         1.498     9.960    datapath/div_u_alu/CO[0]
-    SLICE_X57Y15         LUT4 (Prop_lut4_I3_O)        0.124    10.084 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_51/O
-                         net (fo=1, routed)           0.420    10.503    datapath/div_u_alu/store_remainder[2]_34[15]
-    SLICE_X56Y15         LUT4 (Prop_lut4_I1_O)        0.124    10.627 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_16/O
-                         net (fo=1, routed)           1.081    11.708    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_16_n_2
-    SLICE_X43Y15         CARRY4 (Prop_carry4_DI[0]_CO[3])
-                                                      0.526    12.234 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    12.234    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3_n_2
-    SLICE_X43Y16         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    12.348 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_2/CO[3]
-                         net (fo=45, routed)          1.268    13.616    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_11_0[0]
-    SLICE_X43Y18         LUT6 (Prop_lut6_I5_O)        0.124    13.740 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_21/O
-                         net (fo=4, routed)           0.600    14.340    datapath/div_u_alu/store_remainder[3]_36[29]
-    SLICE_X46Y20         LUT6 (Prop_lut6_I1_O)        0.124    14.464 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_4/O
-                         net (fo=1, routed)           0.790    15.255    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_4_n_2
-    SLICE_X45Y19         CARRY4 (Prop_carry4_DI[3]_CO[3])
-                                                      0.385    15.640 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_2/CO[3]
-                         net (fo=159, routed)         1.068    16.708    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_11_0[0]
-    SLICE_X43Y17         LUT5 (Prop_lut5_I4_O)        0.124    16.832 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[13]_i_35/O
-                         net (fo=9, routed)           1.071    17.903    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_2_0[0]
-    SLICE_X52Y12         LUT6 (Prop_lut6_I1_O)        0.124    18.027 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_58/O
-                         net (fo=1, routed)           0.488    18.514    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_58_n_2
-    SLICE_X51Y12         CARRY4 (Prop_carry4_DI[1]_CO[3])
-                                                      0.507    19.021 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    19.021    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_29_n_2
-    SLICE_X51Y13         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    19.135 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    19.135    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_12_n_2
-    SLICE_X51Y14         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    19.249 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    19.249    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_3_n_2
-    SLICE_X51Y15         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    19.363 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_2/CO[3]
-                         net (fo=75, routed)          1.289    20.652    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_11_0[0]
-    SLICE_X55Y14         LUT5 (Prop_lut5_I4_O)        0.124    20.776 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[14]_i_7/O
-                         net (fo=9, routed)           0.516    21.292    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_2_0[1]
-    SLICE_X54Y14         LUT6 (Prop_lut6_I1_O)        0.124    21.416 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_53/O
-                         net (fo=1, routed)           0.914    22.329    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_53_n_2
-    SLICE_X48Y14         CARRY4 (Prop_carry4_DI[2]_CO[3])
-                                                      0.398    22.727 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    22.727    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_29_n_2
-    SLICE_X48Y15         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    22.841 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    22.841    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_12_n_2
-    SLICE_X48Y16         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    22.955 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    22.955    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3_n_2
-    SLICE_X48Y17         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    23.069 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_2/CO[3]
-                         net (fo=156, routed)         1.168    24.238    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_11_0[0]
-    SLICE_X49Y14         LUT5 (Prop_lut5_I4_O)        0.124    24.362 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[13]_i_22/O
-                         net (fo=9, routed)           0.791    25.153    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_2_0[0]
-    SLICE_X56Y14         LUT6 (Prop_lut6_I1_O)        0.124    25.277 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_57/O
-                         net (fo=1, routed)           0.711    25.988    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_57_n_2
-    SLICE_X52Y14         CARRY4 (Prop_carry4_DI[2]_CO[3])
-                                                      0.398    26.386 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    26.386    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29_n_2
-    SLICE_X52Y15         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    26.500 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    26.500    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12_n_2
-    SLICE_X52Y16         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    26.614 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    26.614    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3_n_2
-    SLICE_X52Y17         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    26.728 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_2/CO[3]
-                         net (fo=79, routed)          1.232    27.959    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_11_0[0]
-    SLICE_X54Y16         LUT5 (Prop_lut5_I4_O)        0.124    28.083 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_6/O
-                         net (fo=9, routed)           0.422    28.505    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_2_0[1]
-    SLICE_X53Y16         LUT6 (Prop_lut6_I1_O)        0.124    28.629 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_53/O
-                         net (fo=1, routed)           0.840    29.469    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_53_n_2
-    SLICE_X49Y16         CARRY4 (Prop_carry4_DI[2]_CO[3])
-                                                      0.398    29.867 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    29.867    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29_n_2
-    SLICE_X49Y17         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    29.981 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    29.981    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12_n_2
-    SLICE_X49Y18         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    30.095 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    30.095    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3_n_2
-    SLICE_X49Y19         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    30.209 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_2/CO[3]
-                         net (fo=153, routed)         1.281    31.490    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_11_0[0]
-    SLICE_X51Y16         LUT5 (Prop_lut5_I4_O)        0.124    31.614 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_21/O
-                         net (fo=9, routed)           0.634    32.248    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_2_0[0]
-    SLICE_X51Y17         LUT6 (Prop_lut6_I1_O)        0.124    32.372 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_57/O
-                         net (fo=1, routed)           0.782    33.154    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_57_n_2
-    SLICE_X44Y16         CARRY4 (Prop_carry4_DI[2]_CO[3])
-                                                      0.398    33.552 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    33.552    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_29_n_2
-    SLICE_X44Y17         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    33.666 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    33.666    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_12_n_2
-    SLICE_X44Y18         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    33.780 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    33.780    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3_n_2
-    SLICE_X44Y19         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    33.894 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_2/CO[3]
-                         net (fo=83, routed)          1.272    35.166    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_11_0[0]
-    SLICE_X42Y12         LUT5 (Prop_lut5_I4_O)        0.124    35.290 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[8]_i_5/O
-                         net (fo=9, routed)           0.847    36.137    datapath/div_u_alu/store_remainder[9]_48[1]
-    SLICE_X40Y18         LUT6 (Prop_lut6_I1_O)        0.124    36.261 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_47/O
-                         net (fo=1, routed)           0.629    36.890    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_47_n_2
-    SLICE_X38Y16         CARRY4 (Prop_carry4_DI[1]_CO[3])
-                                                      0.520    37.410 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    37.410    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_29_n_2
-    SLICE_X38Y17         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    37.527 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    37.527    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12_n_2
-    SLICE_X38Y18         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    37.644 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    37.644    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3_n_2
-    SLICE_X38Y19         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    37.761 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_2/CO[3]
-                         net (fo=150, routed)         1.202    38.963    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_11_0[0]
-    SLICE_X35Y16         LUT5 (Prop_lut5_I4_O)        0.124    39.087 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_18/O
-                         net (fo=9, routed)           0.658    39.745    datapath/div_u_alu/store_remainder[10]_50[5]
-    SLICE_X35Y15         LUT6 (Prop_lut6_I1_O)        0.124    39.869 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_53/O
-                         net (fo=1, routed)           0.478    40.347    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_53_n_2
-    SLICE_X37Y15         CARRY4 (Prop_carry4_DI[3]_CO[3])
-                                                      0.385    40.732 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_29/CO[3]
-                         net (fo=1, routed)           0.000    40.732    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_29_n_2
-    SLICE_X37Y16         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    40.846 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    40.846    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12_n_2
-    SLICE_X37Y17         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    40.960 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    40.960    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3_n_2
-    SLICE_X37Y18         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    41.074 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_2/CO[3]
-                         net (fo=87, routed)          1.219    42.293    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_11_0[0]
-    SLICE_X37Y20         LUT5 (Prop_lut5_I4_O)        0.124    42.417 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[10]_i_4/O
-                         net (fo=9, routed)           0.191    42.608    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_2_0[0]
-    SLICE_X37Y20         LUT6 (Prop_lut6_I1_O)        0.124    42.732 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_40/O
-                         net (fo=1, routed)           0.593    43.325    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_40_n_2
-    SLICE_X36Y19         CARRY4 (Prop_carry4_DI[3]_CO[3])
-                                                      0.396    43.721 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_26/CO[3]
-                         net (fo=1, routed)           0.000    43.721    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_26_n_2
-    SLICE_X36Y20         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    43.838 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    43.838    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12_n_2
-    SLICE_X36Y21         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    43.955 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    43.955    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3_n_2
-    SLICE_X36Y22         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    44.072 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_2/CO[3]
-                         net (fo=147, routed)         1.260    45.332    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_11_0[0]
-    SLICE_X35Y25         LUT5 (Prop_lut5_I4_O)        0.124    45.456 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_5/O
-                         net (fo=9, routed)           0.500    45.956    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_2_0[0]
-    SLICE_X35Y25         LUT6 (Prop_lut6_I1_O)        0.124    46.080 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_30/O
-                         net (fo=1, routed)           0.521    46.600    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_30_n_2
-    SLICE_X32Y23         CARRY4 (Prop_carry4_DI[0]_CO[3])
-                                                      0.550    47.150 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    47.150    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_12_n_2
-    SLICE_X32Y24         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    47.267 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3/CO[3]
-                         net (fo=1, routed)           0.009    47.276    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3_n_2
-    SLICE_X32Y25         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.117    47.393 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_2/CO[3]
-                         net (fo=91, routed)          1.226    48.620    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_11_0[0]
-    SLICE_X31Y23         LUT5 (Prop_lut5_I4_O)        0.124    48.744 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[4]_i_3/O
-                         net (fo=9, routed)           0.529    49.273    datapath/div_u_alu/store_remainder[13]_56[1]
-    SLICE_X31Y23         LUT6 (Prop_lut6_I1_O)        0.124    49.397 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_38/O
-                         net (fo=1, routed)           0.337    49.734    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_38_n_2
-    SLICE_X28Y24         CARRY4 (Prop_carry4_DI[1]_CO[3])
-                                                      0.507    50.241 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_22/CO[3]
-                         net (fo=1, routed)           0.009    50.250    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_22_n_2
-    SLICE_X28Y25         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    50.364 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12/CO[3]
-                         net (fo=1, routed)           0.000    50.364    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12_n_2
-    SLICE_X28Y26         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    50.478 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3/CO[3]
-                         net (fo=1, routed)           0.000    50.478    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3_n_2
-    SLICE_X28Y27         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    50.592 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_2/CO[3]
-                         net (fo=144, routed)         0.965    51.557    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_11_0[0]
-    SLICE_X26Y27         LUT5 (Prop_lut5_I4_O)        0.124    51.681 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[5]_i_2/O
-                         net (fo=8, routed)           0.512    52.193    datapath/div_u_alu/store_remainder[14]_58[3]
-    SLICE_X27Y28         LUT6 (Prop_lut6_I1_O)        0.124    52.317 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_118/O
-                         net (fo=1, routed)           0.475    52.792    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_118_n_2
-    SLICE_X29Y28         CARRY4 (Prop_carry4_DI[2]_CO[3])
-                                                      0.398    53.190 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_87/CO[3]
-                         net (fo=1, routed)           0.000    53.190    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_87_n_2
-    SLICE_X29Y29         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    53.304 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51/CO[3]
-                         net (fo=1, routed)           0.000    53.304    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51_n_2
-    SLICE_X29Y30         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    53.418 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15/CO[3]
-                         net (fo=1, routed)           0.000    53.418    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15_n_2
-    SLICE_X29Y31         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    53.532 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_4/CO[3]
-                         net (fo=88, routed)          1.023    54.555    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_23_0[0]
-    SLICE_X26Y29         LUT5 (Prop_lut5_I4_O)        0.124    54.679 f  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[2]_i_2/O
-                         net (fo=4, routed)           0.520    55.199    datapath/div_u_alu/store_remainder[15]_60[1]
-    SLICE_X26Y29         LUT6 (Prop_lut6_I1_O)        0.124    55.323 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_127/O
-                         net (fo=1, routed)           0.733    56.056    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_127_n_2
-    SLICE_X33Y29         CARRY4 (Prop_carry4_DI[1]_CO[3])
-                                                      0.507    56.563 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_100/CO[3]
-                         net (fo=1, routed)           0.000    56.563    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_100_n_2
-    SLICE_X33Y30         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    56.677 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64/CO[3]
-                         net (fo=1, routed)           0.000    56.677    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64_n_2
-    SLICE_X33Y31         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    56.791 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27/CO[3]
-                         net (fo=1, routed)           0.000    56.791    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27_n_2
-    SLICE_X33Y32         CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    56.905 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_6/CO[3]
-                         net (fo=32, routed)          1.444    58.349    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.div_mod_a/less_than
-    SLICE_X32Y30         LUT3 (Prop_lut3_I2_O)        0.124    58.473 r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_1/O
-                         net (fo=1, routed)           0.000    58.473    datapath/div_u_alu/store_remainder[16]_62[12]
-    SLICE_X32Y30         FDRE                                         r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[12]/D
+    SLICE_X54Y4          FDRE (Prop_fdre_C_Q)         0.518    -0.369 r  datapath/execute_state_reg[data_rs1_e][31]/Q
+                         net (fo=186, routed)         0.675     0.306    datapath/div_sr_alu_n/Q[31]
+    SLICE_X55Y0          LUT2 (Prop_lut2_I1_O)        0.124     0.430 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new[19]_i_4/O
+                         net (fo=1, routed)           0.000     0.430    datapath/div_sr_alu_n/i_dividend1[1]
+    SLICE_X55Y0          CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     0.980 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[19]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     0.980    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[19]_i_1_n_1
+    SLICE_X55Y1          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.094 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[23]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     1.094    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[23]_i_1_n_1
+    SLICE_X55Y2          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.208 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[27]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     1.208    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[27]_i_1_n_1
+    SLICE_X55Y3          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.322 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[31]_i_1/CO[3]
+                         net (fo=1, routed)           0.000     1.322    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.dividend_new_reg[31]_i_1_n_1
+    SLICE_X55Y4          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.436 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[1]_i_2/CO[3]
+                         net (fo=1, routed)           0.000     1.436    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[1]_i_2_n_1
+    SLICE_X55Y5          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.550 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[5]_i_6/CO[3]
+                         net (fo=1, routed)           0.000     1.550    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[5]_i_6_n_1
+    SLICE_X55Y6          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.664 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[9]_i_22/CO[3]
+                         net (fo=1, routed)           0.000     1.664    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[9]_i_22_n_1
+    SLICE_X55Y7          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.778 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[15]_i_38/CO[3]
+                         net (fo=10, routed)          1.021     2.799    datapath/div_sr_alu_n/CO[0]
+    SLICE_X55Y8          LUT2 (Prop_lut2_I0_O)        0.124     2.923 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_76__0/O
+                         net (fo=1, routed)           0.000     2.923    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_76__0_n_1
+    SLICE_X55Y8          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     3.455 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_64__0/CO[3]
+                         net (fo=1, routed)           0.000     3.455    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_64__0_n_1
+    SLICE_X55Y9          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.569 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_55__0/CO[3]
+                         net (fo=1, routed)           0.000     3.569    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_55__0_n_1
+    SLICE_X55Y10         CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.334     3.903 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_54__0/O[1]
+                         net (fo=9, routed)           1.298     5.202    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_37__0_0[9]
+    SLICE_X56Y13         LUT5 (Prop_lut5_I1_O)        0.303     5.505 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_31__0/O
+                         net (fo=1, routed)           0.000     5.505    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_31__0_n_1
+    SLICE_X56Y13         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     6.055 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000     6.055    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_12__0_n_1
+    SLICE_X56Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     6.169 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000     6.169    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_3__0_n_1
+    SLICE_X56Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     6.283 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[14]_i_2__0/CO[3]
+                         net (fo=148, routed)         1.637     7.920    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[14]_i_11__0_0[0]
+    SLICE_X60Y2          LUT4 (Prop_lut4_I3_O)        0.124     8.044 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_94__0/O
+                         net (fo=1, routed)           0.655     8.698    datapath/div_sr_alu_n/store_remainder[2]_81[7]
+    SLICE_X61Y2          LUT4 (Prop_lut4_I1_O)        0.124     8.822 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_40__0/O
+                         net (fo=1, routed)           0.737     9.559    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_40__0_n_1
+    SLICE_X60Y12         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    10.085 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    10.085    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_12__0_n_1
+    SLICE_X60Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    10.199 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    10.199    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_3__0_n_1
+    SLICE_X60Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    10.313 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_2__0/CO[3]
+                         net (fo=45, routed)          1.598    11.911    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[13]_i_11__0_0[0]
+    SLICE_X58Y3          LUT6 (Prop_lut6_I5_O)        0.124    12.035 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_87__0/O
+                         net (fo=10, routed)          0.967    13.003    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[13]_i_2__0_0[2]
+    SLICE_X57Y13         LUT4 (Prop_lut4_I3_O)        0.124    13.127 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_57__0/O
+                         net (fo=1, routed)           0.000    13.127    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_57__0_n_1
+    SLICE_X57Y13         CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.398    13.525 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_29__0/CO[3]
+                         net (fo=1, routed)           0.000    13.525    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_29__0_n_1
+    SLICE_X57Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    13.639 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    13.639    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_12__0_n_1
+    SLICE_X57Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    13.753 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    13.753    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_3__0_n_1
+    SLICE_X57Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    13.867 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[12]_i_2__0/CO[3]
+                         net (fo=159, routed)         1.478    15.344    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[12]_i_11__0_0[0]
+    SLICE_X52Y10         LUT3 (Prop_lut3_I2_O)        0.124    15.468 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_25__0/O
+                         net (fo=2, routed)           0.585    16.053    datapath/div_sr_alu_n/store_remainder[4]_85[26]
+    SLICE_X53Y10         LUT6 (Prop_lut6_I4_O)        0.124    16.177 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_6__0/O
+                         net (fo=1, routed)           0.707    16.885    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_6__0_n_1
+    SLICE_X54Y8          CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520    17.405 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_2__0/CO[3]
+                         net (fo=75, routed)          1.226    18.630    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[11]_i_11__0_0[0]
+    SLICE_X54Y4          LUT5 (Prop_lut5_I4_O)        0.124    18.754 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_7__0/O
+                         net (fo=9, routed)           0.570    19.324    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[11]_i_2__0_0[0]
+    SLICE_X52Y5          LUT6 (Prop_lut6_I1_O)        0.124    19.448 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_54__0/O
+                         net (fo=1, routed)           0.765    20.213    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_54__0_n_1
+    SLICE_X57Y9          CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.507    20.720 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_29__0/CO[3]
+                         net (fo=1, routed)           0.000    20.720    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_29__0_n_1
+    SLICE_X57Y10         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    20.834 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    20.834    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_12__0_n_1
+    SLICE_X57Y11         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    20.948 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    20.948    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_3__0_n_1
+    SLICE_X57Y12         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.062 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[10]_i_2__0/CO[3]
+                         net (fo=156, routed)         1.480    22.542    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[10]_i_11__0_0[0]
+    SLICE_X64Y4          LUT5 (Prop_lut5_I4_O)        0.124    22.666 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[11]_i_34__0/O
+                         net (fo=9, routed)           0.359    23.025    datapath/div_sr_alu_n/store_remainder[6]_89[1]
+    SLICE_X64Y3          LUT6 (Prop_lut6_I1_O)        0.124    23.149 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_58__0/O
+                         net (fo=1, routed)           0.527    23.677    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_58__0_n_1
+    SLICE_X62Y3          CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520    24.197 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29__0/CO[3]
+                         net (fo=1, routed)           0.000    24.197    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_29__0_n_1
+    SLICE_X62Y4          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    24.314 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    24.314    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_12__0_n_1
+    SLICE_X62Y5          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    24.431 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    24.431    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_3__0_n_1
+    SLICE_X62Y6          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117    24.548 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_2__0/CO[3]
+                         net (fo=79, routed)          1.264    25.812    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[9]_i_11__0_0[0]
+    SLICE_X63Y2          LUT5 (Prop_lut5_I4_O)        0.124    25.936 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_6__0/O
+                         net (fo=9, routed)           0.766    26.701    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[9]_i_2__0_0[1]
+    SLICE_X64Y5          LUT6 (Prop_lut6_I1_O)        0.124    26.825 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_53__0/O
+                         net (fo=1, routed)           0.519    27.344    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_53__0_n_1
+    SLICE_X65Y5          CARRY4 (Prop_carry4_DI[2]_CO[3])
+                                                      0.398    27.742 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29__0/CO[3]
+                         net (fo=1, routed)           0.000    27.742    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_29__0_n_1
+    SLICE_X65Y6          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    27.856 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    27.856    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_12__0_n_1
+    SLICE_X65Y7          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    27.970 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    27.970    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_3__0_n_1
+    SLICE_X65Y8          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    28.084 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[8]_i_2__0/CO[3]
+                         net (fo=153, routed)         1.192    29.277    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[8]_i_11__0_0[0]
+    SLICE_X63Y11         LUT3 (Prop_lut3_I2_O)        0.124    29.401 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_44__0/O
+                         net (fo=2, routed)           0.929    30.329    datapath/div_sr_alu_n/store_remainder[8]_93[16]
+    SLICE_X64Y8          LUT6 (Prop_lut6_I4_O)        0.124    30.453 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_16__0/O
+                         net (fo=1, routed)           0.658    31.111    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_16__0_n_1
+    SLICE_X64Y11         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    31.637 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    31.637    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_3__0_n_1
+    SLICE_X64Y12         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    31.751 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_2__0/CO[3]
+                         net (fo=83, routed)          1.573    33.324    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[7]_i_11__0_0[0]
+    SLICE_X69Y8          LUT5 (Prop_lut5_I4_O)        0.124    33.448 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[20]_i_14__0/O
+                         net (fo=8, routed)           0.985    34.432    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[7]_i_2__0_0[7]
+    SLICE_X65Y13         LUT4 (Prop_lut4_I1_O)        0.124    34.556 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_34__0/O
+                         net (fo=1, routed)           0.000    34.556    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_34__0_n_1
+    SLICE_X65Y13         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401    34.957 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    34.957    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_12__0_n_1
+    SLICE_X65Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    35.071 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    35.071    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_3__0_n_1
+    SLICE_X65Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    35.185 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_2__0/CO[3]
+                         net (fo=150, routed)         1.218    36.403    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[6]_i_11__0_0[0]
+    SLICE_X69Y7          LUT5 (Prop_lut5_I4_O)        0.124    36.527 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[13]_i_6__0/O
+                         net (fo=9, routed)           0.616    37.144    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[6]_i_2__0_0[0]
+    SLICE_X71Y6          LUT6 (Prop_lut6_I1_O)        0.124    37.268 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_33__0/O
+                         net (fo=1, routed)           0.556    37.824    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_33__0_n_1
+    SLICE_X72Y7          CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    38.350 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    38.350    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_12__0_n_1
+    SLICE_X72Y8          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    38.464 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    38.464    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_3__0_n_1
+    SLICE_X72Y9          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    38.578 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_2__0/CO[3]
+                         net (fo=87, routed)          1.053    39.631    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[5]_i_11__0_0[0]
+    SLICE_X71Y8          LUT5 (Prop_lut5_I4_O)        0.124    39.755 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[12]_i_4__0/O
+                         net (fo=9, routed)           1.000    40.755    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[5]_i_2__0_0[1]
+    SLICE_X77Y8          LUT6 (Prop_lut6_I1_O)        0.124    40.879 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_30__0/O
+                         net (fo=1, routed)           0.344    41.223    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_30__0_n_1
+    SLICE_X74Y8          CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    41.749 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    41.749    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_12__0_n_1
+    SLICE_X74Y9          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    41.863 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    41.863    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_3__0_n_1
+    SLICE_X74Y10         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    41.977 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[4]_i_2__0/CO[3]
+                         net (fo=147, routed)         1.201    43.178    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[4]_i_11__0_0[0]
+    SLICE_X80Y9          LUT3 (Prop_lut3_I2_O)        0.124    43.302 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_38__0/O
+                         net (fo=2, routed)           0.652    43.954    datapath/div_sr_alu_n/store_remainder[12]_101[16]
+    SLICE_X80Y9          LUT6 (Prop_lut6_I4_O)        0.124    44.078 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_16__0/O
+                         net (fo=1, routed)           0.499    44.577    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_16__0_n_1
+    SLICE_X79Y9          CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    45.103 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    45.103    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_3__0_n_1
+    SLICE_X79Y10         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    45.217 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[3]_i_2__0/CO[3]
+                         net (fo=91, routed)          1.275    46.492    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[3]_i_11__0_0[0]
+    SLICE_X77Y7          LUT5 (Prop_lut5_I4_O)        0.124    46.616 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[6]_i_3__0/O
+                         net (fo=9, routed)           0.611    47.227    datapath/div_sr_alu_n/store_remainder[13]_103[3]
+    SLICE_X78Y8          LUT6 (Prop_lut6_I1_O)        0.124    47.351 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_37__0/O
+                         net (fo=1, routed)           0.340    47.692    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_37__0_n_1
+    SLICE_X77Y9          CARRY4 (Prop_carry4_DI[2]_CO[3])
+                                                      0.398    48.090 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_22__0/CO[3]
+                         net (fo=1, routed)           0.000    48.090    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_22__0_n_1
+    SLICE_X77Y10         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    48.204 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12__0/CO[3]
+                         net (fo=1, routed)           0.000    48.204    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_12__0_n_1
+    SLICE_X77Y11         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    48.318 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3__0/CO[3]
+                         net (fo=1, routed)           0.000    48.318    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_3__0_n_1
+    SLICE_X77Y12         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    48.432 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new_reg[2]_i_2__0/CO[3]
+                         net (fo=144, routed)         1.065    49.497    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.quotient_new[2]_i_11__0_0[0]
+    SLICE_X74Y12         LUT5 (Prop_lut5_I4_O)        0.124    49.621 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[9]_i_2__0/O
+                         net (fo=8, routed)           0.959    50.580    datapath/div_sr_alu_n/store_remainder[14]_105[7]
+    SLICE_X69Y10         LUT6 (Prop_lut6_I1_O)        0.124    50.704 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_91__0/O
+                         net (fo=1, routed)           0.472    51.176    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_91__0_n_1
+    SLICE_X69Y13         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    51.702 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51__0/CO[3]
+                         net (fo=1, routed)           0.000    51.702    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_51__0_n_1
+    SLICE_X69Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    51.816 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15__0/CO[3]
+                         net (fo=1, routed)           0.000    51.816    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_15__0_n_1
+    SLICE_X69Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    51.930 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_4__0/CO[3]
+                         net (fo=88, routed)          1.211    53.141    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_23__0_0[0]
+    SLICE_X67Y17         LUT5 (Prop_lut5_I4_O)        0.124    53.265 f  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[8]_i_2__0/O
+                         net (fo=4, routed)           0.584    53.849    datapath/div_sr_alu_n/store_remainder[15]_107[7]
+    SLICE_X67Y17         LUT6 (Prop_lut6_I1_O)        0.124    53.973 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_104__0/O
+                         net (fo=1, routed)           0.647    54.620    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[30]_i_104__0_n_1
+    SLICE_X67Y14         CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.526    55.146 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64__0/CO[3]
+                         net (fo=1, routed)           0.000    55.146    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_64__0_n_1
+    SLICE_X67Y15         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    55.260 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27__0/CO[3]
+                         net (fo=1, routed)           0.000    55.260    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_27__0_n_1
+    SLICE_X67Y16         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    55.374 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[30]_i_6__0/CO[3]
+                         net (fo=32, routed)          1.268    56.642    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.div_mod_a/less_than
+    SLICE_X68Y16         LUT3 (Prop_lut3_I2_O)        0.124    56.766 r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new[4]_i_1__0/O
+                         net (fo=1, routed)           0.000    56.766    datapath/div_sr_alu_n/store_remainder[16]_109[4]
+    SLICE_X68Y16         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[4]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_proc_clk_wiz_0 rise edge)
@@ -321,16 +297,16 @@ Slack (VIOLATED) :        -19.498ns  (required time - arrival time)
                          net (fo=2, routed)           1.691    36.835    mmcm/clk_proc_clk_wiz_0
     BUFGCTRL_X0Y0        BUFGCTRL (Prop_bufgctrl_I0_O)
                                                       0.091    36.926 r  mmcm/clkout1_buf/O
-                         net (fo=1981, routed)        1.481    38.408    datapath/div_u_alu/clock_processor
-    SLICE_X32Y30         FDRE                                         r  datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[12]/C
-                         clock pessimism              0.577    38.984    
-                         clock uncertainty           -0.091    38.893    
-    SLICE_X32Y30         FDRE (Setup_fdre_C_D)        0.081    38.974    datapath/div_u_alu/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[12]
+                         net (fo=1981, routed)        1.548    38.475    datapath/div_sr_alu_n/clock_processor
+    SLICE_X68Y16         FDRE                                         r  datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[4]/C
+                         clock pessimism              0.577    39.051    
+                         clock uncertainty           -0.091    38.960    
+    SLICE_X68Y16         FDRE (Setup_fdre_C_D)        0.032    38.992    datapath/div_sr_alu_n/g_div_iteration[15].g_reg_iter.g_prep_pipe.remainder_new_reg[4]
   -------------------------------------------------------------------
-                         required time                         38.974    
-                         arrival time                         -58.473    
+                         required time                         38.992    
+                         arrival time                         -56.766    
   -------------------------------------------------------------------
-                         slack                                -19.498    
+                         slack                                -17.774    
 
 
 

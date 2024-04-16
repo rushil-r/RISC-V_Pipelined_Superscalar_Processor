@@ -1,8 +1,8 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date             : Mon Apr 15 20:46:49 2024
-| Host             : big05.seas.upenn.edu running 64-bit openSUSE Leap 15.5
+| Date             : Mon Apr 15 23:55:19 2024
+| Host             : big17.seas.upenn.edu running 64-bit openSUSE Leap 15.5
 | Command          : report_power -file ./vivado_output/post_route_power_report.txt
 | Design           : RiscvSystem
 | Device           : xc7z020clg484-1
@@ -30,14 +30,14 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.266        |
+| Total On-Chip Power (W)  | 0.264        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.158        |
+| Dynamic (W)              | 0.155        |
 | Device Static (W)        | 0.109        |
 | Effective TJA (C/W)      | 11.5         |
-| Max Ambient (C)          | 81.9         |
-| Junction Temperature (C) | 28.1         |
+| Max Ambient (C)          | 82.0         |
+| Junction Temperature (C) | 28.0         |
 | Confidence Level         | Medium       |
 | Setting File             | ---          |
 | Simulation Activity File | ---          |
@@ -53,20 +53,20 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |     0.003 |        5 |       --- |             --- |
-| Slice Logic    |     0.018 |    13059 |       --- |             --- |
-|   LUT as Logic |     0.017 |     7968 |     53200 |           14.98 |
-|   CARRY4       |     0.001 |      953 |     13300 |            7.17 |
-|   Register     |    <0.001 |     2048 |    106400 |            1.92 |
-|   F7/F8 Muxes  |    <0.001 |      397 |     53200 |            0.75 |
+| Slice Logic    |     0.017 |    13057 |       --- |             --- |
+|   LUT as Logic |     0.016 |     7986 |     53200 |           15.01 |
+|   CARRY4       |     0.001 |      967 |     13300 |            7.27 |
+|   Register     |    <0.001 |     2046 |    106400 |            1.92 |
+|   F7/F8 Muxes  |    <0.001 |      388 |     53200 |            0.73 |
 |   BUFG         |    <0.001 |        2 |        32 |            6.25 |
 |   Others       |     0.000 |       34 |       --- |             --- |
-| Signals        |     0.020 |    10247 |       --- |             --- |
+| Signals        |     0.019 |    10300 |       --- |             --- |
 | Block RAM      |     0.009 |      9.5 |       140 |            6.79 |
 | MMCM           |     0.106 |        1 |         4 |           25.00 |
 | DSPs           |     0.002 |       15 |       220 |            6.82 |
 | I/O            |    <0.001 |       17 |       200 |            8.50 |
 | Static Power   |     0.109 |          |           |                 |
-| Total          |     0.266 |          |           |                 |
+| Total          |     0.264 |          |           |                 |
 +----------------+-----------+----------+-----------+-----------------+
 
 
@@ -76,7 +76,7 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint    |       1.000 |     0.060 |       0.051 |      0.008 |       NA    | Unspecified | NA         |
+| Vccint    |       1.000 |     0.057 |       0.049 |      0.008 |       NA    | Unspecified | NA         |
 | Vccaux    |       1.800 |     0.069 |       0.059 |      0.011 |       NA    | Unspecified | NA         |
 | Vcco33    |       3.300 |     0.001 |       0.000 |      0.001 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -154,10 +154,10 @@ Table of Contents
 +------------------+-----------+
 | Name             | Power (W) |
 +------------------+-----------+
-| RiscvSystem      |     0.158 |
-|   datapath       |     0.042 |
+| RiscvSystem      |     0.155 |
+|   datapath       |     0.039 |
 |     div_sr_alu_n |     0.016 |
-|     div_u_alu    |     0.017 |
+|     div_u_alu    |     0.015 |
 |     rf           |     0.001 |
 |   mem            |     0.008 |
 |   mmcm           |     0.106 |
