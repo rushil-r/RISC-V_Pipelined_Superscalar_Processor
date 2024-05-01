@@ -126,17 +126,8 @@ module MemoryAxiLite #(
     axi_if.subord insn,
     axi_if.subord data
 );
-
-  // memory is an array of 4B words
   logic [DATA_WIDTH-1:0] mem_array[NUM_WORDS];
-  localparam int AddrMsb = $clog2(NUM_WORDS) + 1;  // 6
-  localparam int AddrLsb = 2;  //2
-
-  // [BR]RESP codes, from Section A 3.4.4 of AXI4 spec
   localparam bit [1:0] ResponseOkay = 2'b00;
-  // localparam bit [1:0] ResponseSubordinateError = 2'b10;
-  // localparam bit [1:0] ResponseDecodeError = 2'b11;
-
 `ifndef FORMAL
   always_comb begin
     // memory addresses should always be 4B-aligned
@@ -151,109 +142,83 @@ module MemoryAxiLite #(
 `endif
 
   wire [ADDR_WIDTH-1:0] param_warn1;  //to kill warns that err and break
-  // TODO: changes will be needed throughout this module
 
-  always_ff @(posedge axi.ACLK) begin
-    if (!axi.ARESETn) begin
-      // start out ready to accept incoming reads
-      insn.ARREADY <= 1;
-      data.ARREADY <= 1;
-      // start out ready to accept an incoming write
-      // When AWREADY is 1[SPEC DFLT: AWR=1], slave must be able to accept any valid address presented to it.
-      // The default state of WREADY can be 1, IFF slave can always accept write data in single-cycle.
-      data.AWREADY <= 1;
-      data.WREADY  <= 1;
-      // start out ready to accept ___________
-      insn.RRESP   <= ResponseOkay;
-      data.RRESP   <= ResponseOkay;
-      data.BRESP   <= ResponseOkay;
-      insn.BRESP   <= ResponseOkay;
-      // //BVALID out
-      // insn.BVALID  <= 0;
-      // data.BVALID  <= 0;
-      // //RVLAID out
-      // insn.RVALID  <= 0;
-      // data.RVALID  <= 0;
-
-      //BREADY out
-      //The default state of BREADY can be HIGH, but only if the master can always accept a write response in a single cycle.
-
-      //WREADY out
-      //The default state of WREADY can be HIGH, but only if the slave can always accept a write response in a single cycle.
-
-      // modport subord(
-      //     output _ARREADY_, _RVALID_, RDATA, _RRESP_, _AWREADY_, _WREADY_, _BVALID_, _BRESP
-      //     input ARVALID, ARADDR, ARPROT, RREADY, AWVALID, AWADDR, AWPROT, WVALID, WDATA, WSTRB, BREADY,
-      // );
-
-      //TODO FINISH
-    end else begin
-      if (insn.AWVALID && !(insn.AWREADY)) begin
-        insn.AWREADY <= 1;
-      end else if (!(insn.AWVALID)) begin
-        insn.AWREADY <= 0;
-      end
-      if (data.AWVALID && !(data.AWREADY)) begin
-        data.AWREADY <= 1;
-      end else if (!(data.AWVALID)) begin
-        data.AWREADY <= 0;
-      end
-
-
-      if (insn.WVALID && !(insn.WREADY)) begin
-        mem_array[insn.AWADDR[AddrMsb : AddrLsb]] <= insn.WDATA;
-        insn.WREADY <= 1;
-        insn.BVALID <= 1;
-      end else if (!(insn.WVALID)) begin
-        insn.WREADY <= 0;
-      end
-      if (data.WVALID && !(data.WREADY)) begin
-        mem_array[data.AWADDR[AddrMsb : AddrLsb]] <= data.WDATA;
-        data.WREADY <= 1;
-        data.BVALID <= 1;
-      end else if (!(data.WVALID)) begin
-        data.WREADY <= 0;
-      end
-
-      // READ DEPS
-      //ACCEPT READ channel
-      if (insn.ARVALID && !(insn.ARREADY)) begin
-        insn.ARREADY <= 1;
-      end else if (!(insn.RREADY)) begin
-        insn.ARREADY <= 0;
-      end
-      if (data.ARVALID && !(data.ARREADY)) begin
-        data.ARREADY <= 1;
-      end else if (!(data.RREADY)) begin
-        data.ARREADY <= 0;
-      end
-      if (insn.ARVALID && insn.ARREADY && !(insn.RVALID)) begin
-        insn.RDATA   <= mem_array[insn.ARADDR[AddrMsb : AddrLsb]];
-        insn.RVALID  <= 1;
-        insn.RRESP   <= ResponseOkay;
-        insn.ARREADY <= 0;
+always_ff @(posedge axi.ACLK) begin
+    // if we're not in the reset state 
+    if (axi.ARESETn) begin
+      if (insn.ARREADY && insn.ARVALID) begin
+        //performing read operation
+        insn.RDATA  <= mem_array[insn.ARADDR>>2];
+        insn.RVALID <= 1'b1;
+        insn.RRESP  <= ResponseOkay;
       end else begin
-        insn.RVALID <= 0;
-      end
-      if (data.ARVALID && data.ARREADY && !(data.RVALID)) begin
-        data.RDATA   <= mem_array[data.ARADDR[AddrMsb : AddrLsb]];
-        data.RVALID  <= 1;
-        data.RRESP   <= ResponseOkay;
-        data.ARREADY <= 0;
-      end else begin
-        data.RVALID <= 0;
+        // clear read data outputs if no valid read 
+        insn.RDATA  <= 32'b0;
+        insn.RVALID <= 1'b0;
+        insn.RRESP  <= ResponseOkay;
       end
 
-
+      // handling data r & w
       if (data.ARVALID && data.ARREADY) begin
-        data.ARREADY <= 0;
+        //read 
+        data.RRESP  <= ResponseOkay;
+        data.BRESP  <= ResponseOkay;
+        data.RVALID <= 1'b1;
+        data.RDATA  <= mem_array[data.ARADDR>>2];
+      end else if (data.AWVALID && data.WVALID && data.AWREADY && data.WREADY) begin
+        // handling valid writing 
+        if (data.WSTRB[0]) begin
+          mem_array[data.AWADDR>>2][7:0] <= data.WDATA[7:0];
+        end
+        if (data.WSTRB[1]) begin
+          mem_array[data.AWADDR>>2][15:8] <= data.WDATA[15:8];
+        end
+        if (data.WSTRB[2]) begin
+          mem_array[data.AWADDR>>2][23:16] <= data.WDATA[23:16];
+        end
+        if (data.WSTRB[3]) begin
+          mem_array[data.AWADDR>>2][31:24] <= data.WDATA[31:24];
+        end
+        // reeset read data after writing
+        data.BVALID <= 1'b1;
+        data.RVALID <= 1'b0;
+        data.RDATA <= 32'b0;
+        data.RRESP <= ResponseOkay;
+        data.BRESP <= ResponseOkay;
+      end else begin
+        // clear outputs if invalid 
+        data.BVALID <= 1'b0;
+        data.RVALID <= 1'b0;
+        data.RDATA  <= 32'b0;
+        data.RRESP  <= ResponseOkay;
+        data.BRESP  <= ResponseOkay;
       end
+    end else begin
 
+     // reset data
+      data.BVALID  <= 1'b0;
+      data.RVALID  <= 1'b0;
+      data.ARREADY <= 1'b1;
+      data.RDATA   <= 32'b0;
 
+      data.AWREADY <= 1'b1;
+      data.WREADY  <= 1'b1;
+
+      // reset instructions
+      insn.RVALID  <= 1'b0;
+      insn.RDATA   <= 32'b0;
+      insn.BVALID  <= 1'b0;
+      insn.ARREADY <= 1'b1;
+      insn.AWREADY <= 1'b0;
+      insn.WREADY  <= 1'b0;
+
+      //set instructions resp
+      insn.RRESP   <= ResponseOkay;
+      insn.RRESP   <= ResponseOkay;
+      insn.BRESP   <= ResponseOkay;
+      insn.BRESP   <= ResponseOkay;
     end
   end
-
-
 endmodule
 
 /** This is used for testing MemoryAxiLite in simulation, since Verilator doesn't allow
@@ -266,48 +231,44 @@ module MemAxiLiteTester #(
 ) (
     input wire ACLK,
     input wire ARESETn,
-
     input  wire                   I_ARVALID,
     output logic                  I_ARREADY,
     input  wire  [ADDR_WIDTH-1:0] I_ARADDR,
-    input  wire  [           2:0] I_ARPROT,
+    input  wire  [2:0] I_ARPROT,
     output logic                  I_RVALID,
     input  wire                   I_RREADY,
     output logic [ADDR_WIDTH-1:0] I_RDATA,
-    output logic [           1:0] I_RRESP,
-
+    output logic [1:0] I_RRESP,
     input  wire                       I_AWVALID,
     output logic                      I_AWREADY,
-    input  wire  [    ADDR_WIDTH-1:0] I_AWADDR,
-    input  wire  [               2:0] I_AWPROT,
+    input  wire  [ADDR_WIDTH-1:0] I_AWADDR,
+    input  wire  [2:0] I_AWPROT,
     input  wire                       I_WVALID,
     output logic                      I_WREADY,
-    input  wire  [    DATA_WIDTH-1:0] I_WDATA,
+    input  wire  [DATA_WIDTH-1:0] I_WDATA,
     input  wire  [(DATA_WIDTH/8)-1:0] I_WSTRB,
     output logic                      I_BVALID,
     input  wire                       I_BREADY,
-    output logic [               1:0] I_BRESP,
-
+    output logic [1:0] I_BRESP,
     input  wire                   D_ARVALID,
     output logic                  D_ARREADY,
     input  wire  [ADDR_WIDTH-1:0] D_ARADDR,
-    input  wire  [           2:0] D_ARPROT,
+    input  wire  [2:0] D_ARPROT,
     output logic                  D_RVALID,
     input  wire                   D_RREADY,
     output logic [ADDR_WIDTH-1:0] D_RDATA,
-    output logic [           1:0] D_RRESP,
-
+    output logic [1:0] D_RRESP,
     input  wire                       D_AWVALID,
     output logic                      D_AWREADY,
-    input  wire  [    ADDR_WIDTH-1:0] D_AWADDR,
+    input  wire  [ADDR_WIDTH-1:0] D_AWADDR,
     input  wire  [               2:0] D_AWPROT,
     input  wire                       D_WVALID,
     output logic                      D_WREADY,
-    input  wire  [    DATA_WIDTH-1:0] D_WDATA,
+    input  wire  [DATA_WIDTH-1:0] D_WDATA,
     input  wire  [(DATA_WIDTH/8)-1:0] D_WSTRB,
     output logic                      D_BVALID,
     input  wire                       D_BREADY,
-    output logic [               1:0] D_BRESP
+    output logic [1:0] D_BRESP
 );
 
   axi_clkrst_if axi (.*);
@@ -855,6 +816,7 @@ module DatapathAxilMemory (
     end else begin
       cla_input_2 = cla_input_2;
     end
+
     // WD Bypassing
     if ((writeback_state.rd_w == insn_rs1) && writeback_state.rd_w != 0) begin
       data_rs1 = writeback_state.alu_result_w;
