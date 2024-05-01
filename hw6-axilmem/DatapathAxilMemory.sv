@@ -143,7 +143,7 @@ module MemoryAxiLite #(
 
   wire [ADDR_WIDTH-1:0] param_warn1;  //to kill warns that err and break
 
-always_ff @(posedge axi.ACLK) begin
+  always_ff @(posedge axi.ACLK) begin
     // if we're not in the reset state 
     if (axi.ARESETn) begin
       if (insn.ARREADY && insn.ARVALID) begin
@@ -182,9 +182,9 @@ always_ff @(posedge axi.ACLK) begin
         // reeset read data after writing
         data.BVALID <= 1'b1;
         data.RVALID <= 1'b0;
-        data.RDATA <= 32'b0;
-        data.RRESP <= ResponseOkay;
-        data.BRESP <= ResponseOkay;
+        data.RDATA  <= 32'b0;
+        data.RRESP  <= ResponseOkay;
+        data.BRESP  <= ResponseOkay;
       end else begin
         // clear outputs if invalid 
         data.BVALID <= 1'b0;
@@ -195,7 +195,7 @@ always_ff @(posedge axi.ACLK) begin
       end
     end else begin
 
-     // reset data
+      // reset data
       data.BVALID  <= 1'b0;
       data.RVALID  <= 1'b0;
       data.ARREADY <= 1'b1;
@@ -229,46 +229,46 @@ module MemAxiLiteTester #(
     parameter int ADDR_WIDTH = 32,
     parameter int DATA_WIDTH = 32
 ) (
-    input wire ACLK,
-    input wire ARESETn,
-    input  wire                   I_ARVALID,
-    output logic                  I_ARREADY,
-    input  wire  [ADDR_WIDTH-1:0] I_ARADDR,
-    input  wire  [2:0] I_ARPROT,
-    output logic                  I_RVALID,
-    input  wire                   I_RREADY,
-    output logic [ADDR_WIDTH-1:0] I_RDATA,
-    output logic [1:0] I_RRESP,
+    input  wire                       ACLK,
+    input  wire                       ARESETn,
+    input  wire                       I_ARVALID,
+    output logic                      I_ARREADY,
+    input  wire  [    ADDR_WIDTH-1:0] I_ARADDR,
+    input  wire  [               2:0] I_ARPROT,
+    output logic                      I_RVALID,
+    input  wire                       I_RREADY,
+    output logic [    ADDR_WIDTH-1:0] I_RDATA,
+    output logic [               1:0] I_RRESP,
     input  wire                       I_AWVALID,
     output logic                      I_AWREADY,
-    input  wire  [ADDR_WIDTH-1:0] I_AWADDR,
-    input  wire  [2:0] I_AWPROT,
+    input  wire  [    ADDR_WIDTH-1:0] I_AWADDR,
+    input  wire  [               2:0] I_AWPROT,
     input  wire                       I_WVALID,
     output logic                      I_WREADY,
-    input  wire  [DATA_WIDTH-1:0] I_WDATA,
+    input  wire  [    DATA_WIDTH-1:0] I_WDATA,
     input  wire  [(DATA_WIDTH/8)-1:0] I_WSTRB,
     output logic                      I_BVALID,
     input  wire                       I_BREADY,
-    output logic [1:0] I_BRESP,
-    input  wire                   D_ARVALID,
-    output logic                  D_ARREADY,
-    input  wire  [ADDR_WIDTH-1:0] D_ARADDR,
-    input  wire  [2:0] D_ARPROT,
-    output logic                  D_RVALID,
-    input  wire                   D_RREADY,
-    output logic [ADDR_WIDTH-1:0] D_RDATA,
-    output logic [1:0] D_RRESP,
+    output logic [               1:0] I_BRESP,
+    input  wire                       D_ARVALID,
+    output logic                      D_ARREADY,
+    input  wire  [    ADDR_WIDTH-1:0] D_ARADDR,
+    input  wire  [               2:0] D_ARPROT,
+    output logic                      D_RVALID,
+    input  wire                       D_RREADY,
+    output logic [    ADDR_WIDTH-1:0] D_RDATA,
+    output logic [               1:0] D_RRESP,
     input  wire                       D_AWVALID,
     output logic                      D_AWREADY,
-    input  wire  [ADDR_WIDTH-1:0] D_AWADDR,
+    input  wire  [    ADDR_WIDTH-1:0] D_AWADDR,
     input  wire  [               2:0] D_AWPROT,
     input  wire                       D_WVALID,
     output logic                      D_WREADY,
-    input  wire  [DATA_WIDTH-1:0] D_WDATA,
+    input  wire  [    DATA_WIDTH-1:0] D_WDATA,
     input  wire  [(DATA_WIDTH/8)-1:0] D_WSTRB,
     output logic                      D_BVALID,
     input  wire                       D_BREADY,
-    output logic [1:0] D_BRESP
+    output logic [               1:0] D_BRESP
 );
 
   axi_clkrst_if axi (.*);
@@ -411,16 +411,21 @@ module DatapathAxilMemory (
     input wire rst,
 
     // Start by replacing this interface to imem...
-    output logic [`REG_SIZE] pc_to_imem,
-    input wire [`INSN_SIZE] insn_from_imem,
+    // output logic [`REG_SIZE] pc_to_imem,
+    // input wire [`INSN_SIZE] insn_from_imem,
     // ...with this AXIL one.
     axi_if.manager imem,
+
 
     // Once imem is working, replace this interface to dmem...
     output logic [`REG_SIZE] addr_to_dmem,
     input wire [`REG_SIZE] load_data_from_dmem,
     output logic [`REG_SIZE] store_data_to_dmem,
     output logic [3:0] store_we_to_dmem,
+    // TODO: replace addr_to_dmem, store_data_to_dmem, store_we_to_dmem, and load_data_from_dmem
+    // w/ corresponding axi_data.manager DATA sigs (always do in always_comb -- see imem)
+    // THIS MEANS ALL load/store instruction logic must take place in an always_comb block
+    // WHEN DONE -- comment out above 4 lines (and corresponding 4 lines in the module call at the very end of the code, like last 10 lines)
     // ...with this AXIL one
     axi_if.manager dmem,
 
@@ -464,7 +469,7 @@ module DatapathAxilMemory (
   //FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH//FETCH
 
   logic [`REG_SIZE] f_pc_current, f_pc_next;
-  wire [`REG_SIZE] f_insn;
+  logic [`REG_SIZE] f_insn, f_insn_stall;
   cycle_status_e f_cycle_status;
 
   // program counter
@@ -485,8 +490,23 @@ module DatapathAxilMemory (
     end
   end
   // send PC to imem
-  assign pc_to_imem = f_pc_current & 32'b11111111111111111111111111111100;
-  assign f_insn = insn_from_imem;
+
+  always_comb begin
+    imem.ARVALID = 1'b1; // before we send the address, we signal to check mem is ready to accept it
+    imem.RREADY = 1'b1;
+    imem.ARADDR = f_pc_current;  // update the addr loc w/ curr PC val
+  end
+
+  always_comb begin
+    if (decode_state.cycle_status_d == CYCLE_TAKEN_BRANCH) begin
+      f_insn = 32'd0;
+    end else begin
+      f_insn = imem.RDATA;  //if not a branch, send RDATA to f_insn
+      // IMPORTANT!: WE NO LONGER USE decode_state.insn_d AT_ALL -- it breaks everything -- EVERY INSTANCE replaced with f_insn
+      // IMPORTANT!: WE NO LONGER USE decode_state.insn_d AT_ALL -- it breaks everything -- EVERY INSTANCE replaced with f_insn
+    end
+  end
+
 
   // Here's how to disassemble an insn into a string you can view in GtkWave.
   // Use PREFIX to provide a 1-character tag to identify which stage the insn comes from.
@@ -524,7 +544,7 @@ module DatapathAxilMemory (
   Disasm #(
       .PREFIX("D")
   ) disasm_1decode (
-      .insn  (decode_state.insn_d),
+      .insn  (f_insn),
       .disasm(d_disasm)
   );
 
@@ -544,14 +564,14 @@ module DatapathAxilMemory (
   wire [2:0] insn_funct3;
   wire [4:0] insn_rd;
   wire [`OPCODE_SIZE] insn_opcode;
-  assign {insn_funct7, insn_rs2, insn_rs1, insn_funct3, insn_rd, insn_opcode} = decode_state.insn_d;
+  assign {insn_funct7, insn_rs2, insn_rs1, insn_funct3, insn_rd, insn_opcode} = f_insn;
 
   // setup for I, S, B & J type instructions
 
   // I - short immediates and loads
   wire [11:0] imm_i;
-  assign imm_i = decode_state.insn_d[31:20];
-  wire [ 4:0] imm_shamt = decode_state.insn_d[24:20];
+  assign imm_i = f_insn[31:20];
+  wire [ 4:0] imm_shamt = f_insn[24:20];
 
   // S - stores
   wire [11:0] imm_s;
@@ -563,13 +583,11 @@ module DatapathAxilMemory (
 
   // J - unconditional jumps
   wire [20:0] imm_j;
-  assign {imm_j[20], imm_j[10:1], imm_j[11], imm_j[19:12], imm_j[0]} = {
-    decode_state.insn_d[31:12], 1'b0
-  };
+  assign {imm_j[20], imm_j[10:1], imm_j[11], imm_j[19:12], imm_j[0]} = {f_insn[31:12], 1'b0};
 
   // U - 20-bit immediate
   wire [19:0] imm_u;
-  assign imm_u = decode_state.insn_d[31:12];
+  assign imm_u = f_insn[31:12];
 
   wire [`REG_SIZE] imm_i_sext = {{20{imm_i[11]}}, imm_i[11:0]};
   wire [`REG_SIZE] imm_s_sext = {{20{imm_s[11]}}, imm_s[11:0]};
@@ -582,76 +600,66 @@ module DatapathAxilMemory (
   wire insn_jal = insn_opcode == OpcodeJal;
   wire insn_jalr = insn_opcode == OpcodeJalr;
 
-  wire insn_beq = insn_opcode == OpcodeBranch && decode_state.insn_d[14:12] == 3'b000;
-  wire insn_bne = insn_opcode == OpcodeBranch && decode_state.insn_d[14:12] == 3'b001;
-  wire insn_blt = insn_opcode == OpcodeBranch && decode_state.insn_d[14:12] == 3'b100;
-  wire insn_bge = insn_opcode == OpcodeBranch && decode_state.insn_d[14:12] == 3'b101;
-  wire insn_bltu = insn_opcode == OpcodeBranch && decode_state.insn_d[14:12] == 3'b110;
-  wire insn_bgeu = insn_opcode == OpcodeBranch && decode_state.insn_d[14:12] == 3'b111;
+  wire insn_beq = insn_opcode == OpcodeBranch && f_insn[14:12] == 3'b000;
+  wire insn_bne = insn_opcode == OpcodeBranch && f_insn[14:12] == 3'b001;
+  wire insn_blt = insn_opcode == OpcodeBranch && f_insn[14:12] == 3'b100;
+  wire insn_bge = insn_opcode == OpcodeBranch && f_insn[14:12] == 3'b101;
+  wire insn_bltu = insn_opcode == OpcodeBranch && f_insn[14:12] == 3'b110;
+  wire insn_bgeu = insn_opcode == OpcodeBranch && f_insn[14:12] == 3'b111;
 
-  wire insn_lb = insn_opcode == OpcodeLoad && decode_state.insn_d[14:12] == 3'b000;
-  wire insn_lh = insn_opcode == OpcodeLoad && decode_state.insn_d[14:12] == 3'b001;
-  wire insn_lw = insn_opcode == OpcodeLoad && decode_state.insn_d[14:12] == 3'b010;
-  wire insn_lbu = insn_opcode == OpcodeLoad && decode_state.insn_d[14:12] == 3'b100;
-  wire insn_lhu = insn_opcode == OpcodeLoad && decode_state.insn_d[14:12] == 3'b101;
+  wire insn_lb = insn_opcode == OpcodeLoad && f_insn[14:12] == 3'b000;
+  wire insn_lh = insn_opcode == OpcodeLoad && f_insn[14:12] == 3'b001;
+  wire insn_lw = insn_opcode == OpcodeLoad && f_insn[14:12] == 3'b010;
+  wire insn_lbu = insn_opcode == OpcodeLoad && f_insn[14:12] == 3'b100;
+  wire insn_lhu = insn_opcode == OpcodeLoad && f_insn[14:12] == 3'b101;
 
-  wire insn_sb = insn_opcode == OpcodeStore && decode_state.insn_d[14:12] == 3'b000;
-  wire insn_sh = insn_opcode == OpcodeStore && decode_state.insn_d[14:12] == 3'b001;
-  wire insn_sw = insn_opcode == OpcodeStore && decode_state.insn_d[14:12] == 3'b010;
+  wire insn_sb = insn_opcode == OpcodeStore && f_insn[14:12] == 3'b000;
+  wire insn_sh = insn_opcode == OpcodeStore && f_insn[14:12] == 3'b001;
+  wire insn_sw = insn_opcode == OpcodeStore && f_insn[14:12] == 3'b010;
 
-  wire insn_addi = insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b000;
-  wire insn_slti = insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b010;
-  wire insn_sltiu = insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b011;
-  wire insn_xori = insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b100;
-  wire insn_ori = insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b110;
-  wire insn_andi = insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b111;
+  wire insn_addi = insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b000;
+  wire insn_slti = insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b010;
+  wire insn_sltiu = insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b011;
+  wire insn_xori = insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b100;
+  wire insn_ori = insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b110;
+  wire insn_andi = insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b111;
 
-  wire insn_slli = (insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b001
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_srli = (insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b101
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_srai = (insn_opcode == OpcodeRegImm && decode_state.insn_d[14:12] == 3'b101
-     && decode_state.insn_d[31:25] == 7'b0100000);
+  wire insn_slli = (insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b001
+     && f_insn[31:25] == 7'd0);
+  wire insn_srli = (insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b101
+     && f_insn[31:25] == 7'd0);
+  wire insn_srai = (insn_opcode == OpcodeRegImm && f_insn[14:12] == 3'b101
+     && f_insn[31:25] == 7'b0100000);
 
-  wire insn_add = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b000
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_sub = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b000
-     && decode_state.insn_d[31:25] == 7'b0100000);
-  wire insn_sll = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b001
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_slt = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b010
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_sltu = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b011
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_xor = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b100
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_srl = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b101
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_sra  = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b101
-     && decode_state.insn_d[31:25] == 7'b0100000);
-  wire insn_or = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b110
-     && decode_state.insn_d[31:25] == 7'd0);
-  wire insn_and = (insn_opcode == OpcodeRegReg && decode_state.insn_d[14:12] == 3'b111
-     && decode_state.insn_d[31:25] == 7'd0);
+  wire insn_add = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b000 && f_insn[31:25] == 7'd0);
+  wire insn_sub = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b000
+     && f_insn[31:25] == 7'b0100000);
+  wire insn_sll = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b001 && f_insn[31:25] == 7'd0);
+  wire insn_slt = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b010 && f_insn[31:25] == 7'd0);
+  wire insn_sltu = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b011
+     && f_insn[31:25] == 7'd0);
+  wire insn_xor = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b100 && f_insn[31:25] == 7'd0);
+  wire insn_srl = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b101 && f_insn[31:25] == 7'd0);
+  wire insn_sra  = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b101
+     && f_insn[31:25] == 7'b0100000);
+  wire insn_or = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b110 && f_insn[31:25] == 7'd0);
+  wire insn_and = (insn_opcode == OpcodeRegReg && f_insn[14:12] == 3'b111 && f_insn[31:25] == 7'd0);
 
-  wire insn_mul    = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b000);
-  wire insn_mulh   = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b001);
-  wire insn_mulhsu = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b010);
-  wire insn_mulhu  = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b011);
-  wire insn_div    = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b100);
-  wire insn_divu   = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b101);
-  wire insn_rem    = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b110);
-  wire insn_remu   = (insn_opcode == OpcodeRegReg && decode_state.insn_d[31:25] == 7'd1
-     && decode_state.insn_d[14:12] == 3'b111);
+  wire insn_mul = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1 && f_insn[14:12] == 3'b000);
+  wire insn_mulh   = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1
+     && f_insn[14:12] == 3'b001);
+  wire insn_mulhsu = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1
+     && f_insn[14:12] == 3'b010);
+  wire insn_mulhu  = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1
+     && f_insn[14:12] == 3'b011);
+  wire insn_div = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1 && f_insn[14:12] == 3'b100);
+  wire insn_divu   = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1
+     && f_insn[14:12] == 3'b101);
+  wire insn_rem = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1 && f_insn[14:12] == 3'b110);
+  wire insn_remu   = (insn_opcode == OpcodeRegReg && f_insn[31:25] == 7'd1
+     && f_insn[14:12] == 3'b111);
 
-  wire insn_ecall = insn_opcode == OpcodeEnviron && decode_state.insn_d[31:7] == 25'd0;
+  wire insn_ecall = insn_opcode == OpcodeEnviron && f_insn[31:7] == 25'd0;
   wire insn_fence = insn_opcode == OpcodeMiscMem;
 
   // TODO: your code here, though you will also need to modify some of the code above
@@ -733,7 +741,7 @@ module DatapathAxilMemory (
       execute_state <= '{
           pc_e: decode_state.pc_d,
           cycle_status_ee: decode_state.cycle_status_d,
-          insn_e: decode_state.insn_d,
+          insn_e: f_insn,
           insn_opcode_e: insn_opcode,
           insn_rd_e: insn_rd,
           insn_rs1_e: insn_rs1,
@@ -772,14 +780,14 @@ module DatapathAxilMemory (
   logic [`REG_SIZE] data_rs2_temp;
 
   RegFile rf (
-      .rd(writeback_state.rd_w),  //note: derived from decode_state.insn_d
+      .rd(writeback_state.rd_w),  //note: derived from f_insn
       .rd_data(writeback_state.alu_result_w),
-      .rs1(insn_rs1),  //note: derived from decode_state.insn_d
+      .rs1(insn_rs1),  //note: derived from f_insn
       .rs1_data(data_rs1_temp),
-      .rs2(insn_rs2),  //note: derived from decode_state.insn_d
+      .rs2(insn_rs2),  //note: derived from f_insn
       .rs2_data(data_rs2_temp),
       .clk(clk),
-      .we(writeback_state.regfile_we_w),  //note: derived from decode_state.insn_d
+      .we(writeback_state.regfile_we_w),  //note: derived from f_insn
       .rst(rst)
   );
 
@@ -1582,10 +1590,14 @@ module RiscvProcessor (
   DatapathAxilMemory datapath (
       .clk(clk),
       .rst(rst),
-      .imem(axi_insn.manager),  // TODO FIX IN module params and replace below mem
-      .dmem(axi_data.manager),  // TODO FIX IN module params and replace below mem
-      .pc_to_imem(pc_to_imem),
-      .insn_from_imem(insn_from_imem),
+      .imem(axi_insn.manager),  // TODO done
+      // .pc_to_imem(pc_to_imem),
+      // .insn_from_imem(insn_from_imem),
+      .dmem(axi_data.manager),
+      // TODO: replace addr_to_dmem, store_data_to_dmem, store_we_to_dmem, and load_data_from_dmem
+      // w/ corresponding axi_data.manager DATA sigs (always do in always_comb -- see imem)
+      // THIS MEANS ALL load/store instruction logic must take place in an always_comb block
+      // WHEN DONE -- comment out below 4 lines
       .addr_to_dmem(mem_data_addr),
       .store_data_to_dmem(mem_data_to_write),
       .store_we_to_dmem(mem_data_we),
